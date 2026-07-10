@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>PharmFinder — Sign In</title>
+    <meta name="description" content="Sign in to your PharmFinder account to access your pharmacy dashboard." />
+    <meta name="theme-color" content="#0D6B4E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+    <style>
+        :root {
+            --ios-blue: #007AFF;
+            --ios-green: #34C759;
+            --ios-red: #FF3B30;
+            --ios-gray: #8E8E93;
+            --ios-gray2: #AEAEB2;
+            --ios-gray3: #C7C7CC;
+            --ios-gray4: #D1D1D6;
+            --ios-gray5: #E5E5EA;
+            --ios-gray6: #F2F2F7;
+            --ios-bg: #F9F9FB;
+            --ios-white: #FFFFFF;
+            --ios-black: #1C1C1E;
+            --brand-primary: #0D6B4E;
+            --brand-primary-light: #0F8A63;
+            --brand-accent: #22C55E;
+            --brand-bg-light: #ECFDF5;
+            --brand-gradient: linear-gradient(135deg, #0D6B4E 0%, #0F8A63 30%, #1B9C6B 60%, #22C55E 100%);
+            --glass-bg: rgba(255, 255, 255, 0.78);
+            --glass-border: rgba(255, 255, 255, 0.65);
+            --shadow-ios: 0 1px 3px rgba(0, 0, 0, 0.06), 0 6px 16px rgba(0, 0, 0, 0.06);
+            --shadow-ios-lg: 0 4px 20px rgba(0, 0, 0, 0.10), 0 12px 40px rgba(0, 0, 0, 0.08);
+            --shadow-glow-green: 0 0 40px rgba(13, 107, 78, 0.25), 0 0 80px rgba(34, 197, 94, 0.15);
+            --radius-sm: 10px;
+            --radius-md: 16px;
+            --radius-lg: 22px;
+            --radius-xl: 28px;
+            --radius-full: 9999px;
+            --transition-smooth: 0.3s cubic-bezier(0.25, 0.1, 0.25, 1);
+            --transition-bounce: 0.45s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        html {
+            font-size: 16px;
+            -webkit-tap-highlight-color: transparent;
+        }
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif;
+            background: var(--ios-bg);
+            color: var(--ios-black);
+            line-height: 1.5;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* Ambient orbs */
+        .bg-orb {
+            position: fixed;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 0;
+            opacity: 0.35;
+            filter: blur(80px);
+            animation: orbFloat 16s ease-in-out infinite;
+        }
+        .bg-orb--1 {
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(34, 197, 94, 0.35) 0%, transparent 70%);
+            top: -10%;
+            left: -5%;
+        }
+        .bg-orb--2 {
+            width: 350px;
+            height: 350px;
+            background: radial-gradient(circle, rgba(13, 107, 78, 0.3) 0%, transparent 70%);
+            bottom: -8%;
+            right: -5%;
+            animation-delay: -6s;
+            animation-duration: 18s;
+        }
+        .bg-orb--3 {
+            width: 250px;
+            height: 250px;
+            background: radial-gradient(circle, rgba(90, 200, 250, 0.2) 0%, transparent 70%);
+            top: 50%;
+            left: 60%;
+            animation-delay: -10s;
+            animation-duration: 20s;
+        }
+        @keyframes orbFloat {
+            0%,
+            100% {
+                transform: translate(0, 0) scale(1);
+            }
+            33% {
+                transform: translate(35px, -30px) scale(1.08);
+            }
+            66% {
+                transform: translate(-20px, 20px) scale(0.92);
+            }
+        }
+
+        /* Main card */
+        .auth-wrapper {
+            position: relative;
+            z-index: 1;
+            width: 100%;
+            max-width: 440px;
+            margin: 20px;
+            animation: cardFadeIn 0.6s cubic-bezier(0.22, 0.61, 0.36, 1) both;
+        }
+        @keyframes cardFadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .auth-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(30px) saturate(180%);
+            -webkit-backdrop-filter: blur(30px) saturate(180%);
+            border-radius: var(--radius-xl);
+            padding: 32px 24px;
+            border: 1px solid var(--glass-border);
+            box-shadow: var(--shadow-ios-lg), 0 0 0 1px rgba(255, 255, 255, 0.6);
+        }
+        .auth-header {
+            text-align: center;
+            margin-bottom: 28px;
+        }
+        .auth-logo {
+            width: 56px;
+            height: 56px;
+            border-radius: var(--radius-md);
+            background: var(--brand-gradient);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 12px;
+            color: #fff;
+            font-size: 1.8rem;
+            box-shadow: 0 8px 24px rgba(13, 107, 78, 0.35);
+        }
+        .auth-title {
+            font-size: 1.6rem;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            color: var(--ios-black);
+        }
+        .auth-subtitle {
+            font-size: 0.85rem;
+            color: var(--ios-gray);
+            margin-top: 4px;
+        }
+
+        /* Form */
+        .login-form {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+        .input-group label {
+            font-size: 0.72rem;
+            font-weight: 700;
+            color: var(--ios-gray);
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+        }
+        .input-field {
+            display: flex;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.75);
+            border: 1.5px solid var(--ios-gray4);
+            border-radius: var(--radius-md);
+            padding: 0 16px;
+            transition: all var(--transition-smooth);
+        }
+        .input-field:focus-within {
+            border-color: var(--brand-primary);
+            box-shadow: 0 0 0 4px rgba(13, 107, 78, 0.08);
+        }
+        .input-field i {
+            color: var(--ios-gray2);
+            font-size: 1rem;
+            margin-right: 10px;
+            flex-shrink: 0;
+        }
+        .input-field input {
+            flex: 1;
+            border: none;
+            background: transparent;
+            padding: 14px 0;
+            font-size: 0.95rem;
+            font-family: 'Inter', sans-serif;
+            color: var(--ios-black);
+            outline: none;
+        }
+        .input-field input::placeholder {
+            color: var(--ios-gray3);
+        }
+
+        .forgot-link {
+            text-align: right;
+            font-size: 0.78rem;
+            font-weight: 600;
+            color: var(--brand-primary);
+            text-decoration: none;
+            cursor: pointer;
+            transition: opacity var(--transition-smooth);
+        }
+        .forgot-link:hover {
+            opacity: 0.7;
+        }
+
+        .btn-login {
+            width: 100%;
+            padding: 15px;
+            background: var(--brand-gradient);
+            color: #fff;
+            font-weight: 700;
+            font-size: 1rem;
+            border: none;
+            border-radius: var(--radius-full);
+            cursor: pointer;
+            transition: all var(--transition-bounce);
+            font-family: 'Inter', sans-serif;
+            box-shadow: var(--shadow-glow-green), 0 6px 20px rgba(13, 107, 78, 0.3);
+            letter-spacing: -0.2px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        .btn-login:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-glow-green), 0 12px 32px rgba(13, 107, 78, 0.45);
+        }
+        .btn-login:active {
+            transform: scale(0.96);
+        }
+
+        .divider {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 0.7rem;
+            color: var(--ios-gray3);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin: 16px 0;
+        }
+        .divider::before,
+        .divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: var(--ios-gray4);
+        }
+
+        .social-buttons {
+            display: flex;
+            gap: 12px;
+        }
+        .social-btn {
+            flex: 1;
+            padding: 12px;
+            border-radius: var(--radius-md);
+            border: 1.5px solid var(--ios-gray4);
+            background: #fff;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            transition: all var(--transition-smooth);
+            font-family: 'Inter', sans-serif;
+            color: var(--ios-black);
+        }
+        .social-btn:hover {
+            border-color: var(--brand-primary);
+            background: var(--brand-bg-light);
+        }
+
+        .auth-footer {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 0.85rem;
+            color: var(--ios-gray);
+        }
+        .auth-footer a {
+            color: var(--brand-primary);
+            text-decoration: none;
+            font-weight: 700;
+        }
+        .auth-footer a:hover {
+            text-decoration: underline;
+        }
+
+        .back-link {
+            text-align: center;
+            margin-top: 16px;
+            font-size: 0.8rem;
+            color: var(--ios-gray2);
+        }
+        .back-link a {
+            color: var(--brand-primary);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        /* iOS Notification modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.55);
+            z-index: 9999;
+            display: flex;
+            align-items: flex-start;
+            justify-content: center;
+            padding-top: 60px;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
+        }
+        .modal-overlay.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+        .modal-notification {
+            background: rgba(255, 255, 255, 0.96);
+            backdrop-filter: blur(30px) saturate(200%);
+            -webkit-backdrop-filter: blur(30px) saturate(200%);
+            border-radius: 22px;
+            padding: 18px 20px;
+            width: 90%;
+            max-width: 400px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(255, 255, 255, 0.6);
+            transform: translateY(-30px) scale(0.92);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+        }
+        .modal-overlay.active .modal-notification {
+            transform: translateY(0) scale(1);
+        }
+        .modal-notification__header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        .modal-notification__app-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            background: var(--brand-gradient);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 0.85rem;
+        }
+        .modal-notification__app-name {
+            font-weight: 700;
+            font-size: 0.85rem;
+            color: var(--ios-black);
+        }
+        .modal-notification__time {
+            font-size: 0.7rem;
+            color: var(--ios-gray2);
+            margin-left: auto;
+        }
+        .modal-notification__body {
+            font-size: 0.9rem;
+            color: var(--ios-black);
+            line-height: 1.4;
+            font-weight: 500;
+        }
+        .modal-notification__sub {
+            font-size: 0.75rem;
+            color: var(--ios-gray);
+            margin-top: 4px;
+        }
+        .modal-notification__close {
+            position: absolute;
+            top: 10px;
+            right: 14px;
+            background: rgba(0, 0, 0, 0.06);
+            border: none;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 0.8rem;
+            color: var(--ios-gray);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .modal-notification__actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 12px;
+        }
+        .modal-notification__btn {
+            flex: 1;
+            padding: 10px;
+            border-radius: var(--radius-full);
+            border: none;
+            font-weight: 600;
+            font-size: 0.8rem;
+            cursor: pointer;
+            font-family: 'Inter', sans-serif;
+        }
+        .modal-notification__btn--primary {
+            background: var(--brand-primary);
+            color: #fff;
+        }
+        .modal-notification__btn--secondary {
+            background: var(--ios-gray6);
+            color: var(--ios-black);
+        }
+
+        @media (max-width: 500px) {
+            .auth-card {
+                padding: 24px 16px;
+            }
+            .social-buttons {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Ambient orbs -->
+    <div class="bg-orb bg-orb--1"></div>
+    <div class="bg-orb bg-orb--2"></div>
+    <div class="bg-orb bg-orb--3"></div>
+
+    <div class="auth-wrapper">
+        <div class="auth-card">
+            <div class="auth-header">
+                <div class="auth-logo">
+                    <i class="fas fa-prescription-bottle"></i>
+                </div>
+                <h1 class="auth-title">Welcome Back</h1>
+                <p class="auth-subtitle">Sign in to your PharmFinder account</p>
+            </div>
+
+            <form class="login-form" id="loginForm" novalidate>
+                <div class="input-group">
+                    <label>Email Address</label>
+                    <div class="input-field">
+                        <i class="fas fa-envelope"></i>
+                        <input type="email" id="loginEmail" placeholder="you@example.com" autocomplete="email" required />
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <label>Password</label>
+                    <div class="input-field">
+                        <i class="fas fa-lock"></i>
+                        <input type="password" id="loginPassword" placeholder="••••••••" autocomplete="current-password" required />
+                    </div>
+                </div>
+
+                <a class="forgot-link" id="forgotPassword">Forgot password?</a>
+
+                <button type="submit" class="btn-login" id="btnLoginSubmit">
+                    <i class="fas fa-arrow-right-to-bracket"></i> Sign In
+                </button>
+            </form>
+
+            <div class="divider">or continue with</div>
+            <div class="social-buttons">
+                <button class="social-btn" id="btnGoogle">
+                    <i class="fab fa-google"></i> Google
+                </button>
+                <button class="social-btn" id="btnApple">
+                    <i class="fab fa-apple"></i> Apple
+                </button>
+            </div>
+
+            <div class="auth-footer">
+                Don't have an account? <a href="register.html">Create one here</a>
+            </div>
+        </div>
+        <div class="back-link">
+            <a href="index.html"><i class="fas fa-arrow-left"></i> Back to Home</a>
+        </div>
+    </div>
+
+    <!-- iOS Notification Modal -->
+    <div class="modal-overlay" id="modalOverlay">
+        <div class="modal-notification">
+            <button class="modal-notification__close" id="modalCloseBtn"><i class="fas fa-xmark"></i></button>
+            <div class="modal-notification__header">
+                <div class="modal-notification__app-icon"><i class="fas fa-prescription-bottle"></i></div>
+                <span class="modal-notification__app-name">PharmFinder</span>
+                <span class="modal-notification__time" id="modalTime">now</span>
+            </div>
+            <div class="modal-notification__body" id="modalBody">Message</div>
+            <div class="modal-notification__sub" id="modalSub"></div>
+            <div class="modal-notification__actions">
+                <button class="modal-notification__btn modal-notification__btn--secondary" id="modalBtnDismiss">Dismiss</button>
+                <button class="modal-notification__btn modal-notification__btn--primary" id="modalBtnAction">OK</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        (function() {
+            // Modal system
+            const modalOverlay = document.getElementById('modalOverlay');
+            const modalBody = document.getElementById('modalBody');
+            const modalSub = document.getElementById('modalSub');
+            const modalTime = document.getElementById('modalTime');
+            const modalBtnDismiss = document.getElementById('modalBtnDismiss');
+            const modalBtnAction = document.getElementById('modalBtnAction');
+            const modalCloseBtn = document.getElementById('modalCloseBtn');
+            let modalActionCallback = null;
+
+            function showModal(bodyText, subText, actionLabel, callback) {
+                modalBody.textContent = bodyText;
+                modalSub.textContent = subText || '';
+                modalTime.textContent = new Date().toLocaleTimeString([], { hour: '2-digit',
+                minute: '2-digit' });
+                modalBtnAction.textContent = actionLabel || 'OK';
+                modalActionCallback = callback || null;
+                modalOverlay.classList.add('active');
+            }
+
+            function hideModal() {
+                modalOverlay.classList.remove('active');
+                modalActionCallback = null;
+            }
+
+            modalCloseBtn.addEventListener('click', hideModal);
+            modalBtnDismiss.addEventListener('click', hideModal);
+            modalBtnAction.addEventListener('click', () => {
+                if (modalActionCallback && typeof modalActionCallback === 'function')
+                modalActionCallback();
+                hideModal();
+            });
+            modalOverlay.addEventListener('click', (e) => { if (e.target === modalOverlay)
+            hideModal(); });
+            document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && modalOverlay.classList
+                    .contains('active')) hideModal(); });
+
+            // Form handling
+            const form = document.getElementById('loginForm');
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                const email = document.getElementById('loginEmail').value.trim();
+                const password = document.getElementById('loginPassword').value;
+                if (!email || !password) {
+                    showModal('Missing Fields', 'Please enter both email and password.', 'OK');
+                    return;
+                }
+                // Demo: simulate successful login
+                showModal('Welcome Back!',
+                    'You have successfully signed in (demo). Redirecting to your dashboard…',
+                    'Continue', () => {
+                        window.location.href = 'index.html'; // or dashboard
+                    });
+            });
+
+            // Forgot password
+            document.getElementById('forgotPassword').addEventListener('click', (e) => {
+                e.preventDefault();
+                const email = document.getElementById('loginEmail').value.trim();
+                if (!email) {
+                    showModal('Forgot Password',
+                        'Please enter your email address first, then tap "Forgot password?" again.',
+                        'OK');
+                } else {
+                    showModal('Password Reset',
+                        `If an account exists for ${email}, a reset link has been sent.`,
+                        'OK');
+                }
+            });
+
+            // Social buttons (demo)
+            document.getElementById('btnGoogle').addEventListener('click', () => {
+                showModal('Google Sign‑In', 'This is a demo. Google authentication would be integrated here.',
+                    'OK');
+            });
+            document.getElementById('btnApple').addEventListener('click', () => {
+                showModal('Apple Sign‑In', 'This is a demo. Sign in with Apple would be integrated here.',
+                'OK');
+            });
+
+            console.log('🔐 PharmFinder login page ready.');
+        })();
+    </script>
+</body>
+</html>

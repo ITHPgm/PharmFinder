@@ -1,0 +1,975 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>PharmFinder — Register Your Pharmacy</title>
+    <meta name="description" content="Register your pharmacy on PharmFinder to reach nearby patients and manage your listing." />
+    <meta name="theme-color" content="#0D6B4E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+    <style>
+        :root {
+            --ios-blue: #007AFF;
+            --ios-green: #34C759;
+            --ios-red: #FF3B30;
+            --ios-orange: #FF9500;
+            --ios-teal: #5AC8FA;
+            --ios-indigo: #5856D6;
+            --ios-purple: #AF52DE;
+            --ios-pink: #FF2D55;
+            --ios-gray: #8E8E93;
+            --ios-gray2: #AEAEB2;
+            --ios-gray3: #C7C7CC;
+            --ios-gray4: #D1D1D6;
+            --ios-gray5: #E5E5EA;
+            --ios-gray6: #F2F2F7;
+            --ios-bg: #F9F9FB;
+            --ios-white: #FFFFFF;
+            --ios-black: #1C1C1E;
+            --ios-dark-card: #2C2C2E;
+            --brand-primary: #0D6B4E;
+            --brand-primary-light: #0F8A63;
+            --brand-secondary: #1B9C6B;
+            --brand-accent: #22C55E;
+            --brand-bg-light: #ECFDF5;
+            --brand-gradient: linear-gradient(135deg, #0D6B4E 0%, #0F8A63 30%, #1B9C6B 60%, #22C55E 100%);
+            --amber-gradient: linear-gradient(135deg, #F59E0B 0%, #F97316 100%);
+            --glass-bg: rgba(255, 255, 255, 0.74);
+            --glass-border: rgba(255, 255, 255, 0.58);
+            --glass-blur: blur(22px) saturate(180%);
+            --radius-sm: 10px;
+            --radius-md: 16px;
+            --radius-lg: 22px;
+            --radius-xl: 28px;
+            --radius-2xl: 36px;
+            --radius-full: 9999px;
+            --shadow-ios: 0 1px 3px rgba(0, 0, 0, 0.06), 0 6px 16px rgba(0, 0, 0, 0.06);
+            --shadow-ios-lg: 0 4px 20px rgba(0, 0, 0, 0.10), 0 12px 40px rgba(0, 0, 0, 0.08);
+            --shadow-ios-xl: 0 8px 40px rgba(0, 0, 0, 0.14), 0 20px 60px rgba(0, 0, 0, 0.10);
+            --shadow-glow-green: 0 0 40px rgba(13, 107, 78, 0.25), 0 0 80px rgba(34, 197, 94, 0.15);
+            --transition-fast: 0.18s cubic-bezier(0.25, 0.1, 0.25, 1);
+            --transition-smooth: 0.3s cubic-bezier(0.25, 0.1, 0.25, 1);
+            --transition-bounce: 0.45s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        html {
+            scroll-behavior: smooth;
+            font-size: 16px;
+            -webkit-tap-highlight-color: transparent;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Helvetica Neue', sans-serif;
+            background: var(--ios-bg);
+            color: var(--ios-black);
+            line-height: 1.55;
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+            padding-bottom: 80px;
+        }
+
+        .bg-orb {
+            position: fixed;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 0;
+            opacity: 0.25;
+            filter: blur(90px);
+            animation: orbFloat 18s ease-in-out infinite;
+        }
+        .bg-orb--1 {
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(34, 197, 94, 0.28) 0%, transparent 70%);
+            top: -8%;
+            left: -8%;
+        }
+        .bg-orb--2 {
+            width: 330px;
+            height: 330px;
+            background: radial-gradient(circle, rgba(13, 107, 78, 0.24) 0%, transparent 70%);
+            bottom: -6%;
+            right: -6%;
+            animation-delay: -7s;
+            animation-duration: 20s;
+        }
+        .bg-orb--3 {
+            width: 260px;
+            height: 260px;
+            background: radial-gradient(circle, rgba(245, 158, 11, 0.12) 0%, transparent 70%);
+            top: 45%;
+            left: 58%;
+            animation-delay: -12s;
+            animation-duration: 22s;
+        }
+        @keyframes orbFloat {
+            0%,
+            100% {
+                transform: translate(0, 0) scale(1);
+            }
+            15% {
+                transform: translate(30px, -25px) scale(1.08);
+            }
+            30% {
+                transform: translate(-18px, 20px) scale(0.94);
+            }
+            45% {
+                transform: translate(25px, 15px) scale(1.05);
+            }
+            60% {
+                transform: translate(-30px, -10px) scale(0.92);
+            }
+            75% {
+                transform: translate(10px, -30px) scale(1.06);
+            }
+            90% {
+                transform: translate(-15px, 25px) scale(0.96);
+            }
+        }
+
+        .app-wrapper {
+            position: relative;
+            z-index: 1;
+            max-width: 580px;
+            margin: 0 auto;
+            padding: 0 16px 40px;
+        }
+
+        /* ── Header ── */
+        .nav-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 0 6px;
+            position: sticky;
+            top: 0;
+            z-index: 90;
+            background: rgba(249, 249, 251, 0.86);
+            backdrop-filter: blur(22px);
+            -webkit-backdrop-filter: blur(22px);
+        }
+        .nav-header .btn-back {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.7);
+            border: 1px solid var(--ios-gray4);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all var(--transition-fast);
+            color: var(--ios-black);
+            font-size: 1rem;
+            flex-shrink: 0;
+        }
+        .nav-header .btn-back:hover {
+            background: #fff;
+            box-shadow: var(--shadow-ios);
+        }
+        .nav-header__title {
+            font-size: 1.05rem;
+            font-weight: 700;
+            letter-spacing: -0.3px;
+            color: var(--ios-black);
+            flex: 1;
+        }
+
+        /* ── Form Section ── */
+        .section-block {
+            margin-top: 28px;
+        }
+        .section-title {
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: var(--ios-gray);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .section-title i {
+            font-size: 0.7rem;
+            color: var(--brand-primary);
+        }
+
+        .form-card {
+            background: var(--glass-bg);
+            backdrop-filter: var(--glass-blur);
+            -webkit-backdrop-filter: var(--glass-blur);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius-xl);
+            padding: 20px 18px;
+            box-shadow: var(--shadow-ios);
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+        .form-group:last-child {
+            margin-bottom: 0;
+        }
+        .form-group label {
+            font-size: 0.72rem;
+            font-weight: 700;
+            color: var(--ios-gray);
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            display: block;
+            margin-bottom: 6px;
+        }
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            border: 1.5px solid var(--ios-gray4);
+            border-radius: var(--radius-md);
+            padding: 13px 16px;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.9rem;
+            color: var(--ios-black);
+            background: rgba(255, 255, 255, 0.7);
+            outline: none;
+            transition: all var(--transition-smooth);
+            resize: vertical;
+        }
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            border-color: var(--brand-primary);
+            box-shadow: 0 0 0 4px rgba(13, 107, 78, 0.08);
+        }
+        .form-group textarea {
+            min-height: 80px;
+        }
+        .form-group .input-hint {
+            font-size: 0.62rem;
+            color: var(--ios-gray3);
+            margin-top: 4px;
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            font-size: 0.78rem;
+            color: var(--ios-gray);
+            line-height: 1.4;
+            margin-bottom: 14px;
+        }
+        .checkbox-group input {
+            margin-top: 3px;
+            accent-color: var(--brand-primary);
+            width: 18px;
+            height: 18px;
+            flex-shrink: 0;
+        }
+
+        .toggle-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 16px;
+            padding: 10px 14px;
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: var(--radius-md);
+            border: 1px solid var(--ios-gray5);
+        }
+        .toggle-row span {
+            font-weight: 600;
+            font-size: 0.82rem;
+        }
+
+        /* iOS toggle */
+        .ios-toggle {
+            position: relative;
+            width: 48px;
+            height: 28px;
+            flex-shrink: 0;
+        }
+        .ios-toggle input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        .ios-toggle .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: var(--ios-gray4);
+            border-radius: 28px;
+            transition: 0.25s;
+        }
+        .ios-toggle .slider:before {
+            position: absolute;
+            content: "";
+            height: 24px;
+            width: 24px;
+            left: 2px;
+            bottom: 2px;
+            background-color: white;
+            border-radius: 50%;
+            transition: 0.25s;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+        }
+        .ios-toggle input:checked+.slider {
+            background-color: var(--ios-green);
+        }
+        .ios-toggle input:checked+.slider:before {
+            transform: translateX(20px);
+        }
+
+        .btn-submit {
+            width: 100%;
+            padding: 15px;
+            background: var(--brand-gradient);
+            color: #fff;
+            font-weight: 700;
+            font-size: 1rem;
+            border: none;
+            border-radius: var(--radius-full);
+            cursor: pointer;
+            transition: all var(--transition-bounce);
+            font-family: 'Inter', sans-serif;
+            box-shadow: var(--shadow-glow-green), 0 6px 20px rgba(13, 107, 78, 0.3);
+            letter-spacing: -0.2px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 20px;
+        }
+        .btn-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-glow-green), 0 12px 32px rgba(13, 107, 78, 0.45);
+        }
+        .btn-submit:active {
+            transform: scale(0.96);
+        }
+        .btn-submit:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .verification-note {
+            margin-top: 20px;
+            background: #FFFBF0;
+            border: 1px solid rgba(245, 158, 11, 0.2);
+            border-radius: var(--radius-lg);
+            padding: 14px 16px;
+            display: flex;
+            gap: 10px;
+            font-size: 0.7rem;
+            color: #92400E;
+            line-height: 1.5;
+            align-items: flex-start;
+        }
+        .verification-note i {
+            color: #F59E0B;
+            font-size: 0.9rem;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
+        /* ── Modal ── */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.55);
+            z-index: 9999;
+            display: flex;
+            align-items: flex-start;
+            justify-content: center;
+            padding-top: 60px;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
+        }
+        .modal-overlay.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+        .modal-notification {
+            background: rgba(255, 255, 255, 0.96);
+            backdrop-filter: blur(30px) saturate(200%);
+            -webkit-backdrop-filter: blur(30px) saturate(200%);
+            border-radius: 22px;
+            padding: 18px 20px;
+            width: 90%;
+            max-width: 420px;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(255, 255, 255, 0.6);
+            transform: translateY(-30px) scale(0.92);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+        }
+        .modal-overlay.active .modal-notification {
+            transform: translateY(0) scale(1);
+        }
+        .modal-notification__header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        .modal-notification__app-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            background: var(--brand-gradient);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 0.85rem;
+        }
+        .modal-notification__app-name {
+            font-weight: 700;
+            font-size: 0.85rem;
+            color: var(--ios-black);
+        }
+        .modal-notification__time {
+            font-size: 0.7rem;
+            color: var(--ios-gray2);
+            margin-left: auto;
+        }
+        .modal-notification__body {
+            font-size: 0.9rem;
+            color: var(--ios-black);
+            line-height: 1.4;
+            font-weight: 500;
+        }
+        .modal-notification__sub {
+            font-size: 0.75rem;
+            color: var(--ios-gray);
+            margin-top: 4px;
+        }
+        .modal-notification__close {
+            position: absolute;
+            top: 10px;
+            right: 14px;
+            background: rgba(0, 0, 0, 0.06);
+            border: none;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 0.8rem;
+            color: var(--ios-gray);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .modal-notification__actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 12px;
+        }
+        .modal-notification__btn {
+            flex: 1;
+            padding: 10px;
+            border-radius: var(--radius-full);
+            border: none;
+            font-weight: 600;
+            font-size: 0.8rem;
+            cursor: pointer;
+            font-family: 'Inter', sans-serif;
+        }
+        .modal-notification__btn--primary {
+            background: var(--brand-primary);
+            color: #fff;
+        }
+        .modal-notification__btn--secondary {
+            background: var(--ios-gray6);
+            color: var(--ios-black);
+        }
+
+        /* Toast */
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%) translateY(120px);
+            background: var(--ios-dark-card);
+            color: #fff;
+            padding: 12px 22px;
+            border-radius: var(--radius-full);
+            font-weight: 600;
+            font-size: 0.82rem;
+            z-index: 10000;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .toast.show {
+            transform: translateX(-50%) translateY(0);
+        }
+
+        @media (max-width: 400px) {
+            .form-card {
+                padding: 16px 12px;
+            }
+            .toggle-row span {
+                font-size: 0.72rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-orb bg-orb--1"></div>
+    <div class="bg-orb bg-orb--2"></div>
+    <div class="bg-orb bg-orb--3"></div>
+
+    <div class="app-wrapper">
+        <!-- Header -->
+        <div class="nav-header">
+            <button class="btn-back" onclick="history.back()" aria-label="Go back">
+                <i class="fas fa-chevron-left"></i>
+            </button>
+            <span class="nav-header__title">Register Pharmacy</span>
+        </div>
+
+        <form id="pharmacyRegistrationForm" novalidate>
+            <!-- 1. Basic Info Section -->
+            <div class="section-block">
+                <div class="section-title"><i class="fas fa-store"></i> Basic Information</div>
+                <div class="form-card">
+                    <div class="form-group">
+                        <label for="pharmacyName">Pharmacy Name *</label>
+                        <input type="text" id="pharmacyName" placeholder="e.g. MediCare Pharmacy" required autocomplete="organization" />
+                    </div>
+                    <div class="form-group">
+                        <label for="pharmacyDesc">Short Description</label>
+                        <textarea id="pharmacyDesc" placeholder="Describe your pharmacy in a few words... (optional)" maxlength="200"></textarea>
+                        <span class="input-hint" id="descCharCount">0/200</span>
+                    </div>
+                    <div class="form-group">
+                        <label for="pharmacyCategory">Category</label>
+                        <select id="pharmacyCategory">
+                            <option value="retail">Retail Pharmacy</option>
+                            <option value="hospital">Hospital Pharmacy</option>
+                            <option value="community">Community Pharmacy</option>
+                            <option value="24h">24/7 Pharmacy</option>
+                            <option value="online">Online / Delivery</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2. Location Section -->
+            <div class="section-block">
+                <div class="section-title"><i class="fas fa-location-dot"></i> Location</div>
+                <div class="form-card">
+                    <div class="form-group">
+                        <label for="pharmacyAddress">Street Address *</label>
+                        <input type="text" id="pharmacyAddress" placeholder="Enter full street address" required autocomplete="street-address" />
+                    </div>
+                    <div class="form-group">
+                        <label for="pharmacyCity">City *</label>
+                        <input type="text" id="pharmacyCity" placeholder="e.g. Lagos" required autocomplete="address-level2" />
+                    </div>
+                    <div class="form-group">
+                        <label for="pharmacyLandmark">Nearby Landmark</label>
+                        <input type="text" id="pharmacyLandmark" placeholder="e.g. Opposite GTBank" autocomplete="off" />
+                    </div>
+                    <button type="button" class="btn-submit" id="btnUseMyLocation" style="margin-top:0; background:var(--ios-white); color:var(--ios-blue); border:2px solid var(--ios-blue); box-shadow:none; font-size:0.85rem; padding:12px;">
+                        <i class="fas fa-location-crosshairs"></i> Use My Current Location
+                    </button>
+                </div>
+            </div>
+
+            <!-- 3. Contact Information -->
+            <div class="section-block">
+                <div class="section-title"><i class="fas fa-phone"></i> Contact Information</div>
+                <div class="form-card">
+                    <div class="form-group">
+                        <label for="pharmacyPhone">Primary Phone Number *</label>
+                        <input type="tel" id="pharmacyPhone" placeholder="+1 (555) 000-0000" required autocomplete="tel" />
+                    </div>
+                    <div class="form-group">
+                        <label for="pharmacyEmail">Email Address (optional)</label>
+                        <input type="email" id="pharmacyEmail" placeholder="pharmacy@example.com" autocomplete="email" />
+                    </div>
+                    <div class="form-group">
+                        <label for="pharmacyWebsite">Website (optional)</label>
+                        <input type="url" id="pharmacyWebsite" placeholder="https://www.example.com" autocomplete="url" />
+                    </div>
+                </div>
+            </div>
+
+            <!-- 4. Operating Hours -->
+            <div class="section-block">
+                <div class="section-title"><i class="fas fa-clock"></i> Operating Hours</div>
+                <div class="form-card">
+                    <div class="toggle-row">
+                        <span>Open 24/7</span>
+                        <label class="ios-toggle">
+                            <input type="checkbox" id="toggle24h">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    <div id="customHoursContainer">
+                        <div class="form-group">
+                            <label for="openTime">Opening Time</label>
+                            <input type="time" id="openTime" value="08:00" />
+                        </div>
+                        <div class="form-group">
+                            <label for="closeTime">Closing Time</label>
+                            <input type="time" id="closeTime" value="22:00" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 5. Services Offered -->
+            <div class="section-block">
+                <div class="section-title"><i class="fas fa-capsules"></i> Services Offered</div>
+                <div class="form-card">
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="svcPrescription" checked />
+                        <label for="svcPrescription">Prescription Filling</label>
+                    </div>
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="svcOTC" checked />
+                        <label for="svcOTC">Over-the-Counter (OTC)</label>
+                    </div>
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="svcVaccination" />
+                        <label for="svcVaccination">Vaccinations</label>
+                    </div>
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="svcDelivery" />
+                        <label for="svcDelivery">Delivery Service</label>
+                    </div>
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="svcConsultation" />
+                        <label for="svcConsultation">Health Consultation</label>
+                    </div>
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="svcCompounding" />
+                        <label for="svcCompounding">Compounding</label>
+                    </div>
+                    <div class="form-group">
+                        <label for="otherServices">Other Services</label>
+                        <input type="text" id="otherServices" placeholder="e.g. Diabetes screening, blood pressure checks" />
+                    </div>
+                </div>
+            </div>
+
+            <!-- 6. Pharmacy Image Upload (Optional) -->
+            <div class="section-block">
+                <div class="section-title"><i class="fas fa-camera"></i> Pharmacy Image (Optional)</div>
+                <div class="form-card">
+                    <div class="form-group">
+                        <label for="pharmacyLogo">Upload Logo or Photo</label>
+                        <input type="file" id="pharmacyLogo" accept="image/*" style="padding:10px;" />
+                        <span class="input-hint">Max 2MB. JPG, PNG. This will be your public profile image.</span>
+                    </div>
+                    <div id="imagePreviewContainer" style="text-align:center;margin-top:10px;display:none;">
+                        <img id="imagePreview" src="#" alt="Preview" style="max-width:200px;border-radius:var(--radius-md);border:1px solid var(--ios-gray4);" />
+                    </div>
+                </div>
+            </div>
+
+            <!-- 7. Verification & Owner Info -->
+            <div class="section-block">
+                <div class="section-title"><i class="fas fa-shield-halved"></i> Verification</div>
+                <div class="form-card">
+                    <div class="form-group">
+                        <label for="ownerName">Owner Full Name *</label>
+                        <input type="text" id="ownerName" placeholder="Your legal name" required autocomplete="name" />
+                    </div>
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="agreeTerms" required />
+                        <label for="agreeTerms">I confirm that the information provided is accurate and I am authorized to list this pharmacy. I agree to the <a href="terms.html" style="color:var(--brand-primary);">Terms of Service</a>.</label>
+                    </div>
+                    <div class="verification-note">
+                        <i class="fas fa-clock"></i>
+                        <div>Your pharmacy will be reviewed and approved within 24 hours. You'll be notified once it's live on PharmFinder.</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Submit -->
+            <button type="submit" class="btn-submit" id="submitBtn">
+                <i class="fas fa-paper-plane"></i> Submit for Approval
+            </button>
+        </form>
+    </div>
+
+    <!-- iOS Modal -->
+    <div class="modal-overlay" id="modalOverlay">
+        <div class="modal-notification" id="modalNotification">
+            <button class="modal-notification__close" id="modalCloseBtn"><i class="fas fa-xmark"></i></button>
+            <div class="modal-notification__header">
+                <div class="modal-notification__app-icon"><i class="fas fa-prescription-bottle"></i></div>
+                <span class="modal-notification__app-name">PharmFinder</span>
+                <span class="modal-notification__time" id="modalTime">now</span>
+            </div>
+            <div class="modal-notification__body" id="modalBody">Message</div>
+            <div class="modal-notification__sub" id="modalSub"></div>
+            <div class="modal-notification__actions">
+                <button class="modal-notification__btn modal-notification__btn--secondary" id="modalBtnDismiss">Close</button>
+                <button class="modal-notification__btn modal-notification__btn--primary" id="modalBtnAction">OK</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast -->
+    <div class="toast" id="toast"><i class="fas fa-circle-check"></i><span id="toastMsg"></span></div>
+
+    <script>
+        (function() {
+            // ─── DOM refs ───
+            const form = document.getElementById('pharmacyRegistrationForm');
+            const toggle24h = document.getElementById('toggle24h');
+            const customHoursContainer = document.getElementById('customHoursContainer');
+            const openTime = document.getElementById('openTime');
+            const closeTime = document.getElementById('closeTime');
+            const descTextarea = document.getElementById('pharmacyDesc');
+            const descCharCount = document.getElementById('descCharCount');
+            const pharmacyLogo = document.getElementById('pharmacyLogo');
+            const imagePreviewContainer = document.getElementById('imagePreviewContainer');
+            const imagePreview = document.getElementById('imagePreview');
+            const btnUseMyLocation = document.getElementById('btnUseMyLocation');
+            const submitBtn = document.getElementById('submitBtn');
+
+            const modalOverlay = document.getElementById('modalOverlay');
+            const modalBody = document.getElementById('modalBody');
+            const modalSub = document.getElementById('modalSub');
+            const modalTime = document.getElementById('modalTime');
+            const modalBtnDismiss = document.getElementById('modalBtnDismiss');
+            const modalBtnAction = document.getElementById('modalBtnAction');
+            const modalCloseBtn = document.getElementById('modalCloseBtn');
+            const toast = document.getElementById('toast');
+            const toastMsg = document.getElementById('toastMsg');
+
+            let toastTimer;
+            let modalActionCallback = null;
+
+            // ─── Modal system ───
+            function showModal(bodyText, subText, actionLabel, callback, dismissLabel = 'Close') {
+                modalBody.innerHTML = bodyText;
+                modalSub.textContent = subText || '';
+                modalTime.textContent = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                modalBtnAction.textContent = actionLabel || 'OK';
+                modalBtnDismiss.textContent = dismissLabel;
+                modalActionCallback = callback || null;
+                modalOverlay.classList.add('active');
+            }
+
+            function hideModal() {
+                modalOverlay.classList.remove('active');
+                modalActionCallback = null;
+            }
+            modalCloseBtn.addEventListener('click', hideModal);
+            modalBtnDismiss.addEventListener('click', hideModal);
+            modalBtnAction.addEventListener('click', () => {
+                if (modalActionCallback && typeof modalActionCallback === 'function') modalActionCallback();
+                hideModal();
+            });
+            modalOverlay.addEventListener('click', (e) => { if (e.target === modalOverlay) hideModal(); });
+            document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && modalOverlay.classList
+                    .contains('active')) hideModal(); });
+
+            function showToast(message, iconClass = 'fa-circle-check') {
+                clearTimeout(toastTimer);
+                toastMsg.textContent = message;
+                const iconEl = toast.querySelector('i');
+                if (iconEl) iconEl.className = 'fas ' + iconClass;
+                toast.classList.add('show');
+                toastTimer = setTimeout(() => toast.classList.remove('show'), 2800);
+            }
+
+            // ─── Toggle 24/7 ───
+            toggle24h.addEventListener('change', function() {
+                if (this.checked) {
+                    customHoursContainer.style.display = 'none';
+                    openTime.removeAttribute('required');
+                    closeTime.removeAttribute('required');
+                } else {
+                    customHoursContainer.style.display = 'block';
+                    openTime.setAttribute('required', 'required');
+                    closeTime.setAttribute('required', 'required');
+                }
+            });
+            // Initial state
+            if (toggle24h.checked) customHoursContainer.style.display = 'none';
+
+            // ─── Description character count ───
+            descTextarea.addEventListener('input', function() {
+                const len = this.value.length;
+                descCharCount.textContent = len + '/200';
+                descCharCount.style.color = len > 190 ? 'var(--ios-orange)' : 'var(--ios-gray3)';
+            });
+
+            // ─── Image preview ───
+            pharmacyLogo.addEventListener('change', function() {
+                const file = this.files[0];
+                if (file) {
+                    if (file.size > 2 * 1024 * 1024) {
+                        showToast('Image size must be under 2MB.', 'fa-circle-exclamation');
+                        this.value = '';
+                        imagePreviewContainer.style.display = 'none';
+                        return;
+                    }
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        imagePreview.src = e.target.result;
+                        imagePreviewContainer.style.display = 'block';
+                    };
+                    reader.readAsDataURL(file);
+                } else {
+                    imagePreviewContainer.style.display = 'none';
+                }
+            });
+
+            // ─── Use My Location ───
+            btnUseMyLocation.addEventListener('click', function(e) {
+                e.preventDefault();
+                if (!navigator.geolocation) {
+                    showToast('Geolocation not supported.', 'fa-triangle-exclamation');
+                    return;
+                }
+                this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Locating…';
+                this.disabled = true;
+                navigator.geolocation.getCurrentPosition(
+                    (position) => {
+                        const lat = position.coords.latitude.toFixed(4);
+                        const lng = position.coords.longitude.toFixed(4);
+                        // Reverse geocode would be used in production; here we just show coordinates
+                        document.getElementById('pharmacyAddress').value = `Lat: ${lat}, Lng: ${lng}`;
+                        document.getElementById('pharmacyCity').value = 'Current Location';
+                        this.innerHTML =
+                            '<i class="fas fa-location-crosshairs"></i> Use My Current Location';
+                        this.disabled = false;
+                        showToast('Location applied to address fields.', 'fa-location-dot');
+                    },
+                    (error) => {
+                        this.innerHTML =
+                            '<i class="fas fa-location-crosshairs"></i> Use My Current Location';
+                        this.disabled = false;
+                        showToast('Unable to retrieve location. Please enter manually.',
+                            'fa-circle-exclamation');
+                    }, { enableHighAccuracy: true, timeout: 10000 }
+                );
+            });
+
+            // ─── Form submission ───
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+
+                // Collect form data
+                const name = document.getElementById('pharmacyName').value.trim();
+                const address = document.getElementById('pharmacyAddress').value.trim();
+                const city = document.getElementById('pharmacyCity').value.trim();
+                const phone = document.getElementById('pharmacyPhone').value.trim();
+                const owner = document.getElementById('ownerName').value.trim();
+                const agree = document.getElementById('agreeTerms').checked;
+
+                // Validation
+                if (!name || !address || !city || !phone || !owner) {
+                    showToast('Please fill in all required fields.', 'fa-circle-exclamation');
+                    return;
+                }
+                if (!agree) {
+                    showToast('You must agree to the Terms of Service.', 'fa-circle-exclamation');
+                    return;
+                }
+
+                // Build submission object
+                const submission = {
+                    id: Date.now(),
+                    name,
+                    description: document.getElementById('pharmacyDesc').value.trim(),
+                    category: document.getElementById('pharmacyCategory').value,
+                    address,
+                    city,
+                    landmark: document.getElementById('pharmacyLandmark').value.trim(),
+                    phone,
+                    email: document.getElementById('pharmacyEmail').value.trim(),
+                    website: document.getElementById('pharmacyWebsite').value.trim(),
+                    is24h: toggle24h.checked,
+                    openTime: toggle24h.checked ? null : openTime.value,
+                    closeTime: toggle24h.checked ? null : closeTime.value,
+                    services: {
+                        prescription: document.getElementById('svcPrescription').checked,
+                        otc: document.getElementById('svcOTC').checked,
+                        vaccination: document.getElementById('svcVaccination').checked,
+                        delivery: document.getElementById('svcDelivery').checked,
+                        consultation: document.getElementById('svcConsultation').checked,
+                        compounding: document.getElementById('svcCompounding').checked,
+                        other: document.getElementById('otherServices').value.trim(),
+                    },
+                    ownerName: owner,
+                    logo: pharmacyLogo.files[0] ? pharmacyLogo.files[0].name : null,
+                    status: 'pending',
+                    submittedAt: new Date().toISOString(),
+                };
+
+                // Save to localStorage (simulate submission)
+                const existing = JSON.parse(localStorage.getItem('pharmfinder_pharmacy_submissions') || '[]');
+                existing.push(submission);
+                localStorage.setItem('pharmfinder_pharmacy_submissions', JSON.stringify(existing));
+
+                // Disable submit button
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Submitting…';
+
+                setTimeout(() => {
+                    // Success modal
+                    showModal(
+                        '🎉 Registration Submitted!',
+                        'Your pharmacy "' + name +
+                        '" has been submitted for review. We\'ll notify you at ' + (document
+                            .getElementById('pharmacyEmail').value || 'your email') +
+                        ' once it\'s approved (usually within 24 hours).',
+                        'View Profile',
+                        () => {
+                            window.location.href = 'profile.html';
+                        },
+                        'Close'
+                    );
+                    // Reset form
+                    form.reset();
+                    imagePreviewContainer.style.display = 'none';
+                    toggle24h.checked = false;
+                    customHoursContainer.style.display = 'block';
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Submit for Approval';
+                    showToast('Pharmacy submitted for review!', 'fa-circle-check');
+                }, 1500);
+            });
+
+            console.log('🏥 PharmFinder — Register Pharmacy page ready.');
+            console.log('📋 Fill in the form to add a new pharmacy listing.');
+            console.log('📌 Submissions are saved locally under "pharmfinder_pharmacy_submissions".');
+        })();
+    </script>
+</body>
+</html>

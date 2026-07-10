@@ -1,0 +1,1553 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>PharmFinder — Search Pharmacies</title>
+    <meta name="description" content="Search for pharmacies in any location — by city, area, street, or landmark." />
+    <meta name="theme-color" content="#0D6B4E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+    <style>
+        :root {
+            --ios-blue: #007AFF;
+            --ios-green: #34C759;
+            --ios-red: #FF3B30;
+            --ios-orange: #FF9500;
+            --ios-teal: #5AC8FA;
+            --ios-indigo: #5856D6;
+            --ios-purple: #AF52DE;
+            --ios-gray: #8E8E93;
+            --ios-gray2: #AEAEB2;
+            --ios-gray3: #C7C7CC;
+            --ios-gray4: #D1D1D6;
+            --ios-gray5: #E5E5EA;
+            --ios-gray6: #F2F2F7;
+            --ios-bg: #F9F9FB;
+            --ios-white: #FFFFFF;
+            --ios-black: #1C1C1E;
+            --ios-dark-card: #2C2C2E;
+            --brand-primary: #0D6B4E;
+            --brand-primary-light: #0F8A63;
+            --brand-secondary: #1B9C6B;
+            --brand-accent: #22C55E;
+            --brand-bg-light: #ECFDF5;
+            --brand-gradient: linear-gradient(135deg, #0D6B4E 0%, #0F8A63 30%, #1B9C6B 60%, #22C55E 100%);
+            --brand-gradient-subtle: linear-gradient(135deg, #ECFDF5 0%, #D1FAE5 50%, #A7F3D0 100%);
+            --glass-bg: rgba(255, 255, 255, 0.74);
+            --glass-border: rgba(255, 255, 255, 0.58);
+            --glass-blur: blur(22px) saturate(180%);
+            --radius-sm: 10px;
+            --radius-md: 16px;
+            --radius-lg: 22px;
+            --radius-xl: 28px;
+            --radius-2xl: 36px;
+            --radius-full: 9999px;
+            --shadow-ios: 0 1px 3px rgba(0, 0, 0, 0.06), 0 6px 16px rgba(0, 0, 0, 0.06);
+            --shadow-ios-lg: 0 4px 20px rgba(0, 0, 0, 0.10), 0 12px 40px rgba(0, 0, 0, 0.08);
+            --shadow-ios-xl: 0 8px 40px rgba(0, 0, 0, 0.14), 0 20px 60px rgba(0, 0, 0, 0.10);
+            --shadow-glow-green: 0 0 40px rgba(13, 107, 78, 0.25), 0 0 80px rgba(34, 197, 94, 0.15);
+            --shadow-glow-blue: 0 0 40px rgba(0, 122, 255, 0.2), 0 0 80px rgba(90, 200, 250, 0.12);
+            --transition-fast: 0.18s cubic-bezier(0.25, 0.1, 0.25, 1);
+            --transition-smooth: 0.3s cubic-bezier(0.25, 0.1, 0.25, 1);
+            --transition-bounce: 0.45s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            --transition-spring: 0.55s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        html {
+            scroll-behavior: smooth;
+            font-size: 16px;
+            -webkit-tap-highlight-color: transparent;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Helvetica Neue', sans-serif;
+            background: var(--ios-bg);
+            color: var(--ios-black);
+            line-height: 1.55;
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+            padding-bottom: 60px;
+        }
+
+        /* ── Animated Background Orbs ── */
+        .bg-orb {
+            position: fixed;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 0;
+            opacity: 0.28;
+            filter: blur(85px);
+            animation: orbFloat 18s ease-in-out infinite;
+        }
+        .bg-orb--1 {
+            width: 380px;
+            height: 380px;
+            background: radial-gradient(circle, rgba(34, 197, 94, 0.30) 0%, transparent 70%);
+            top: -8%;
+            left: -8%;
+        }
+        .bg-orb--2 {
+            width: 320px;
+            height: 320px;
+            background: radial-gradient(circle, rgba(13, 107, 78, 0.26) 0%, transparent 70%);
+            bottom: -6%;
+            right: -6%;
+            animation-delay: -7s;
+            animation-duration: 20s;
+        }
+        .bg-orb--3 {
+            width: 260px;
+            height: 260px;
+            background: radial-gradient(circle, rgba(0, 122, 255, 0.14) 0%, transparent 70%);
+            top: 50%;
+            left: 55%;
+            animation-delay: -12s;
+            animation-duration: 22s;
+        }
+        @keyframes orbFloat {
+            0%,
+            100% {
+                transform: translate(0, 0) scale(1);
+            }
+            15% {
+                transform: translate(30px, -25px) scale(1.08);
+            }
+            30% {
+                transform: translate(-18px, 20px) scale(0.94);
+            }
+            45% {
+                transform: translate(25px, 15px) scale(1.05);
+            }
+            60% {
+                transform: translate(-30px, -10px) scale(0.92);
+            }
+            75% {
+                transform: translate(10px, -30px) scale(1.06);
+            }
+            90% {
+                transform: translate(-15px, 25px) scale(0.96);
+            }
+        }
+
+        /* ── Main Container ── */
+        .app-wrapper {
+            position: relative;
+            z-index: 1;
+            max-width: 540px;
+            margin: 0 auto;
+            padding: 0 16px 40px;
+        }
+
+        /* ── Navigation Header ── */
+        .nav-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 0 6px;
+            position: sticky;
+            top: 0;
+            z-index: 90;
+            background: rgba(249, 249, 251, 0.84);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+        }
+        .nav-header .btn-back {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.7);
+            border: 1px solid var(--ios-gray4);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all var(--transition-fast);
+            color: var(--ios-black);
+            font-size: 1rem;
+            flex-shrink: 0;
+        }
+        .nav-header .btn-back:hover {
+            background: #fff;
+            box-shadow: var(--shadow-ios);
+        }
+        .nav-header__title {
+            font-size: 1.05rem;
+            font-weight: 700;
+            letter-spacing: -0.3px;
+            color: var(--ios-black);
+            flex: 1;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .nav-header__title i {
+            color: var(--brand-primary);
+            font-size: 0.85rem;
+        }
+        .nav-header .btn-clear-search {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.85rem;
+            color: var(--ios-gray);
+            transition: all var(--transition-fast);
+            flex-shrink: 0;
+        }
+        .nav-header .btn-clear-search:hover {
+            background: var(--ios-gray6);
+            color: var(--ios-red);
+        }
+
+        /* ── Search Bar ── */
+        .search-bar-container {
+            margin-top: 16px;
+            position: relative;
+        }
+        .search-bar {
+            display: flex;
+            align-items: center;
+            background: var(--glass-bg);
+            backdrop-filter: var(--glass-blur);
+            -webkit-backdrop-filter: var(--glass-blur);
+            border: 2px solid transparent;
+            border-radius: var(--radius-xl);
+            padding: 6px 6px 6px 20px;
+            box-shadow: var(--shadow-ios-lg);
+            transition: all var(--transition-smooth);
+            position: relative;
+            z-index: 2;
+        }
+        .search-bar:focus-within {
+            border-color: var(--brand-primary);
+            box-shadow: var(--shadow-glow-green), var(--shadow-ios-xl);
+            transform: translateY(-1px);
+        }
+        .search-bar i.search-icon {
+            color: var(--ios-gray);
+            font-size: 1rem;
+            flex-shrink: 0;
+            transition: color var(--transition-fast);
+        }
+        .search-bar:focus-within i.search-icon {
+            color: var(--brand-primary);
+        }
+        .search-bar input {
+            flex: 1;
+            border: none;
+            background: transparent;
+            padding: 14px 14px;
+            font-size: 0.95rem;
+            font-family: 'Inter', sans-serif;
+            color: var(--ios-black);
+            outline: none;
+            letter-spacing: -0.2px;
+            min-width: 0;
+        }
+        .search-bar input::placeholder {
+            color: var(--ios-gray3);
+            font-weight: 400;
+        }
+        .search-bar .btn-search-go {
+            padding: 10px 20px;
+            border-radius: var(--radius-full);
+            background: var(--brand-gradient);
+            color: #fff;
+            font-weight: 700;
+            font-size: 0.8rem;
+            border: none;
+            cursor: pointer;
+            transition: all var(--transition-bounce);
+            font-family: 'Inter', sans-serif;
+            white-space: nowrap;
+            flex-shrink: 0;
+            box-shadow: 0 4px 14px rgba(13, 107, 78, 0.30);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .search-bar .btn-search-go:hover {
+            transform: scale(1.04);
+            box-shadow: 0 6px 20px rgba(13, 107, 78, 0.40);
+        }
+        .search-bar .btn-search-go:active {
+            transform: scale(0.94);
+        }
+        .search-bar .btn-mic {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: var(--ios-gray6);
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9rem;
+            color: var(--ios-gray);
+            transition: all var(--transition-fast);
+            flex-shrink: 0;
+            margin-right: 8px;
+        }
+        .search-bar .btn-mic:hover {
+            background: #e0e0e5;
+            color: var(--ios-blue);
+        }
+        .search-bar .btn-mic.listening {
+            background: var(--ios-red);
+            color: #fff;
+            animation: micPulse 1.2s ease-in-out infinite;
+        }
+        @keyframes micPulse {
+            0%,
+            100% {
+                box-shadow: 0 0 0 0 rgba(255, 59, 48, 0.4);
+            }
+            50% {
+                box-shadow: 0 0 0 16px rgba(255, 59, 48, 0);
+            }
+        }
+
+        /* ── Suggestions Dropdown ── */
+        .suggestions-dropdown {
+            position: absolute;
+            top: calc(100% - 8px);
+            left: 12px;
+            right: 12px;
+            background: var(--glass-bg);
+            backdrop-filter: var(--glass-blur);
+            -webkit-backdrop-filter: var(--glass-blur);
+            border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+            border: 1px solid var(--glass-border);
+            border-top: none;
+            box-shadow: var(--shadow-ios-xl);
+            z-index: 1;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.35s ease, padding 0.35s ease;
+            padding: 0 14px;
+        }
+        .suggestions-dropdown.visible {
+            max-height: 360px;
+            padding: 8px 14px 14px;
+        }
+        .suggestion-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 10px;
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: var(--ios-black);
+        }
+        .suggestion-item:hover {
+            background: var(--brand-bg-light);
+        }
+        .suggestion-item i {
+            color: var(--ios-gray);
+            font-size: 0.85rem;
+            width: 20px;
+            text-align: center;
+        }
+        .suggestion-item .suggestion-highlight {
+            font-weight: 700;
+            color: var(--brand-primary);
+        }
+        .suggestion-item .suggestion-sub {
+            font-size: 0.68rem;
+            color: var(--ios-gray);
+            display: block;
+        }
+        .suggestions-dropdown .no-results {
+            text-align: center;
+            padding: 20px;
+            color: var(--ios-gray);
+            font-size: 0.8rem;
+        }
+
+        /* ── Quick Location Row ── */
+        .quick-location-row {
+            display: flex;
+            gap: 10px;
+            margin-top: 14px;
+        }
+        .btn-quick-location {
+            flex: 1;
+            padding: 11px 14px;
+            border-radius: var(--radius-full);
+            font-weight: 600;
+            font-size: 0.76rem;
+            border: 1.5px solid var(--ios-gray4);
+            background: rgba(255, 255, 255, 0.6);
+            cursor: pointer;
+            transition: all var(--transition-bounce);
+            font-family: 'Inter', sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 7px;
+            color: var(--ios-black);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            white-space: nowrap;
+        }
+        .btn-quick-location:hover {
+            border-color: var(--brand-primary);
+            background: var(--brand-bg-light);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-ios);
+        }
+        .btn-quick-location:active {
+            transform: scale(0.95);
+        }
+        .btn-quick-location i {
+            font-size: 0.8rem;
+        }
+        .btn-quick-location--current {
+            border-color: var(--ios-blue);
+            color: var(--ios-blue);
+            background: #EBF5FF;
+        }
+        .btn-quick-location--current i {
+            animation: locationPulse 2s ease-in-out infinite;
+        }
+        @keyframes locationPulse {
+            0%,
+            100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.2);
+            }
+        }
+
+        /* ── Section Headers ── */
+        .section-block {
+            margin-top: 26px;
+        }
+        .section-block h3 {
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: var(--ios-gray);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .section-block h3 i {
+            font-size: 0.7rem;
+        }
+
+        /* ── Recent Searches ── */
+        .recent-list {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+        .recent-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 11px 14px;
+            background: var(--ios-white);
+            border-radius: var(--radius-md);
+            border: 1px solid var(--ios-gray6);
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            box-shadow: var(--shadow-ios);
+        }
+        .recent-item:hover {
+            border-color: var(--brand-primary);
+            box-shadow: var(--shadow-ios-lg);
+            transform: translateX(3px);
+        }
+        .recent-item i.fa-clock-rotate-left {
+            color: var(--ios-gray);
+            font-size: 0.8rem;
+        }
+        .recent-item__text {
+            flex: 1;
+            font-size: 0.82rem;
+            font-weight: 500;
+            color: var(--ios-black);
+        }
+        .recent-item__count {
+            font-size: 0.65rem;
+            color: var(--ios-gray);
+            background: var(--ios-gray6);
+            padding: 3px 8px;
+            border-radius: var(--radius-full);
+        }
+        .recent-item .btn-remove-recent {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            font-size: 0.65rem;
+            color: var(--ios-gray3);
+            transition: all var(--transition-fast);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .recent-item .btn-remove-recent:hover {
+            background: #FEE2E2;
+            color: var(--ios-red);
+        }
+        .recent-empty {
+            text-align: center;
+            padding: 16px;
+            font-size: 0.75rem;
+            color: var(--ios-gray3);
+            background: rgba(255, 255, 255, 0.4);
+            border-radius: var(--radius-md);
+            border: 1px dashed var(--ios-gray4);
+        }
+
+        /* ── Popular Locations Grid ── */
+        .popular-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+        .popular-card {
+            background: var(--ios-white);
+            border-radius: var(--radius-lg);
+            padding: 16px 14px;
+            border: 1px solid var(--ios-gray6);
+            cursor: pointer;
+            transition: all var(--transition-bounce);
+            box-shadow: var(--shadow-ios);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            position: relative;
+            overflow: hidden;
+        }
+        .popular-card:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-ios-lg);
+            border-color: rgba(13, 107, 78, 0.2);
+        }
+        .popular-card:active {
+            transform: scale(0.96);
+        }
+        .popular-card__icon {
+            width: 38px;
+            height: 38px;
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            flex-shrink: 0;
+        }
+        .popular-card__icon--green {
+            background: #D1FAE5;
+            color: #065F46;
+        }
+        .popular-card__icon--blue {
+            background: #DBEAFE;
+            color: #1E40AF;
+        }
+        .popular-card__icon--purple {
+            background: #EDE9FE;
+            color: #5B21B6;
+        }
+        .popular-card__icon--orange {
+            background: #FED7AA;
+            color: #9A3412;
+        }
+        .popular-card__icon--teal {
+            background: #CCFBF1;
+            color: #0F766E;
+        }
+        .popular-card__icon--pink {
+            background: #FCE7F3;
+            color: #9D174D;
+        }
+        .popular-card__info {
+            flex: 1;
+            min-width: 0;
+        }
+        .popular-card__name {
+            font-weight: 700;
+            font-size: 0.78rem;
+            color: var(--ios-black);
+            letter-spacing: -0.2px;
+        }
+        .popular-card__sub {
+            font-size: 0.63rem;
+            color: var(--ios-gray);
+            margin-top: 1px;
+        }
+
+        /* ── Smart Suggestion Chips ── */
+        .smart-chips {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .smart-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 9px 15px;
+            border-radius: var(--radius-full);
+            font-size: 0.72rem;
+            font-weight: 600;
+            cursor: pointer;
+            border: 1.5px solid var(--ios-gray4);
+            background: rgba(255, 255, 255, 0.65);
+            color: var(--ios-black);
+            transition: all var(--transition-bounce);
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
+            white-space: nowrap;
+        }
+        .smart-chip:hover {
+            border-color: var(--brand-primary);
+            background: var(--brand-bg-light);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-ios);
+        }
+        .smart-chip i {
+            font-size: 0.65rem;
+            color: var(--brand-primary);
+        }
+        .smart-chip--emergency {
+            border-color: #FECACA;
+            color: var(--ios-red);
+            background: #FFF5F5;
+            animation: chipGlow 3s ease-in-out infinite;
+        }
+        @keyframes chipGlow {
+            0%,
+            100% {
+                box-shadow: 0 0 0px rgba(255, 59, 48, 0);
+            }
+            50% {
+                box-shadow: 0 0 16px rgba(255, 59, 48, 0.15);
+            }
+        }
+        .smart-chip--emergency i {
+            color: var(--ios-red);
+            animation: heartBeat 1.4s ease-in-out infinite;
+        }
+        @keyframes heartBeat {
+            0%,
+            100% {
+                transform: scale(1);
+            }
+            15% {
+                transform: scale(1.3);
+            }
+            30% {
+                transform: scale(1);
+            }
+        }
+
+        /* ── Footer ── */
+        .footer-note {
+            margin-top: 32px;
+            text-align: center;
+            font-size: 0.64rem;
+            color: var(--ios-gray3);
+            line-height: 1.5;
+        }
+
+        /* ── iOS Notification Modal ── */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.55);
+            z-index: 9999;
+            display: flex;
+            align-items: flex-start;
+            justify-content: center;
+            padding-top: 60px;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
+        }
+        .modal-overlay.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+        .modal-notification {
+            background: rgba(255, 255, 255, 0.96);
+            backdrop-filter: blur(30px) saturate(200%);
+            -webkit-backdrop-filter: blur(30px) saturate(200%);
+            border-radius: 22px;
+            padding: 18px 20px;
+            width: 90%;
+            max-width: 400px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(255, 255, 255, 0.6);
+            transform: translateY(-30px) scale(0.92);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+        }
+        .modal-overlay.active .modal-notification {
+            transform: translateY(0) scale(1);
+        }
+        .modal-notification__header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        .modal-notification__app-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            background: var(--brand-gradient);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 0.85rem;
+        }
+        .modal-notification__app-name {
+            font-weight: 700;
+            font-size: 0.85rem;
+            color: var(--ios-black);
+        }
+        .modal-notification__time {
+            font-size: 0.7rem;
+            color: var(--ios-gray2);
+            margin-left: auto;
+        }
+        .modal-notification__body {
+            font-size: 0.9rem;
+            color: var(--ios-black);
+            line-height: 1.4;
+            font-weight: 500;
+        }
+        .modal-notification__sub {
+            font-size: 0.75rem;
+            color: var(--ios-gray);
+            margin-top: 4px;
+        }
+        .modal-notification__close {
+            position: absolute;
+            top: 10px;
+            right: 14px;
+            background: rgba(0, 0, 0, 0.06);
+            border: none;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 0.8rem;
+            color: var(--ios-gray);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .modal-notification__actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 12px;
+        }
+        .modal-notification__btn {
+            flex: 1;
+            padding: 10px;
+            border-radius: var(--radius-full);
+            border: none;
+            font-weight: 600;
+            font-size: 0.8rem;
+            cursor: pointer;
+            font-family: 'Inter', sans-serif;
+        }
+        .modal-notification__btn--primary {
+            background: var(--brand-primary);
+            color: #fff;
+        }
+        .modal-notification__btn--secondary {
+            background: var(--ios-gray6);
+            color: var(--ios-black);
+        }
+
+        /* ── Toast ── */
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%) translateY(120px);
+            background: var(--ios-dark-card);
+            color: #fff;
+            padding: 12px 22px;
+            border-radius: var(--radius-full);
+            font-weight: 600;
+            font-size: 0.82rem;
+            z-index: 10000;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .toast.show {
+            transform: translateX(-50%) translateY(0);
+        }
+        .toast i {
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 400px) {
+            .search-bar input {
+                font-size: 0.82rem;
+                padding: 12px 8px;
+            }
+            .search-bar .btn-search-go {
+                font-size: 0.7rem;
+                padding: 8px 14px;
+            }
+            .search-bar .btn-mic {
+                width: 32px;
+                height: 32px;
+                margin-right: 4px;
+            }
+            .popular-grid {
+                grid-template-columns: 1fr;
+            }
+            .quick-location-row {
+                flex-direction: column;
+            }
+            .btn-quick-location {
+                font-size: 0.7rem;
+            }
+            .smart-chips {
+                gap: 5px;
+            }
+            .smart-chip {
+                font-size: 0.66rem;
+                padding: 7px 11px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ── Animated Background Orbs ── -->
+    <div class="bg-orb bg-orb--1"></div>
+    <div class="bg-orb bg-orb--2"></div>
+    <div class="bg-orb bg-orb--3"></div>
+
+    <!-- ── App Wrapper ── -->
+    <div class="app-wrapper">
+        <!-- Navigation Header -->
+        <div class="nav-header">
+            <button class="btn-back" onclick="history.back()" aria-label="Go back">
+                <i class="fas fa-chevron-left"></i>
+            </button>
+            <span class="nav-header__title">
+                <i class="fas fa-magnifying-glass"></i> Search Location
+            </span>
+            <button class="btn-clear-search" id="btnClearSearch" title="Clear search" aria-label="Clear search input">
+                <i class="fas fa-xmark"></i>
+            </button>
+        </div>
+
+        <!-- Search Bar -->
+        <div class="search-bar-container" id="searchBarContainer">
+            <div class="search-bar">
+                <i class="fas fa-magnifying-glass search-icon"></i>
+                <input type="text" id="searchInput" placeholder="Enter area, street, or city…" autocomplete="off" aria-label="Search for a location" />
+                <button class="btn-mic" id="btnMic" title="Voice search" aria-label="Voice search">
+                    <i class="fas fa-microphone"></i>
+                </button>
+                <button class="btn-search-go" id="btnSearchGo">
+                    <i class="fas fa-paper-plane"></i> Go
+                </button>
+            </div>
+            <!-- Suggestions Dropdown -->
+            <div class="suggestions-dropdown" id="suggestionsDropdown">
+                <div id="suggestionsList"></div>
+            </div>
+        </div>
+
+        <!-- Quick Location Row -->
+        <div class="quick-location-row">
+            <button class="btn-quick-location btn-quick-location--current" id="btnUseCurrent">
+                <i class="fas fa-location-crosshairs"></i> Use Current Location
+            </button>
+            <button class="btn-quick-location" id="btnBrowseMap">
+                <i class="fas fa-map"></i> Browse on Map
+            </button>
+        </div>
+
+        <!-- Smart Suggestions -->
+        <div class="section-block">
+            <h3><i class="fas fa-lightbulb"></i> Smart Suggestions</h3>
+            <div class="smart-chips">
+                <span class="smart-chip" data-search="pharmacies near me">
+                    <i class="fas fa-location-dot"></i> Pharmacies near me
+                </span>
+                <span class="smart-chip" data-search="open pharmacies now">
+                    <i class="fas fa-door-open"></i> Open pharmacies now
+                </span>
+                <span class="smart-chip" data-search="24/7 pharmacies">
+                    <i class="fas fa-clock"></i> 24/7 pharmacies
+                </span>
+                <span class="smart-chip smart-chip--emergency" data-search="emergency pharmacy">
+                    <i class="fas fa-heart-pulse"></i> Emergency pharmacy
+                </span>
+                <span class="smart-chip" data-search="pharmacies with delivery">
+                    <i class="fas fa-truck"></i> Pharmacies with delivery
+                </span>
+                <span class="smart-chip" data-search="late night pharmacy">
+                    <i class="fas fa-moon"></i> Late night pharmacy
+                </span>
+            </div>
+        </div>
+
+        <!-- Recent Searches -->
+        <div class="section-block" id="recentSection">
+            <h3><i class="fas fa-clock-rotate-left"></i> Recent Searches</h3>
+            <div class="recent-list" id="recentList">
+                <!-- Injected by JS -->
+            </div>
+        </div>
+
+        <!-- Popular Locations -->
+        <div class="section-block">
+            <h3><i class="fas fa-fire"></i> Popular Locations</h3>
+            <div class="popular-grid" id="popularGrid">
+                <div class="popular-card" data-location="Victoria Island, Lagos">
+                    <div class="popular-card__icon popular-card__icon--green">
+                        <i class="fas fa-building"></i>
+                    </div>
+                    <div class="popular-card__info">
+                        <div class="popular-card__name">Victoria Island</div>
+                        <div class="popular-card__sub">Lagos · Business district</div>
+                    </div>
+                </div>
+                <div class="popular-card" data-location="Ikeja, Lagos">
+                    <div class="popular-card__icon popular-card__icon--blue">
+                        <i class="fas fa-city"></i>
+                    </div>
+                    <div class="popular-card__info">
+                        <div class="popular-card__name">Ikeja</div>
+                        <div class="popular-card__sub">Lagos · Mainland hub</div>
+                    </div>
+                </div>
+                <div class="popular-card" data-location="Lekki Phase 1, Lagos">
+                    <div class="popular-card__icon popular-card__icon--purple">
+                        <i class="fas fa-house-chimney"></i>
+                    </div>
+                    <div class="popular-card__info">
+                        <div class="popular-card__name">Lekki Phase 1</div>
+                        <div class="popular-card__sub">Lagos · Residential area</div>
+                    </div>
+                </div>
+                <div class="popular-card" data-location="Airport Road, Lagos">
+                    <div class="popular-card__icon popular-card__icon--orange">
+                        <i class="fas fa-plane-departure"></i>
+                    </div>
+                    <div class="popular-card__info">
+                        <div class="popular-card__name">Airport Area</div>
+                        <div class="popular-card__sub">Near MMIA · Transit zone</div>
+                    </div>
+                </div>
+                <div class="popular-card" data-location="Marina, Lagos Island">
+                    <div class="popular-card__icon popular-card__icon--teal">
+                        <i class="fas fa-anchor"></i>
+                    </div>
+                    <div class="popular-card__info">
+                        <div class="popular-card__name">Marina</div>
+                        <div class="popular-card__sub">Lagos Island · Central</div>
+                    </div>
+                </div>
+                <div class="popular-card" data-location="Surulere, Lagos">
+                    <div class="popular-card__icon popular-card__icon--pink">
+                        <i class="fas fa-people-group"></i>
+                    </div>
+                    <div class="popular-card__info">
+                        <div class="popular-card__name">Surulere</div>
+                        <div class="popular-card__sub">Lagos · Mainland</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer-note">
+            <i class="fas fa-circle-info"></i> Search any location to find nearby pharmacies.<br>
+            Recent searches are saved locally on your device for quick access.
+        </div>
+    </div>
+
+    <!-- ── iOS Notification Modal ── -->
+    <div class="modal-overlay" id="modalOverlay">
+        <div class="modal-notification" id="modalNotification">
+            <button class="modal-notification__close" id="modalCloseBtn">
+                <i class="fas fa-xmark"></i>
+            </button>
+            <div class="modal-notification__header">
+                <div class="modal-notification__app-icon">
+                    <i class="fas fa-prescription-bottle"></i>
+                </div>
+                <span class="modal-notification__app-name">PharmFinder</span>
+                <span class="modal-notification__time" id="modalTime">now</span>
+            </div>
+            <div class="modal-notification__body" id="modalBody">Message</div>
+            <div class="modal-notification__sub" id="modalSub"></div>
+            <div class="modal-notification__actions">
+                <button class="modal-notification__btn modal-notification__btn--secondary" id="modalBtnDismiss">Dismiss</button>
+                <button class="modal-notification__btn modal-notification__btn--primary" id="modalBtnAction">OK</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ── Toast ── -->
+    <div class="toast" id="toast"><i class="fas fa-circle-check"></i><span id="toastMsg"></span></div>
+
+    <script>
+        (function() {
+            // ─── LOCATION DATABASE (simulated for suggestions) ───
+            const locationDatabase = [
+                { name: 'Victoria Island', city: 'Lagos', type: 'district', keywords: ['vi', 'island',
+                        'business', 'eko'
+                    ] },
+                { name: 'Ikeja', city: 'Lagos', type: 'city', keywords: ['mainland', 'capital', 'allen',
+                        'obafemi'
+                    ] },
+                { name: 'Lekki Phase 1', city: 'Lagos', type: 'area', keywords: ['lekki', 'phase',
+                    'admiralty'] },
+                { name: 'Lekki Phase 2', city: 'Lagos', type: 'area', keywords: ['lekki', 'phase'] },
+                { name: 'Marina', city: 'Lagos', type: 'district', keywords: ['island', 'central',
+                    'broad street'
+                ] },
+                { name: 'Surulere', city: 'Lagos', type: 'area', keywords: ['mainland', 'stadium'] },
+                { name: 'Yaba', city: 'Lagos', type: 'area', keywords: ['mainland', 'tech', 'university'] },
+                { name: 'Apapa', city: 'Lagos', type: 'area', keywords: ['port', 'wharf', 'shipping'] },
+                { name: 'Ajah', city: 'Lagos', type: 'area', keywords: ['lekki', 'express'] },
+                { name: 'Airport Road', city: 'Lagos', type: 'landmark', keywords: ['mmia', 'airport',
+                        'terminal', 'international'
+                    ] },
+                { name: 'Oshodi', city: 'Lagos', type: 'area', keywords: ['mainland', 'transport',
+                    'market'] },
+                { name: 'Festac Town', city: 'Lagos', type: 'area', keywords: ['amuwo', 'mile 2'] },
+                { name: 'Gbagada', city: 'Lagos', type: 'area', keywords: ['mainland', 'expressway'] },
+                { name: 'Ikoyi', city: 'Lagos', type: 'district', keywords: ['island', 'banana',
+                    'bourdillon'] },
+                { name: 'Magodo', city: 'Lagos', type: 'area', keywords: ['mainland', 'estate'] },
+                { name: 'Abuja City Centre', city: 'Abuja', type: 'district', keywords: ['capital', 'fct',
+                        'central'
+                    ] },
+                { name: 'Wuse', city: 'Abuja', type: 'area', keywords: ['zone', 'market'] },
+                { name: 'Garki', city: 'Abuja', type: 'area', keywords: ['zone', 'international'] },
+                { name: 'Nairobi CBD', city: 'Nairobi', type: 'district', keywords: ['central', 'kenya'] },
+                { name: 'Accra Central', city: 'Accra', type: 'district', keywords: ['ghana', 'makola'] },
+                { name: 'Johannesburg CBD', city: 'Johannesburg', type: 'district', keywords: ['joburg',
+                        'south africa'
+                    ] },
+            ];
+
+            // ─── STATE ───
+            let recentSearches = [];
+            let isListening = false;
+
+            // ─── LOAD RECENT FROM LOCAL STORAGE ───
+            function loadRecentSearches() {
+                try {
+                    const raw = localStorage.getItem('pharmfinder_recent_searches');
+                    if (raw) {
+                        recentSearches = JSON.parse(raw);
+                    }
+                } catch (e) {
+                    recentSearches = [];
+                }
+                // Limit to 8
+                if (recentSearches.length > 8) {
+                    recentSearches = recentSearches.slice(0, 8);
+                    saveRecentSearches();
+                }
+            }
+
+            function saveRecentSearches() {
+                localStorage.setItem('pharmfinder_recent_searches', JSON.stringify(recentSearches));
+            }
+
+            function addRecentSearch(query) {
+                if (!query || query.trim().length < 2) return;
+                const trimmed = query.trim();
+                // Remove duplicate
+                recentSearches = recentSearches.filter(s => s.query.toLowerCase() !== trimmed.toLowerCase());
+                // Add to front
+                recentSearches.unshift({
+                    query: trimmed,
+                    timestamp: Date.now(),
+                    count: (recentSearches.find(s => s.query.toLowerCase() === trimmed.toLowerCase())
+                        ?.count || 0) + 1,
+                });
+                // Limit
+                if (recentSearches.length > 8) recentSearches = recentSearches.slice(0, 8);
+                saveRecentSearches();
+                renderRecentSearches();
+            }
+
+            function removeRecentSearch(query) {
+                recentSearches = recentSearches.filter(s => s.query !== query);
+                saveRecentSearches();
+                renderRecentSearches();
+            }
+
+            function clearAllRecent() {
+                recentSearches = [];
+                saveRecentSearches();
+                renderRecentSearches();
+                showToast('Recent searches cleared', 'fa-trash-can');
+            }
+
+            // ─── DOM REFS ───
+            const searchInput = document.getElementById('searchInput');
+            const btnSearchGo = document.getElementById('btnSearchGo');
+            const btnMic = document.getElementById('btnMic');
+            const btnClearSearch = document.getElementById('btnClearSearch');
+            const suggestionsDropdown = document.getElementById('suggestionsDropdown');
+            const suggestionsList = document.getElementById('suggestionsList');
+            const recentList = document.getElementById('recentList');
+            const btnUseCurrent = document.getElementById('btnUseCurrent');
+            const btnBrowseMap = document.getElementById('btnBrowseMap');
+            const searchBarContainer = document.getElementById('searchBarContainer');
+            const modalOverlay = document.getElementById('modalOverlay');
+            const modalBody = document.getElementById('modalBody');
+            const modalSub = document.getElementById('modalSub');
+            const modalTime = document.getElementById('modalTime');
+            const modalBtnDismiss = document.getElementById('modalBtnDismiss');
+            const modalBtnAction = document.getElementById('modalBtnAction');
+            const modalCloseBtn = document.getElementById('modalCloseBtn');
+            const toast = document.getElementById('toast');
+            const toastMsg = document.getElementById('toastMsg');
+
+            let toastTimer;
+            let modalActionCallback = null;
+
+            // ─── MODAL SYSTEM ───
+            function showModal(bodyText, subText, actionLabel, callback, dismissLabel = 'Dismiss') {
+                modalBody.textContent = bodyText;
+                modalSub.textContent = subText || '';
+                modalTime.textContent = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                modalBtnAction.textContent = actionLabel || 'OK';
+                modalBtnDismiss.textContent = dismissLabel;
+                modalActionCallback = callback || null;
+                modalOverlay.classList.add('active');
+            }
+
+            function hideModal() {
+                modalOverlay.classList.remove('active');
+                modalActionCallback = null;
+            }
+            modalCloseBtn.addEventListener('click', hideModal);
+            modalBtnDismiss.addEventListener('click', hideModal);
+            modalBtnAction.addEventListener('click', () => {
+                if (modalActionCallback && typeof modalActionCallback === 'function') modalActionCallback();
+                hideModal();
+            });
+            modalOverlay.addEventListener('click', (e) => { if (e.target === modalOverlay) hideModal(); });
+            document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && modalOverlay.classList
+                    .contains('active')) hideModal(); });
+
+            // ─── TOAST ───
+            function showToast(message, iconClass = 'fa-circle-check') {
+                clearTimeout(toastTimer);
+                toastMsg.textContent = message;
+                const iconEl = toast.querySelector('i');
+                if (iconEl) iconEl.className = 'fas ' + iconClass;
+                toast.classList.add('show');
+                toastTimer = setTimeout(() => toast.classList.remove('show'), 2800);
+            }
+
+            // ─── SEARCH EXECUTION ───
+            function executeSearch(query) {
+                if (!query || query.trim().length < 2) {
+                    showToast('Please enter a location to search', 'fa-magnifying-glass');
+                    searchInput.focus();
+                    return;
+                }
+                const trimmed = query.trim();
+                addRecentSearch(trimmed);
+                showToast('Searching pharmacies in "' + trimmed + '"…', 'fa-magnifying-glass-location');
+                // Navigate to results page with query parameter
+                setTimeout(() => {
+                    window.location.href = 'index.html?location=' + encodeURIComponent(trimmed);
+                }, 500);
+            }
+
+            // ─── SUGGESTIONS ENGINE ───
+            function getSuggestions(query) {
+                if (!query || query.trim().length < 1) return [];
+                const q = query.trim().toLowerCase();
+                const results = [];
+
+                locationDatabase.forEach(loc => {
+                    // Match name
+                    if (loc.name.toLowerCase().includes(q)) {
+                        results.push({ ...loc, score: 3, matchType: 'name' });
+                    }
+                    // Match city
+                    else if (loc.city.toLowerCase().includes(q)) {
+                        results.push({ ...loc, score: 2, matchType: 'city' });
+                    }
+                    // Match keywords
+                    else if (loc.keywords.some(kw => kw.includes(q))) {
+                        results.push({ ...loc, score: 1, matchType: 'keyword' });
+                    }
+                });
+
+                // Also match recent searches
+                recentSearches.forEach(rs => {
+                    if (rs.query.toLowerCase().includes(q) && !results.find(r => r.name.toLowerCase() ===
+                            rs.query.toLowerCase())) {
+                        results.push({
+                            name: rs.query,
+                            city: '',
+                            type: 'recent',
+                            score: 4,
+                            matchType: 'recent',
+                            count: rs.count,
+                        });
+                    }
+                });
+
+                // Sort by score desc
+                results.sort((a, b) => b.score - a.score);
+                // Limit to 6
+                return results.slice(0, 6);
+            }
+
+            function renderSuggestions(query) {
+                const suggestions = getSuggestions(query);
+                suggestionsList.innerHTML = '';
+
+                if (suggestions.length === 0 && query.trim().length >= 2) {
+                    suggestionsList.innerHTML = `
+                <div class="no-results">
+                  <i class="fas fa-map-pin" style="font-size:1.2rem;opacity:0.3;display:block;margin-bottom:6px;"></i>
+                  No matching locations found.<br>
+                  <span style="font-size:0.7rem;">Try a different spelling or broader area</span>
+                </div>`;
+                } else if (suggestions.length === 0) {
+                    suggestionsList.innerHTML = '';
+                }
+
+                suggestions.forEach(s => {
+                    const iconMap = {
+                        district: 'fa-building',
+                        city: 'fa-city',
+                        area: 'fa-location-dot',
+                        landmark: 'fa-monument',
+                        recent: 'fa-clock-rotate-left',
+                    };
+                    const icon = iconMap[s.type] || 'fa-map-pin';
+                    const item = document.createElement('div');
+                    item.className = 'suggestion-item';
+                    item.innerHTML = `
+                <i class="fas ${icon}"></i>
+                <div>
+                  <span>${highlightMatch(s.name, query)}</span>
+                  ${s.city ? `<span class="suggestion-sub">${s.city} · ${s.type}</span>` : s.type === 'recent' ? `<span class="suggestion-sub">Recent search · ${s.count || 1} time${s.count > 1 ? 's' : ''}</span>` : ''}
+                </div>
+                <i class="fas fa-arrow-up-right" style="margin-left:auto;font-size:0.6rem;color:var(--ios-gray3);"></i>
+              `;
+                    item.addEventListener('click', () => {
+                        const searchQuery = s.type === 'recent' ? s.name : (s.name +
+                            (s.city ? ', ' + s.city : ''));
+                        searchInput.value = searchQuery;
+                        suggestionsDropdown.classList.remove('visible');
+                        executeSearch(searchQuery);
+                    });
+                    suggestionsList.appendChild(item);
+                });
+            }
+
+            function highlightMatch(text, query) {
+                const q = query.trim();
+                if (!q) return text;
+                const regex = new RegExp('(' + q.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + ')', 'gi');
+                return text.replace(regex,
+                    '<span class="suggestion-highlight">$1</span>');
+            }
+
+            function showSuggestions() {
+                const query = searchInput.value;
+                if (query.trim().length >= 1) {
+                    suggestionsDropdown.classList.add('visible');
+                    renderSuggestions(query);
+                } else {
+                    suggestionsDropdown.classList.remove('visible');
+                }
+            }
+
+            function hideSuggestions() {
+                // Delay to allow click on suggestion
+                setTimeout(() => {
+                    if (!document.activeElement || document.activeElement !== searchInput) {
+                        suggestionsDropdown.classList.remove('visible');
+                    }
+                }, 200);
+            }
+
+            // ─── SEARCH INPUT EVENTS ───
+            searchInput.addEventListener('input', showSuggestions);
+            searchInput.addEventListener('focus', showSuggestions);
+            searchInput.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    const query = searchInput.value;
+                    suggestionsDropdown.classList.remove('visible');
+                    if (query.trim().length >= 2) {
+                        executeSearch(query);
+                    } else {
+                        showToast('Please enter a location first', 'fa-magnifying-glass');
+                    }
+                }
+                if (e.key === 'Escape') {
+                    suggestionsDropdown.classList.remove('visible');
+                    searchInput.blur();
+                }
+            });
+            document.addEventListener('click', (e) => {
+                if (!searchBarContainer.contains(e.target)) {
+                    suggestionsDropdown.classList.remove('visible');
+                }
+            });
+
+            // ─── SEARCH GO BUTTON ───
+            btnSearchGo.addEventListener('click', () => {
+                const query = searchInput.value;
+                suggestionsDropdown.classList.remove('visible');
+                executeSearch(query);
+            });
+
+            // ─── MIC BUTTON ───
+            btnMic.addEventListener('click', () => {
+                if (!('webkitSpeechRecognition' in window || 'SpeechRecognition' in window)) {
+                    showModal('Voice Search Unavailable',
+                        'Your browser does not support voice search. Please type your location manually.',
+                        'OK');
+                    return;
+                }
+                isListening = !isListening;
+                if (isListening) {
+                    btnMic.classList.add('listening');
+                    showToast('Listening… speak your location', 'fa-microphone');
+                    // Simulate voice recognition (in production, use Web Speech API)
+                    setTimeout(() => {
+                        const simulatedQueries = [
+                            'Victoria Island, Lagos',
+                            'Ikeja',
+                            'Lekki Phase 1',
+                            'Marina, Lagos Island',
+                        ];
+                        const randomQuery = simulatedQueries[Math.floor(Math.random() *
+                            simulatedQueries.length)];
+                        searchInput.value = randomQuery;
+                        btnMic.classList.remove('listening');
+                        isListening = false;
+                        showSuggestions();
+                        showToast('Voice search: "' + randomQuery + '"', 'fa-microphone');
+                    }, 2000);
+                } else {
+                    btnMic.classList.remove('listening');
+                    showToast('Voice search cancelled', 'fa-microphone-slash');
+                }
+            });
+
+            // ─── CLEAR SEARCH ───
+            btnClearSearch.addEventListener('click', () => {
+                searchInput.value = '';
+                suggestionsDropdown.classList.remove('visible');
+                searchInput.focus();
+                showToast('Search cleared', 'fa-xmark');
+            });
+
+            // ─── QUICK LOCATION BUTTONS ───
+            btnUseCurrent.addEventListener('click', () => {
+                if (!navigator.geolocation) {
+                    showModal('Geolocation Unavailable',
+                        'Your browser does not support location services.', 'OK');
+                    return;
+                }
+                btnUseCurrent.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Getting location…';
+                btnUseCurrent.disabled = true;
+                navigator.geolocation.getCurrentPosition(
+                    (pos) => {
+                        const loc = pos.coords.latitude.toFixed(4) + ', ' + pos.coords.longitude.toFixed(
+                            4);
+                        btnUseCurrent.innerHTML =
+                            '<i class="fas fa-location-crosshairs"></i> Use Current Location';
+                        btnUseCurrent.disabled = false;
+                        searchInput.value = '📍 Current Location (' + loc + ')';
+                        showToast('Location detected! Searching nearby…', 'fa-location-crosshairs');
+                        setTimeout(() => {
+                            window.location.href = 'index.html?lat=' + pos.coords.latitude +
+                                '&lng=' + pos.coords.longitude;
+                        }, 600);
+                    },
+                    (err) => {
+                        btnUseCurrent.innerHTML =
+                            '<i class="fas fa-location-crosshairs"></i> Use Current Location';
+                        btnUseCurrent.disabled = false;
+                        showModal('Location Access Denied',
+                            'Please enable location access in your browser settings, or search manually.',
+                            'Search Manually', () => { searchInput.focus(); });
+                    }, { enableHighAccuracy: true, timeout: 10000, maximumAge: 60000 }
+                );
+            });
+
+            btnBrowseMap.addEventListener('click', () => {
+                showToast('Opening map view…', 'fa-map');
+                setTimeout(() => { window.location.href = 'map.html'; }, 400);
+            });
+
+            // ─── RENDER RECENT SEARCHES ───
+            function renderRecentSearches() {
+                if (recentSearches.length === 0) {
+                    recentList.innerHTML = `
+                <div class="recent-empty">
+                  <i class="fas fa-magnifying-glass" style="opacity:0.3;display:block;margin-bottom:6px;font-size:1.2rem;"></i>
+                  No recent searches yet
+                </div>`;
+                    return;
+                }
+                recentList.innerHTML = recentSearches.map(rs => {
+                    const timeAgo = getTimeAgo(rs.timestamp);
+                    return `
+                <div class="recent-item" data-query="${rs.query.replace(/"/g, '&quot;')}">
+                  <i class="fas fa-clock-rotate-left"></i>
+                  <span class="recent-item__text">${rs.query}</span>
+                  <span class="recent-item__count">${timeAgo}</span>
+                  <button class="btn-remove-recent" data-query="${rs.query.replace(/"/g, '&quot;')}" title="Remove" aria-label="Remove this search">
+                    <i class="fas fa-xmark"></i>
+                  </button>
+                </div>`;
+                }).join('');
+
+                // Attach click listeners
+                document.querySelectorAll('.recent-item').forEach(item => {
+                    item.addEventListener('click', function(e) {
+                        if (e.target.closest('.btn-remove-recent')) return;
+                        const query = this.getAttribute('data-query');
+                        searchInput.value = query;
+                        executeSearch(query);
+                    });
+                });
+                document.querySelectorAll('.btn-remove-recent').forEach(btn => {
+                    btn.addEventListener('click', function(e) {
+                        e.stopPropagation();
+                        const query = this.getAttribute('data-query');
+                        removeRecentSearch(query);
+                    });
+                });
+            }
+
+            function getTimeAgo(timestamp) {
+                const seconds = Math.floor((Date.now() - timestamp) / 1000);
+                if (seconds < 60) return 'Just now';
+                if (seconds < 3600) return Math.floor(seconds / 60) + 'm ago';
+                if (seconds < 86400) return Math.floor(seconds / 3600) + 'h ago';
+                return Math.floor(seconds / 86400) + 'd ago';
+            }
+
+            // ─── POPULAR LOCATION CARDS ───
+            document.querySelectorAll('.popular-card').forEach(card => {
+                card.addEventListener('click', function() {
+                    const location = this.getAttribute('data-location');
+                    searchInput.value = location;
+                    executeSearch(location);
+                });
+                card.setAttribute('tabindex', '0');
+                card.setAttribute('role', 'button');
+                card.addEventListener('keydown', function(e) {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        this.click();
+                    }
+                });
+            });
+
+            // ─── SMART CHIPS ───
+            document.querySelectorAll('.smart-chip').forEach(chip => {
+                chip.addEventListener('click', function() {
+                    const search = this.getAttribute('data-search');
+                    searchInput.value = search;
+                    executeSearch(search);
+                });
+            });
+
+            // ─── KEYBOARD SHORTCUTS ───
+            document.addEventListener('keydown', (e) => {
+                if (e.key === '/' && !modalOverlay.classList.contains('active') && document
+                    .activeElement !== searchInput) {
+                    e.preventDefault();
+                    searchInput.focus();
+                    showToast('Type a location to search', 'fa-magnifying-glass');
+                }
+                if (e.key === 'l' && e.ctrlKey && !modalOverlay.classList.contains('active')) {
+                    e.preventDefault();
+                    btnUseCurrent.click();
+                }
+                if (e.key === 'm' && e.ctrlKey && !modalOverlay.classList.contains('active')) {
+                    e.preventDefault();
+                    btnBrowseMap.click();
+                }
+            });
+
+            // ─── INIT ───
+            loadRecentSearches();
+            renderRecentSearches();
+
+            console.log('🔍 PharmFinder — Search page ready.');
+            console.log('📍 Type to search any location for nearby pharmacies.');
+            console.log('💡 Shortcuts: / (focus search) | Ctrl+L (current location) | Ctrl+M (map)');
+            console.log('🗂️ Recent searches stored in localStorage under "pharmfinder_recent_searches".');
+
+            // Auto-focus search on load
+            setTimeout(() => {
+                searchInput.focus();
+                showToast('Type a location or choose from popular places below', 'fa-magnifying-glass');
+            }, 600);
+
+            // ─── EXPORT ───
+            window.PharmFinderSearch = {
+                executeSearch,
+                addRecentSearch,
+                getRecentSearches: () => recentSearches,
+                clearRecentSearches: clearAllRecent,
+                getSuggestions,
+            };
+
+        })();
+    </script>
+</body>
+</html>

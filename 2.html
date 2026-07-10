@@ -1,0 +1,2140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PharmFinder — Find Pharmacies Open Near You Instantly</title>
+
+    <!-- Font Awesome 6 (all fas icons, no emojis) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            /* iOS-inspired color palette */
+            --ios-blue: #007AFF;
+            --ios-green: #34C759;
+            --ios-red: #FF3B30;
+            --ios-orange: #FF9500;
+            --ios-teal: #5AC8FA;
+            --ios-indigo: #5856D6;
+            --ios-purple: #AF52DE;
+            --ios-pink: #FF2D55;
+            --ios-gray: #8E8E93;
+            --ios-gray2: #AEAEB2;
+            --ios-gray3: #C7C7CC;
+            --ios-gray4: #D1D1D6;
+            --ios-gray5: #E5E5EA;
+            --ios-gray6: #F2F2F7;
+            --ios-bg: #F9F9FB;
+            --ios-white: #FFFFFF;
+            --ios-black: #1C1C1E;
+            --ios-dark-bg: #1C1C1E;
+            --ios-dark-card: #2C2C2E;
+            --ios-dark-surface: #3A3A3C;
+
+            /* PharmFinder brand */
+            --brand-primary: #0D6B4E;
+            --brand-primary-light: #0F8A63;
+            --brand-secondary: #1B9C6B;
+            --brand-accent: #22C55E;
+            --brand-bg-light: #ECFDF5;
+            --brand-gradient: linear-gradient(135deg, #0D6B4E 0%, #0F8A63 30%, #1B9C6B 60%, #22C55E 100%);
+            --brand-gradient-subtle: linear-gradient(135deg, #ECFDF5 0%, #D1FAE5 50%, #A7F3D0 100%);
+            --glass-bg: rgba(255, 255, 255, 0.72);
+            --glass-border: rgba(255, 255, 255, 0.55);
+            --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+            --glass-blur: blur(20px) saturate(180%);
+
+            --radius-sm: 10px;
+            --radius-md: 16px;
+            --radius-lg: 22px;
+            --radius-xl: 28px;
+            --radius-2xl: 36px;
+            --radius-full: 9999px;
+
+            --shadow-ios: 0 1px 3px rgba(0, 0, 0, 0.06), 0 6px 16px rgba(0, 0, 0, 0.06);
+            --shadow-ios-lg: 0 4px 20px rgba(0, 0, 0, 0.10), 0 12px 40px rgba(0, 0, 0, 0.08);
+            --shadow-ios-xl: 0 8px 40px rgba(0, 0, 0, 0.14), 0 20px 60px rgba(0, 0, 0, 0.10);
+            --shadow-glow-green: 0 0 40px rgba(13, 107, 78, 0.25), 0 0 80px rgba(34, 197, 94, 0.15);
+            --shadow-glow-blue: 0 0 40px rgba(0, 122, 255, 0.2), 0 0 80px rgba(90, 200, 250, 0.12);
+
+            --transition-fast: 0.18s cubic-bezier(0.25, 0.1, 0.25, 1);
+            --transition-smooth: 0.3s cubic-bezier(0.25, 0.1, 0.25, 1);
+            --transition-bounce: 0.45s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            --transition-spring: 0.55s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        html {
+            scroll-behavior: smooth;
+            font-size: 16px;
+            -webkit-tap-highlight-color: transparent;
+        }
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Helvetica Neue', sans-serif;
+            background: var(--ios-bg);
+            color: var(--ios-black);
+            line-height: 1.55;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            min-height: 100vh;
+            position: relative;
+        }
+
+        /* ── Animated Background Orbs ── */
+        .bg-orb {
+            position: fixed;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 0;
+            opacity: 0.35;
+            filter: blur(80px);
+            animation: orbFloat 16s ease-in-out infinite;
+        }
+        .bg-orb--1 {
+            width: 420px;
+            height: 420px;
+            background: radial-gradient(circle, rgba(34, 197, 94, 0.35) 0%, transparent 70%);
+            top: -8%;
+            left: -10%;
+            animation-delay: 0s;
+        }
+        .bg-orb--2 {
+            width: 350px;
+            height: 350px;
+            background: radial-gradient(circle, rgba(13, 107, 78, 0.3) 0%, transparent 70%);
+            bottom: -6%;
+            right: -8%;
+            animation-delay: -6s;
+            animation-duration: 18s;
+        }
+        .bg-orb--3 {
+            width: 280px;
+            height: 280px;
+            background: radial-gradient(circle, rgba(90, 200, 250, 0.25) 0%, transparent 70%);
+            top: 45%;
+            left: 50%;
+            animation-delay: -10s;
+            animation-duration: 20s;
+        }
+        .bg-orb--4 {
+            width: 200px;
+            height: 200px;
+            background: radial-gradient(circle, rgba(175, 82, 222, 0.18) 0%, transparent 70%);
+            top: 20%;
+            right: 15%;
+            animation-delay: -3s;
+            animation-duration: 14s;
+        }
+        @keyframes orbFloat {
+            0%,
+            100% {
+                transform: translate(0, 0) scale(1);
+            }
+            15% {
+                transform: translate(30px, -25px) scale(1.08);
+            }
+            30% {
+                transform: translate(-18px, 20px) scale(0.94);
+            }
+            45% {
+                transform: translate(25px, 15px) scale(1.05);
+            }
+            60% {
+                transform: translate(-30px, -10px) scale(0.92);
+            }
+            75% {
+                transform: translate(10px, -30px) scale(1.06);
+            }
+            90% {
+                transform: translate(-15px, 25px) scale(0.96);
+            }
+        }
+
+        /* ── Floating Pills Animation ── */
+        .floating-pills-container {
+            position: fixed;
+            pointer-events: none;
+            z-index: 0;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+        .floating-pill {
+            position: absolute;
+            opacity: 0.10;
+            font-size: 2.5rem;
+            color: var(--brand-primary);
+            animation: pillDrift 22s linear infinite;
+        }
+        .floating-pill:nth-child(1) {
+            top: 12%;
+            left: 5%;
+            animation-delay: 0s;
+            font-size: 2.2rem;
+            color: var(--brand-secondary);
+        }
+        .floating-pill:nth-child(2) {
+            top: 28%;
+            left: 88%;
+            animation-delay: -5s;
+            font-size: 2.8rem;
+            color: var(--ios-teal);
+        }
+        .floating-pill:nth-child(3) {
+            top: 62%;
+            left: 3%;
+            animation-delay: -11s;
+            font-size: 2rem;
+            color: var(--brand-accent);
+        }
+        .floating-pill:nth-child(4) {
+            top: 78%;
+            left: 82%;
+            animation-delay: -16s;
+            font-size: 3rem;
+            color: var(--brand-primary-light);
+        }
+        .floating-pill:nth-child(5) {
+            top: 45%;
+            left: 92%;
+            animation-delay: -8s;
+            font-size: 2.4rem;
+            color: var(--ios-green);
+        }
+        .floating-pill:nth-child(6) {
+            top: 8%;
+            left: 48%;
+            animation-delay: -14s;
+            font-size: 1.9rem;
+            color: var(--brand-primary);
+        }
+        @keyframes pillDrift {
+            0% {
+                transform: translateY(0) rotate(0deg) scale(1);
+                opacity: 0.08;
+            }
+            25% {
+                transform: translateY(-35px) rotate(90deg) scale(1.15);
+                opacity: 0.14;
+            }
+            50% {
+                transform: translateY(-15px) rotate(180deg) scale(0.9);
+                opacity: 0.06;
+            }
+            75% {
+                transform: translateY(-40px) rotate(270deg) scale(1.1);
+                opacity: 0.12;
+            }
+            100% {
+                transform: translateY(0) rotate(360deg) scale(1);
+                opacity: 0.08;
+            }
+        }
+
+        /* ── Main Wrapper ── */
+        .app-wrapper {
+            position: relative;
+            z-index: 1;
+            max-width: 520px;
+            margin: 0 auto;
+            padding: 0 16px;
+            padding-bottom: 40px;
+        }
+
+        /* ── HEADER ── */
+        .header {
+            position: sticky;
+            top: 12px;
+            z-index: 100;
+            margin-top: 12px;
+            background: var(--glass-bg);
+            backdrop-filter: var(--glass-blur);
+            -webkit-backdrop-filter: var(--glass-blur);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius-xl);
+            padding: 14px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: var(--shadow-ios);
+            transition: all var(--transition-smooth);
+        }
+        .header.scrolled {
+            box-shadow: var(--shadow-ios-lg);
+            background: rgba(255, 255, 255, 0.88);
+        }
+        .header__brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .header__logo-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: var(--radius-md);
+            background: var(--brand-gradient);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 1.25rem;
+            box-shadow: 0 4px 12px rgba(13, 107, 78, 0.35);
+            animation: logoPulse 3s ease-in-out infinite;
+        }
+        @keyframes logoPulse {
+            0%,
+            100% {
+                box-shadow: 0 4px 12px rgba(13, 107, 78, 0.35);
+            }
+            50% {
+                box-shadow: 0 4px 24px rgba(13, 107, 78, 0.55), 0 0 40px rgba(34, 197, 94, 0.25);
+            }
+        }
+        .header__title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--ios-black);
+            letter-spacing: -0.3px;
+        }
+        .header__badge {
+            font-size: 0.68rem;
+            font-weight: 600;
+            background: var(--brand-bg-light);
+            color: var(--brand-primary);
+            padding: 4px 10px;
+            border-radius: var(--radius-full);
+            letter-spacing: 0.2px;
+        }
+        .header__actions {
+            display: flex;
+            gap: 8px;
+        }
+        .header__icon-btn {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: var(--ios-gray6);
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+            color: var(--ios-black);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all var(--transition-fast);
+            position: relative;
+        }
+        .header__icon-btn:hover {
+            background: #e0e0e5;
+            transform: scale(1.06);
+        }
+        .header__icon-btn:active {
+            transform: scale(0.94);
+            background: #d5d5da;
+        }
+        .header__notif-dot {
+            position: absolute;
+            top: 7px;
+            right: 7px;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--ios-red);
+            border: 2px solid #fff;
+            animation: dotBlink 2s ease-in-out infinite;
+        }
+        @keyframes dotBlink {
+            0%,
+            100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.3;
+            }
+        }
+
+        /* ── EMERGENCY BANNER ── */
+        .emergency-banner {
+            margin-top: 16px;
+            background: linear-gradient(135deg, #FFF5F5 0%, #FFE8E8 50%, #FFF0F0 100%);
+            border: 1.5px solid rgba(255, 59, 48, 0.22);
+            border-radius: var(--radius-lg);
+            padding: 14px 18px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            transition: all var(--transition-bounce);
+            animation: bannerGlow 3s ease-in-out infinite;
+            position: relative;
+            overflow: hidden;
+        }
+        .emergency-banner::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255, 59, 48, 0.06) 0%, transparent 70%);
+            animation: bannerShimmer 5s linear infinite;
+        }
+        @keyframes bannerShimmer {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+        @keyframes bannerGlow {
+            0%,
+            100% {
+                box-shadow: 0 0 0px rgba(255, 59, 48, 0);
+            }
+            50% {
+                box-shadow: 0 0 25px rgba(255, 59, 48, 0.18), 0 0 50px rgba(255, 59, 48, 0.08);
+            }
+        }
+        .emergency-banner__icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: var(--ios-red);
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            flex-shrink: 0;
+            animation: emergencyBeat 1.2s ease-in-out infinite;
+            z-index: 1;
+        }
+        @keyframes emergencyBeat {
+            0%,
+            100% {
+                transform: scale(1);
+            }
+            15% {
+                transform: scale(1.2);
+            }
+            30% {
+                transform: scale(1);
+            }
+            45% {
+                transform: scale(1.18);
+            }
+            60% {
+                transform: scale(1);
+            }
+        }
+        .emergency-banner__text {
+            z-index: 1;
+            flex: 1;
+        }
+        .emergency-banner__title {
+            font-weight: 700;
+            font-size: 0.9rem;
+            color: #C0392B;
+        }
+        .emergency-banner__sub {
+            font-size: 0.75rem;
+            color: #8B3A3A;
+            opacity: 0.8;
+        }
+        .emergency-banner__arrow {
+            z-index: 1;
+            color: var(--ios-red);
+            font-size: 1.1rem;
+            animation: arrowNudge 1.5s ease-in-out infinite;
+        }
+        @keyframes arrowNudge {
+            0%,
+            100% {
+                transform: translateX(0);
+            }
+            50% {
+                transform: translateX(6px);
+            }
+        }
+
+        /* ── HERO SECTION ── */
+        .hero {
+            margin-top: 22px;
+            text-align: center;
+            position: relative;
+        }
+        .hero__title {
+            font-size: 2rem;
+            font-weight: 900;
+            letter-spacing: -0.6px;
+            line-height: 1.2;
+            color: var(--ios-black);
+            margin-bottom: 6px;
+        }
+        .hero__title .highlight {
+            background: var(--brand-gradient);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            position: relative;
+        }
+        .hero__subtitle {
+            font-size: 0.95rem;
+            color: var(--ios-gray);
+            margin-bottom: 22px;
+            font-weight: 400;
+        }
+
+        /* ── LOCATION PULSE RING ── */
+        .location-pulse-area {
+            position: relative;
+            width: 130px;
+            height: 130px;
+            margin: 0 auto 20px;
+            cursor: pointer;
+            transition: transform var(--transition-spring);
+        }
+        .location-pulse-area:hover {
+            transform: scale(1.06);
+        }
+        .location-pulse-area:active {
+            transform: scale(0.92);
+        }
+        .pulse-ring {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            border-radius: 50%;
+            border: 2.5px solid var(--brand-accent);
+            animation: pulseExpand 2.5s ease-out infinite;
+            pointer-events: none;
+        }
+        .pulse-ring:nth-child(1) {
+            animation-delay: 0s;
+            width: 50px;
+            height: 50px;
+            opacity: 0;
+        }
+        .pulse-ring:nth-child(2) {
+            animation-delay: 0.6s;
+            width: 50px;
+            height: 50px;
+            opacity: 0;
+        }
+        .pulse-ring:nth-child(3) {
+            animation-delay: 1.2s;
+            width: 50px;
+            height: 50px;
+            opacity: 0;
+        }
+        .pulse-ring:nth-child(4) {
+            animation-delay: 1.8s;
+            width: 50px;
+            height: 50px;
+            opacity: 0;
+        }
+        @keyframes pulseExpand {
+            0% {
+                width: 50px;
+                height: 50px;
+                opacity: 0.7;
+            }
+            100% {
+                width: 180px;
+                height: 180px;
+                opacity: 0;
+            }
+        }
+        .pulse-center {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background: var(--brand-gradient);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 1.4rem;
+            box-shadow: var(--shadow-glow-green);
+            z-index: 2;
+            transition: all var(--transition-bounce);
+        }
+        .pulse-center i {
+            animation: pinBounce 2s ease-in-out infinite;
+        }
+        @keyframes pinBounce {
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+            30% {
+                transform: translateY(-6px);
+            }
+            60% {
+                transform: translateY(0);
+            }
+            80% {
+                transform: translateY(-3px);
+            }
+        }
+
+        /* ── MAIN ACTION BUTTON ── */
+        .btn-find {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: var(--brand-gradient);
+            color: #fff;
+            font-weight: 700;
+            font-size: 1.1rem;
+            padding: 16px 32px;
+            border-radius: var(--radius-full);
+            border: none;
+            cursor: pointer;
+            box-shadow: var(--shadow-glow-green), var(--shadow-ios-lg);
+            transition: all var(--transition-bounce);
+            letter-spacing: -0.2px;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+        .btn-find::before {
+            content: '';
+            position: absolute;
+            top: -60%;
+            left: -60%;
+            width: 220%;
+            height: 220%;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.25) 0%, transparent 60%);
+            animation: btnShimmer 3s linear infinite;
+            z-index: 0;
+        }
+        @keyframes btnShimmer {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+        .btn-find span {
+            position: relative;
+            z-index: 1;
+        }
+        .btn-find i {
+            position: relative;
+            z-index: 1;
+        }
+        .btn-find:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-glow-green), 0 12px 40px rgba(0, 0, 0, 0.16);
+        }
+        .btn-find:active {
+            transform: scale(0.95);
+            box-shadow: var(--shadow-glow-green), 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        /* ── MANUAL LOCATION INPUT ── */
+        .location-input-wrap {
+            margin-top: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--ios-white);
+            border: 1.5px solid var(--ios-gray5);
+            border-radius: var(--radius-full);
+            padding: 6px 6px 6px 18px;
+            box-shadow: var(--shadow-ios);
+            transition: all var(--transition-smooth);
+        }
+        .location-input-wrap:focus-within {
+            border-color: var(--brand-primary);
+            box-shadow: 0 0 0 4px rgba(13, 107, 78, 0.08), var(--shadow-ios);
+        }
+        .location-input-wrap input {
+            flex: 1;
+            border: none;
+            outline: none;
+            font-size: 0.9rem;
+            font-family: 'Inter', sans-serif;
+            color: var(--ios-black);
+            background: transparent;
+            min-width: 0;
+        }
+        .location-input-wrap input::placeholder {
+            color: var(--ios-gray2);
+        }
+        .location-input-wrap .input-icon {
+            color: var(--ios-gray);
+            font-size: 0.95rem;
+            flex-shrink: 0;
+        }
+        .location-input-wrap .btn-input-go {
+            background: var(--brand-primary);
+            color: #fff;
+            border: none;
+            border-radius: var(--radius-full);
+            padding: 10px 18px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+        .location-input-wrap .btn-input-go:hover {
+            background: var(--brand-primary-light);
+            transform: scale(1.03);
+        }
+        .location-input-wrap .btn-input-go:active {
+            transform: scale(0.94);
+        }
+
+        /* ── QUICK FILTERS ── */
+        .quick-filters {
+            margin-top: 18px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 9px;
+            justify-content: center;
+        }
+        .filter-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 10px 16px;
+            border-radius: var(--radius-full);
+            font-weight: 600;
+            font-size: 0.82rem;
+            cursor: pointer;
+            border: 1.5px solid var(--ios-gray4);
+            background: var(--ios-white);
+            color: var(--ios-black);
+            transition: all var(--transition-bounce);
+            user-select: none;
+            white-space: nowrap;
+        }
+        .filter-chip i {
+            font-size: 0.85rem;
+        }
+        .filter-chip:hover {
+            border-color: var(--brand-primary);
+            background: var(--brand-bg-light);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-ios);
+        }
+        .filter-chip--active {
+            background: var(--brand-primary);
+            color: #fff;
+            border-color: var(--brand-primary);
+            box-shadow: 0 4px 14px rgba(13, 107, 78, 0.35);
+        }
+        .filter-chip--active i {
+            color: #fff;
+        }
+        .filter-chip--emergency {
+            border-color: var(--ios-red);
+            color: var(--ios-red);
+            background: #FFF5F5;
+            animation: chipAlert 2.5s ease-in-out infinite;
+        }
+        @keyframes chipAlert {
+            0%,
+            100% {
+                box-shadow: 0 0 0px rgba(255, 59, 48, 0);
+            }
+            50% {
+                box-shadow: 0 0 18px rgba(255, 59, 48, 0.25);
+            }
+        }
+        .filter-chip--emergency.filter-chip--active {
+            background: var(--ios-red);
+            color: #fff;
+            border-color: var(--ios-red);
+        }
+
+        /* ── STATUS FEEDBACK ── */
+        .status-bar {
+            margin-top: 14px;
+            text-align: center;
+            min-height: 26px;
+            font-size: 0.82rem;
+            font-weight: 500;
+            color: var(--ios-gray);
+            transition: all var(--transition-smooth);
+        }
+        .status-bar.loading {
+            color: var(--brand-primary);
+            animation: statusPulse 1s ease-in-out infinite;
+        }
+        @keyframes statusPulse {
+            0%,
+            100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.5;
+            }
+        }
+
+        /* ── SECTION TITLES ── */
+        .section-title {
+            font-size: 1.25rem;
+            font-weight: 800;
+            letter-spacing: -0.3px;
+            color: var(--ios-black);
+            margin-bottom: 6px;
+        }
+        .section-subtitle {
+            font-size: 0.85rem;
+            color: var(--ios-gray);
+            margin-bottom: 18px;
+        }
+
+        /* ── FEATURES SECTION ── */
+        .features-section {
+            margin-top: 36px;
+        }
+        .features-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+        .feature-card {
+            background: var(--ios-white);
+            border-radius: var(--radius-lg);
+            padding: 18px 14px;
+            text-align: center;
+            box-shadow: var(--shadow-ios);
+            border: 1px solid var(--ios-gray6);
+            transition: all var(--transition-bounce);
+            cursor: default;
+            position: relative;
+            overflow: hidden;
+        }
+        .feature-card::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--brand-gradient-subtle);
+            opacity: 0;
+            transition: opacity var(--transition-smooth);
+            z-index: 0;
+        }
+        .feature-card:hover::after {
+            opacity: 1;
+        }
+        .feature-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-ios-lg);
+            border-color: transparent;
+        }
+        .feature-card>* {
+            position: relative;
+            z-index: 1;
+        }
+        .feature-card__icon {
+            width: 46px;
+            height: 46px;
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 10px;
+            font-size: 1.2rem;
+            color: #fff;
+        }
+        .feature-card__icon--green {
+            background: var(--brand-gradient);
+        }
+        .feature-card__icon--blue {
+            background: linear-gradient(135deg, #007AFF, #5AC8FA);
+        }
+        .feature-card__icon--orange {
+            background: linear-gradient(135deg, #FF9500, #FFCC00);
+        }
+        .feature-card__icon--purple {
+            background: linear-gradient(135deg, #5856D6, #AF52DE);
+        }
+        .feature-card__title {
+            font-weight: 700;
+            font-size: 0.88rem;
+            color: var(--ios-black);
+            margin-bottom: 2px;
+        }
+        .feature-card__desc {
+            font-size: 0.73rem;
+            color: var(--ios-gray);
+            line-height: 1.4;
+        }
+
+        /* ── HOW IT WORKS ── */
+        .how-section {
+            margin-top: 36px;
+        }
+        .step-list {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+        .step-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 14px;
+            background: var(--ios-white);
+            border-radius: var(--radius-lg);
+            padding: 16px;
+            box-shadow: var(--shadow-ios);
+            border: 1px solid var(--ios-gray6);
+            transition: all var(--transition-bounce);
+        }
+        .step-item:hover {
+            transform: translateX(4px);
+            box-shadow: var(--shadow-ios-lg);
+            border-color: transparent;
+        }
+        .step-number {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--brand-gradient);
+            color: #fff;
+            font-weight: 800;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            box-shadow: 0 4px 12px rgba(13, 107, 78, 0.3);
+        }
+        .step-content h4 {
+            font-weight: 700;
+            font-size: 0.9rem;
+            color: var(--ios-black);
+            margin-bottom: 2px;
+        }
+        .step-content p {
+            font-size: 0.78rem;
+            color: var(--ios-gray);
+        }
+
+        /* ── STATS SECTION ── */
+        .stats-section {
+            margin-top: 36px;
+            background: var(--brand-gradient);
+            border-radius: var(--radius-xl);
+            padding: 24px 20px;
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 10px;
+            text-align: center;
+            color: #fff;
+            box-shadow: var(--shadow-glow-green), var(--shadow-ios-lg);
+        }
+        .stat-item__number {
+            font-size: 1.8rem;
+            font-weight: 900;
+            letter-spacing: -0.5px;
+        }
+        .stat-item__label {
+            font-size: 0.7rem;
+            font-weight: 500;
+            opacity: 0.85;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+        }
+
+        /* ── TESTIMONIALS ── */
+        .testimonials-section {
+            margin-top: 36px;
+        }
+        .testimonial-scroll {
+            display: flex;
+            gap: 12px;
+            overflow-x: auto;
+            scroll-snap-type: x mandatory;
+            -webkit-overflow-scrolling: touch;
+            padding-bottom: 6px;
+        }
+        .testimonial-scroll::-webkit-scrollbar {
+            display: none;
+        }
+        .testimonial-card {
+            min-width: 260px;
+            background: var(--ios-white);
+            border-radius: var(--radius-lg);
+            padding: 16px;
+            box-shadow: var(--shadow-ios);
+            border: 1px solid var(--ios-gray6);
+            scroll-snap-align: start;
+            flex-shrink: 0;
+        }
+        .testimonial-card__stars {
+            color: #F59E0B;
+            font-size: 0.75rem;
+            margin-bottom: 6px;
+        }
+        .testimonial-card__text {
+            font-size: 0.82rem;
+            color: var(--ios-black);
+            font-style: italic;
+            margin-bottom: 8px;
+        }
+        .testimonial-card__author {
+            font-size: 0.72rem;
+            font-weight: 700;
+            color: var(--brand-primary);
+        }
+
+        /* ── FAQ ── */
+        .faq-section {
+            margin-top: 36px;
+        }
+        .faq-item {
+            background: var(--ios-white);
+            border-radius: var(--radius-md);
+            margin-bottom: 8px;
+            border: 1px solid var(--ios-gray6);
+            overflow: hidden;
+            transition: all var(--transition-smooth);
+        }
+        .faq-question {
+            padding: 15px 18px;
+            font-weight: 600;
+            font-size: 0.88rem;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            user-select: none;
+            color: var(--ios-black);
+            transition: all var(--transition-fast);
+        }
+        .faq-question:hover {
+            background: var(--ios-gray6);
+        }
+        .faq-answer {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease;
+            padding: 0 18px;
+            font-size: 0.8rem;
+            color: var(--ios-gray);
+            line-height: 1.5;
+        }
+        .faq-item.open .faq-answer {
+            max-height: 200px;
+            padding: 0 18px 15px;
+        }
+        .faq-item.open .faq-icon {
+            transform: rotate(180deg);
+            color: var(--brand-primary);
+        }
+        .faq-icon {
+            transition: all var(--transition-smooth);
+            color: var(--ios-gray);
+        }
+
+        /* ── FOOTER ── */
+        .footer {
+            margin-top: 40px;
+            text-align: center;
+            padding: 20px 0;
+            border-top: 1px solid var(--ios-gray5);
+        }
+        .footer__links {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 14px;
+            justify-content: center;
+            margin-bottom: 8px;
+        }
+        .footer__links a {
+            color: var(--ios-gray);
+            text-decoration: none;
+            font-size: 0.78rem;
+            font-weight: 500;
+            transition: color var(--transition-fast);
+            cursor: pointer;
+        }
+        .footer__links a:hover {
+            color: var(--brand-primary);
+        }
+        .footer__copy {
+            font-size: 0.7rem;
+            color: var(--ios-gray2);
+        }
+        .footer__disclaimer {
+            font-size: 0.68rem;
+            color: var(--ios-gray3);
+            margin-top: 6px;
+            max-width: 400px;
+            margin-left: auto;
+            margin-right: auto;
+            line-height: 1.4;
+        }
+
+        /* ── iOS NOTIFICATION MODAL (Lock Screen Style) ── */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.55);
+            z-index: 9999;
+            display: flex;
+            align-items: flex-start;
+            justify-content: center;
+            padding-top: 50px;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
+        }
+        .modal-overlay.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+        .modal-notification {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(30px) saturate(200%);
+            -webkit-backdrop-filter: blur(30px) saturate(200%);
+            border-radius: 22px;
+            padding: 18px 20px;
+            width: 90%;
+            max-width: 400px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(255, 255, 255, 0.6);
+            transform: translateY(-30px) scale(0.92);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+        }
+        .modal-overlay.active .modal-notification {
+            transform: translateY(0) scale(1);
+        }
+        .modal-notification__header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        .modal-notification__app-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            background: var(--brand-gradient);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 0.85rem;
+        }
+        .modal-notification__app-name {
+            font-weight: 700;
+            font-size: 0.85rem;
+            color: var(--ios-black);
+        }
+        .modal-notification__time {
+            font-size: 0.7rem;
+            color: var(--ios-gray2);
+            margin-left: auto;
+        }
+        .modal-notification__body {
+            font-size: 0.9rem;
+            color: var(--ios-black);
+            line-height: 1.4;
+            font-weight: 500;
+        }
+        .modal-notification__sub {
+            font-size: 0.75rem;
+            color: var(--ios-gray);
+            margin-top: 4px;
+        }
+        .modal-notification__close {
+            position: absolute;
+            top: 10px;
+            right: 14px;
+            background: rgba(0, 0, 0, 0.06);
+            border: none;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 0.8rem;
+            color: var(--ios-gray);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all var(--transition-fast);
+        }
+        .modal-notification__close:hover {
+            background: rgba(0, 0, 0, 0.12);
+        }
+        .modal-notification__actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 12px;
+        }
+        .modal-notification__btn {
+            flex: 1;
+            padding: 10px;
+            border-radius: var(--radius-full);
+            border: none;
+            font-weight: 600;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            font-family: 'Inter', sans-serif;
+        }
+        .modal-notification__btn--primary {
+            background: var(--brand-primary);
+            color: #fff;
+        }
+        .modal-notification__btn--primary:hover {
+            background: var(--brand-primary-light);
+        }
+        .modal-notification__btn--secondary {
+            background: var(--ios-gray6);
+            color: var(--ios-black);
+        }
+        .modal-notification__btn--secondary:hover {
+            background: var(--ios-gray5);
+        }
+
+        /* ── TOAST (Bottom Notification) ── */
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: var(--ios-dark-card);
+            color: #fff;
+            padding: 12px 22px;
+            border-radius: var(--radius-full);
+            font-weight: 600;
+            font-size: 0.82rem;
+            z-index: 10000;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .toast.show {
+            transform: translateX(-50%) translateY(0);
+        }
+        .toast i {
+            font-size: 0.9rem;
+        }
+
+        /* ── RESPONSIVE ── */
+        @media (max-width: 400px) {
+            .hero__title {
+                font-size: 1.55rem;
+            }
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+            .stats-section {
+                grid-template-columns: 1fr 1fr 1fr;
+                gap: 6px;
+                padding: 18px 12px;
+            }
+            .stat-item__number {
+                font-size: 1.4rem;
+            }
+            .btn-find {
+                font-size: 0.95rem;
+                padding: 14px 24px;
+            }
+            .header {
+                padding: 10px 14px;
+            }
+            .header__title {
+                font-size: 1rem;
+            }
+        }
+        @media (min-width: 768px) {
+            .app-wrapper {
+                max-width: 600px;
+            }
+            .features-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ── Animated Background Orbs ── -->
+    <div class="bg-orb bg-orb--1"></div>
+    <div class="bg-orb bg-orb--2"></div>
+    <div class="bg-orb bg-orb--3"></div>
+    <div class="bg-orb bg-orb--4"></div>
+
+    <!-- ── Floating Pills ── -->
+    <div class="floating-pills-container">
+        <i class="fas fa-pills floating-pill"></i>
+        <i class="fas fa-capsules floating-pill"></i>
+        <i class="fas fa-tablets floating-pill"></i>
+        <i class="fas fa-prescription-bottle floating-pill"></i>
+        <i class="fas fa-pills floating-pill"></i>
+        <i class="fas fa-capsules floating-pill"></i>
+    </div>
+
+    <!-- ── App Wrapper ── -->
+    <div class="app-wrapper">
+
+        <!-- HEADER -->
+        <header class="header" id="header">
+            <div class="header__brand">
+                <div class="header__logo-icon">
+                    <i class="fas fa-cross"></i>
+                </div>
+                <div>
+                    <div class="header__title">PharmFinder</div>
+                </div>
+                <span class="header__badge">Beta</span>
+            </div>
+            <div class="header__actions">
+                <button class="header__icon-btn" id="btnNotifications" title="Notifications" aria-label="Notifications">
+                    <i class="fas fa-bell"></i>
+                    <span class="header__notif-dot"></span>
+                </button>
+                <button class="header__icon-btn" id="btnInfo" title="Info" aria-label="Information">
+                    <i class="fas fa-circle-info"></i>
+                </button>
+            </div>
+        </header>
+
+        <!-- EMERGENCY BANNER -->
+        <div class="emergency-banner" id="emergencyBanner" role="button" tabindex="0" aria-label="Emergency mode - find open pharmacies now">
+            <div class="emergency-banner__icon">
+                <i class="fas fa-heart-pulse"></i>
+            </div>
+            <div class="emergency-banner__text">
+                <div class="emergency-banner__title">Emergency Mode</div>
+                <div class="emergency-banner__sub">Tap to find pharmacies open right now</div>
+            </div>
+            <div class="emergency-banner__arrow">
+                <i class="fas fa-chevron-right"></i>
+            </div>
+        </div>
+
+        <!-- HERO SECTION -->
+        <section class="hero">
+            <h1 class="hero__title">
+                Find <span class="highlight">Pharmacies</span> Near You Instantly
+            </h1>
+            <p class="hero__subtitle">Locate open pharmacies in seconds — day or night</p>
+
+            <!-- Location Pulse Animation -->
+            <div class="location-pulse-area" id="locationPulseArea" title="Tap to find nearby pharmacies">
+                <div class="pulse-ring"></div>
+                <div class="pulse-ring"></div>
+                <div class="pulse-ring"></div>
+                <div class="pulse-ring"></div>
+                <div class="pulse-center">
+                    <i class="fas fa-location-dot"></i>
+                </div>
+            </div>
+
+            <!-- Main CTA -->
+            <button class="btn-find" id="btnFindPharmacy">
+                <i class="fas fa-magnifying-glass-location"></i>
+                <span>Find Pharmacy Near Me</span>
+            </button>
+
+            <!-- Manual Location Input -->
+            <div class="location-input-wrap" id="locationInputWrap">
+                <i class="fas fa-map-pin input-icon"></i>
+                <input type="text" id="manualLocationInput" placeholder="Enter location manually (optional)">
+                <button class="btn-input-go" id="btnManualGo">
+                    <i class="fas fa-paper-plane"></i>&nbsp; Go
+                </button>
+            </div>
+
+            <!-- Quick Filters -->
+            <div class="quick-filters" id="quickFilters">
+                <button class="filter-chip filter-chip--active" data-filter="all" id="filterAll">
+                    <i class="fas fa-globe"></i> All
+                </button>
+                <button class="filter-chip" data-filter="open-now" id="filterOpenNow">
+                    <i class="fas fa-door-open"></i> Open Now
+                </button>
+                <button class="filter-chip" data-filter="open-late" id="filterOpenLate">
+                    <i class="fas fa-moon"></i> Open Late
+                </button>
+                <button class="filter-chip" data-filter="24-7" id="filter24_7">
+                    <i class="fas fa-clock"></i> 24/7
+                </button>
+                <button class="filter-chip filter-chip--emergency" data-filter="emergency" id="filterEmergency">
+                    <i class="fas fa-heart-pulse"></i> Emergency
+                </button>
+            </div>
+
+            <!-- Status Feedback -->
+            <div class="status-bar" id="statusBar"></div>
+        </section>
+
+        <!-- FEATURES SECTION -->
+        <section class="features-section">
+            <h2 class="section-title">Why PharmFinder?</h2>
+            <p class="section-subtitle">Built for speed, reliability, and real-world urgency</p>
+            <div class="features-grid">
+                <div class="feature-card" id="featureFast">
+                    <div class="feature-card__icon feature-card__icon--green">
+                        <i class="fas fa-bolt"></i>
+                    </div>
+                    <div class="feature-card__title">Lightning Fast</div>
+                    <div class="feature-card__desc">Results load in under 2 seconds — no delays when it matters</div>
+                </div>
+                <div class="feature-card" id="featureReliable">
+                    <div class="feature-card__icon feature-card__icon--blue">
+                        <i class="fas fa-shield-halved"></i>
+                    </div>
+                    <div class="feature-card__title">Verified Data</div>
+                    <div class="feature-card__desc">Regularly updated pharmacy hours & availability</div>
+                </div>
+                <div class="feature-card" id="featureNearby">
+                    <div class="feature-card__icon feature-card__icon--orange">
+                        <i class="fas fa-location-crosshairs"></i>
+                    </div>
+                    <div class="feature-card__title">Truly Nearby</div>
+                    <div class="feature-card__desc">Sorted by actual walking & driving distance from you</div>
+                </div>
+                <div class="feature-card" id="featureSimple">
+                    <div class="feature-card__icon feature-card__icon--purple">
+                        <i class="fas fa-hand-pointer"></i>
+                    </div>
+                    <div class="feature-card__title">One-Tap Actions</div>
+                    <div class="feature-card__desc">Call or get directions with a single tap</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- HOW IT WORKS -->
+        <section class="how-section">
+            <h2 class="section-title">How It Works</h2>
+            <p class="section-subtitle">Three simple steps to find your nearest pharmacy</p>
+            <div class="step-list">
+                <div class="step-item">
+                    <div class="step-number">1</div>
+                    <div class="step-content">
+                        <h4>Allow Location Access</h4>
+                        <p>Tap the main button and grant location permission when prompted</p>
+                    </div>
+                </div>
+                <div class="step-item">
+                    <div class="step-number">2</div>
+                    <div class="step-content">
+                        <h4>Choose Your Filter</h4>
+                        <p>Select "Open Now", "24/7", or "Open Late" to narrow results</p>
+                    </div>
+                </div>
+                <div class="step-item">
+                    <div class="step-number">3</div>
+                    <div class="step-content">
+                        <h4>Call or Navigate</h4>
+                        <p>One tap to call the pharmacy or open directions in your maps app</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- STATS SECTION -->
+        <section class="stats-section">
+            <div class="stat-item">
+                <div class="stat-item__number" id="statPharmacies" data-target="12480">0</div>
+                <div class="stat-item__label">Pharmacies Listed</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-item__number" id="statUsers" data-target="89500">0</div>
+                <div class="stat-item__label">Active Users</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-item__number" id="statSearches" data-target="320000">0</div>
+                <div class="stat-item__label">Searches Done</div>
+            </div>
+        </section>
+
+        <!-- TESTIMONIALS -->
+        <section class="testimonials-section">
+            <h2 class="section-title">What Users Say</h2>
+            <p class="section-subtitle">Trusted by thousands for urgent pharmacy needs</p>
+            <div class="testimonial-scroll">
+                <div class="testimonial-card">
+                    <div class="testimonial-card__stars">
+                        <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+                    </div>
+                    <div class="testimonial-card__text">"Found a 24/7 pharmacy at 2 AM when my daughter needed medicine urgently. Lifesaver!"</div>
+                    <div class="testimonial-card__author">— Sarah M., Lagos</div>
+                </div>
+                <div class="testimonial-card">
+                    <div class="testimonial-card__stars">
+                        <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+                    </div>
+                    <div class="testimonial-card__text">"The open-now filter is genius. No more driving around hoping to find an open pharmacy."</div>
+                    <div class="testimonial-card__author">— David K., Nairobi</div>
+                </div>
+                <div class="testimonial-card">
+                    <div class="testimonial-card__stars">
+                        <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-stroke"></i>
+                    </div>
+                    <div class="testimonial-card__text">"Super easy to use. One tap and I was on the phone with the pharmacist. Highly recommend."</div>
+                    <div class="testimonial-card__author">— Amara C., Accra</div>
+                </div>
+                <div class="testimonial-card">
+                    <div class="testimonial-card__stars">
+                        <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+                    </div>
+                    <div class="testimonial-card__text">"Visiting a new city and needed medication fast. PharmFinder saved me so much stress."</div>
+                    <div class="testimonial-card__author">— Michael T., Johannesburg</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- FAQ -->
+        <section class="faq-section">
+            <h2 class="section-title">Frequently Asked Questions</h2>
+            <p class="section-subtitle">Quick answers to common queries</p>
+            <div class="faq-item">
+                <div class="faq-question" data-faq="1">
+                    <span>How accurate is the "Open Now" status?</span>
+                    <i class="fas fa-chevron-down faq-icon"></i>
+                </div>
+                <div class="faq-answer">We update pharmacy hours regularly and cross-reference with user reports. While we strive for accuracy, we recommend calling ahead for critical needs.</div>
+            </div>
+            <div class="faq-item">
+                <div class="faq-question" data-faq="2">
+                    <span>Do I need to create an account?</span>
+                    <i class="fas fa-chevron-down faq-icon"></i>
+                </div>
+                <div class="faq-answer">No! PharmFinder works instantly without any sign-up or login. Just open the app, allow location access, and find pharmacies near you.</div>
+            </div>
+            <div class="faq-item">
+                <div class="faq-question" data-faq="3">
+                    <span>Is my location data stored or shared?</span>
+                    <i class="fas fa-chevron-down faq-icon"></i>
+                </div>
+                <div class="faq-answer">Your location is used only in real-time to find nearby pharmacies and is never stored or shared with third parties. Privacy is a core commitment.</div>
+            </div>
+            <div class="faq-item">
+                <div class="faq-question" data-faq="4">
+                    <span>Which countries does PharmFinder support?</span>
+                    <i class="fas fa-chevron-down faq-icon"></i>
+                </div>
+                <div class="faq-answer">PharmFinder is built to work locally in any country. We are expanding coverage continuously, starting with major cities across Africa, and growing globally.</div>
+            </div>
+        </section>
+
+        <!-- FOOTER -->
+        <footer class="footer">
+            <div class="footer__links">
+                <a id="linkAbout">About</a>
+                <a id="linkContact">Contact</a>
+                <a id="linkPrivacy">Privacy Policy</a>
+                <a id="linkTerms">Terms of Service</a>
+                <a id="linkDisclaimer">Disclaimer</a>
+            </div>
+            <p class="footer__copy">&copy; <span id="currentYear"></span> PharmFinder. All rights reserved.</p>
+            <p class="footer__disclaimer">
+                <i class="fas fa-circle-exclamation"></i> PharmFinder provides pharmacy location information for convenience. Always consult a healthcare professional for medical advice. In case of emergency, contact local emergency services immediately.
+            </p>
+        </footer>
+
+    </div>
+
+    <!-- ── iOS NOTIFICATION MODAL ── -->
+    <div class="modal-overlay" id="modalOverlay">
+        <div class="modal-notification" id="modalNotification">
+            <button class="modal-notification__close" id="modalCloseBtn">
+                <i class="fas fa-xmark"></i>
+            </button>
+            <div class="modal-notification__header">
+                <div class="modal-notification__app-icon">
+                    <i class="fas fa-cross"></i>
+                </div>
+                <span class="modal-notification__app-name">PharmFinder</span>
+                <span class="modal-notification__time" id="modalTime">now</span>
+            </div>
+            <div class="modal-notification__body" id="modalBody">
+                Notification message here.
+            </div>
+            <div class="modal-notification__sub" id="modalSub"></div>
+            <div class="modal-notification__actions" id="modalActions">
+                <button class="modal-notification__btn modal-notification__btn--secondary" id="modalBtnDismiss">
+                    Dismiss
+                </button>
+                <button class="modal-notification__btn modal-notification__btn--primary" id="modalBtnAction">
+                    OK
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ── TOAST ── -->
+    <div class="toast" id="toast">
+        <i class="fas fa-circle-check"></i>
+        <span id="toastMsg">Action completed</span>
+    </div>
+
+    <script>
+        (function() {
+            // ──────────────────────────────────────
+            // DOM ELEMENT REFERENCES
+            // ──────────────────────────────────────
+            const btnFindPharmacy = document.getElementById('btnFindPharmacy');
+            const btnManualGo = document.getElementById('btnManualGo');
+            const manualLocationInput = document.getElementById('manualLocationInput');
+            const statusBar = document.getElementById('statusBar');
+            const locationPulseArea = document.getElementById('locationPulseArea');
+            const emergencyBanner = document.getElementById('emergencyBanner');
+            const btnNotifications = document.getElementById('btnNotifications');
+            const btnInfo = document.getElementById('btnInfo');
+            const filterChips = document.querySelectorAll('.filter-chip');
+            const modalOverlay = document.getElementById('modalOverlay');
+            const modalNotification = document.getElementById('modalNotification');
+            const modalBody = document.getElementById('modalBody');
+            const modalSub = document.getElementById('modalSub');
+            const modalTime = document.getElementById('modalTime');
+            const modalActions = document.getElementById('modalActions');
+            const modalBtnDismiss = document.getElementById('modalBtnDismiss');
+            const modalBtnAction = document.getElementById('modalBtnAction');
+            const modalCloseBtn = document.getElementById('modalCloseBtn');
+            const toast = document.getElementById('toast');
+            const toastMsg = document.getElementById('toastMsg');
+            const header = document.getElementById('header');
+            const featureCards = document.querySelectorAll('.feature-card');
+            const faqQuestions = document.querySelectorAll('.faq-question');
+            const footerLinks = document.querySelectorAll('.footer__links a');
+            const statPharmacies = document.getElementById('statPharmacies');
+            const statUsers = document.getElementById('statUsers');
+            const statSearches = document.getElementById('statSearches');
+            const currentYearSpan = document.getElementById('currentYear');
+
+            // Set current year
+            if (currentYearSpan) currentYearSpan.textContent = new Date().getFullYear();
+
+            // ──────────────────────────────────────
+            // MODAL SYSTEM (iOS Lock Screen Style)
+            // ──────────────────────────────────────
+            let modalActionCallback = null;
+
+            function showModal(bodyText, subText, actionLabel, callback, dismissLabel = 'Dismiss') {
+                modalBody.textContent = bodyText;
+                modalSub.textContent = subText || '';
+                const now = new Date();
+                modalTime.textContent = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                modalBtnAction.textContent = actionLabel || 'OK';
+                modalBtnDismiss.textContent = dismissLabel;
+                modalActionCallback = callback || null;
+                modalOverlay.classList.add('active');
+                document.body.style.overflow = 'hidden';
+            }
+
+            function hideModal() {
+                modalOverlay.classList.remove('active');
+                document.body.style.overflow = '';
+                modalActionCallback = null;
+            }
+
+            modalCloseBtn.addEventListener('click', hideModal);
+            modalBtnDismiss.addEventListener('click', hideModal);
+            modalBtnAction.addEventListener('click', () => {
+                if (modalActionCallback && typeof modalActionCallback === 'function') {
+                    modalActionCallback();
+                }
+                hideModal();
+            });
+            modalOverlay.addEventListener('click', (e) => {
+                if (e.target === modalOverlay) hideModal();
+            });
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape' && modalOverlay.classList.contains('active')) {
+                    hideModal();
+                }
+            });
+
+            // ──────────────────────────────────────
+            // TOAST SYSTEM
+            // ──────────────────────────────────────
+            let toastTimer;
+
+            function showToast(message, iconClass = 'fa-circle-check') {
+                clearTimeout(toastTimer);
+                toastMsg.textContent = message;
+                const iconEl = toast.querySelector('i');
+                if (iconEl) {
+                    iconEl.className = 'fas ' + iconClass;
+                }
+                toast.classList.add('show');
+                toastTimer = setTimeout(() => {
+                    toast.classList.remove('show');
+                }, 2800);
+            }
+
+            // ──────────────────────────────────────
+            // STATUS BAR UPDATES
+            // ──────────────────────────────────────
+            function setStatus(message, isLoading = false) {
+                statusBar.textContent = message;
+                if (isLoading) {
+                    statusBar.classList.add('loading');
+                } else {
+                    statusBar.classList.remove('loading');
+                }
+            }
+
+            function clearStatus() {
+                statusBar.textContent = '';
+                statusBar.classList.remove('loading');
+            }
+
+            // ──────────────────────────────────────
+            // GEOLOCATION HANDLER
+            // ──────────────────────────────────────
+            function requestGeolocation(callback) {
+                setStatus('Getting your location…', true);
+                if (!navigator.geolocation) {
+                    setStatus('Geolocation not supported by your browser', false);
+                    showModal(
+                        'Geolocation Not Supported',
+                        'Your browser does not support location services. Please enter your location manually.',
+                        'Enter Manually',
+                        () => { manualLocationInput.focus(); },
+                        'Close'
+                    );
+                    return;
+                }
+                navigator.geolocation.getCurrentPosition(
+                    (position) => {
+                        const lat = position.coords.latitude;
+                        const lng = position.coords.longitude;
+                        setStatus('Location found! Searching nearby pharmacies…', true);
+                        if (callback && typeof callback === 'function') {
+                            callback({ lat, lng });
+                        }
+                        // Simulate search completion
+                        setTimeout(() => {
+                            setStatus('Found 8 pharmacies near you within 3 km', false);
+                            showToast('8 pharmacies found nearby!', 'fa-circle-check');
+                        }, 1500);
+                    },
+                    (error) => {
+                        setStatus('', false);
+                        let errorMsg = 'Please enable location access to find nearby pharmacies.';
+                        switch (error.code) {
+                            case error.PERMISSION_DENIED:
+                                errorMsg =
+                                    'Location permission was denied. Please enable it in your browser settings and try again.';
+                                break;
+                            case error.POSITION_UNAVAILABLE:
+                                errorMsg =
+                                    'Location information is unavailable. Please check your device settings.';
+                                break;
+                            case error.TIMEOUT:
+                                errorMsg =
+                                    'The location request timed out. Please try again with a stronger signal.';
+                                break;
+                        }
+                        showModal(
+                            'Location Access Needed',
+                            errorMsg,
+                            'Try Again',
+                            () => { requestGeolocation(callback); },
+                            'Enter Manually'
+                        );
+                    }, { enableHighAccuracy: true, timeout: 12000, maximumAge: 300000 }
+                );
+            }
+
+            // ──────────────────────────────────────
+            // MAIN FIND PHARMACY BUTTON
+            // ──────────────────────────────────────
+            btnFindPharmacy.addEventListener('click', () => {
+                // Animate the pulse center
+                const pulseCenter = document.querySelector('.pulse-center');
+                if (pulseCenter) {
+                    pulseCenter.style.transform = 'translate(-50%, -50%) scale(1.3)';
+                    setTimeout(() => {
+                        pulseCenter.style.transform = 'translate(-50%, -50%) scale(1)';
+                    }, 300);
+                }
+                requestGeolocation((coords) => {
+                    console.log('User coordinates:', coords);
+                    // In production, this would call your backend / Google Maps API
+                    showModal(
+                        'Pharmacies Found Near You',
+                        `We located 8 pharmacies within 3 km of your position (${coords.lat.toFixed(4)}, ${coords.lng.toFixed(4)}). Tap "View Results" to see them.`,
+                        'View Results',
+                        () => {
+                            showToast('Loading pharmacy list…', 'fa-spinner');
+                        }
+                    );
+                });
+            });
+
+            // ──────────────────────────────────────
+            // LOCATION PULSE AREA CLICK
+            // ──────────────────────────────────────
+            locationPulseArea.addEventListener('click', () => {
+                btnFindPharmacy.click();
+            });
+
+            // ──────────────────────────────────────
+            // MANUAL LOCATION INPUT
+            // ──────────────────────────────────────
+            btnManualGo.addEventListener('click', () => {
+                const location = manualLocationInput.value.trim();
+                if (!location) {
+                    setStatus('Please enter a location first', false);
+                    showModal(
+                        'Enter a Location',
+                        'Type a city, street name, or area in the input field above to search manually.',
+                        'OK',
+                        () => { manualLocationInput.focus(); }
+                    );
+                    return;
+                }
+                setStatus(`Searching pharmacies in "${location}"…`, true);
+                setTimeout(() => {
+                    setStatus(`Found results for "${location}" — 6 pharmacies listed`, false);
+                    showModal(
+                        'Search Complete',
+                        `We found 6 pharmacies in or near "${location}". Results are sorted by proximity.`,
+                        'View Results',
+                        () => {
+                            showToast(`Showing results for ${location}`, 'fa-map-pin');
+                        }
+                    );
+                }, 1400);
+            });
+            manualLocationInput.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    btnManualGo.click();
+                }
+            });
+
+            // ──────────────────────────────────────
+            // EMERGENCY BANNER
+            // ──────────────────────────────────────
+            emergencyBanner.addEventListener('click', () => {
+                const emergencyChip = document.getElementById('filterEmergency');
+                // Activate emergency filter
+                filterChips.forEach(chip => chip.classList.remove('filter-chip--active'));
+                if (emergencyChip) emergencyChip.classList.add('filter-chip--active');
+                setStatus('Emergency mode activated — showing only open pharmacies…', true);
+                setTimeout(() => {
+                    setStatus('Emergency: 3 pharmacies currently open nearby', false);
+                    showModal(
+                        'Emergency Mode Activated',
+                        'Showing only pharmacies that are confirmed open right now. Tap "Call Nearest" to contact the closest one immediately.',
+                        'Call Nearest',
+                        () => {
+                            showToast('Calling nearest pharmacy…', 'fa-phone');
+                        },
+                        'View All'
+                    );
+                }, 1000);
+            });
+
+            // ──────────────────────────────────────
+            // QUICK FILTER CHIPS
+            // ──────────────────────────────────────
+            filterChips.forEach(chip => {
+                chip.addEventListener('click', () => {
+                    const filter = chip.getAttribute('data-filter');
+                    // Remove active from all
+                    filterChips.forEach(c => c.classList.remove('filter-chip--active'));
+                    // Add active to clicked
+                    chip.classList.add('filter-chip--active');
+                    // Update status
+                    const filterLabels = {
+                        'all': 'Showing all pharmacies near you',
+                        'open-now': 'Filtering: Open Now — pharmacies currently open',
+                        'open-late': 'Filtering: Open Late — extended hours pharmacies',
+                        '24-7': 'Filtering: 24/7 — round-the-clock pharmacies',
+                        'emergency': 'Emergency filter active — open pharmacies only'
+                    };
+                    const label = filterLabels[filter] || 'Filter applied';
+                    setStatus(label, true);
+                    setTimeout(() => {
+                        setStatus(label.replace('Filtering:', 'Showing:'), false);
+                        showToast(`Filter: ${chip.textContent.trim()} applied`, 'fa-filter');
+                    }, 800);
+                });
+            });
+
+            // ──────────────────────────────────────
+            // HEADER ICON BUTTONS
+            // ──────────────────────────────────────
+            btnNotifications.addEventListener('click', () => {
+                showModal(
+                    'Notifications',
+                    'You have no new notifications. We\'ll alert you when pharmacies near you update their hours or when new 24/7 locations are added.',
+                    'Got It',
+                    null,
+                    'Close'
+                );
+            });
+            btnInfo.addEventListener('click', () => {
+                showModal(
+                    'About PharmFinder',
+                    'PharmFinder is a location-based healthcare utility that helps you find nearby pharmacies instantly. Built for urgent situations, late-night needs, and everyday convenience. No account required — ever.',
+                    'Learn More',
+                    () => { showToast('Thank you for using PharmFinder!', 'fa-heart'); },
+                    'Close'
+                );
+            });
+
+            // ──────────────────────────────────────
+            // FEATURE CARDS CLICK
+            // ──────────────────────────────────────
+            const featureCardMessages = {
+                featureFast: {
+                    body: 'PharmFinder delivers results in under 2 seconds using optimized location queries and cached pharmacy data.',
+                    sub: 'Speed tested across 3G, 4G, and 5G networks.',
+                    action: 'Try It Now',
+                    callback: () => { btnFindPharmacy.click(); }
+                },
+                featureReliable: {
+                    body: 'Our pharmacy database is refreshed regularly. Users can also report status changes to help keep information accurate for everyone.',
+                    sub: 'Crowdsourced accuracy with verified updates.',
+                    action: 'See How',
+                    callback: () => { showToast('Data refreshed every 6 hours', 'fa-shield-halved'); }
+                },
+                featureNearby: {
+                    body: 'Results are sorted by actual distance — walking or driving — so you always see the closest options first.',
+                    sub: 'Uses GPS and network triangulation for precision.',
+                    action: 'Find Nearest',
+                    callback: () => { btnFindPharmacy.click(); }
+                },
+                featureSimple: {
+                    body: 'Every pharmacy listing includes one-tap call and one-tap directions. No menus, no confusion — just instant action.',
+                    sub: 'Designed for stressed, urgent situations.',
+                    action: 'See Demo',
+                    callback: () => {
+                        showModal(
+                            'One-Tap Demo',
+                            'Tap the phone icon to call a pharmacy directly. Tap the navigation icon to open directions in your preferred maps app. It\'s that simple.',
+                            'Got It',
+                            null
+                        );
+                    }
+                }
+            };
+            featureCards.forEach(card => {
+                card.addEventListener('click', () => {
+                    const id = card.id;
+                    const msg = featureCardMessages[id];
+                    if (msg) {
+                        showModal(msg.body, msg.sub, msg.action, msg.callback);
+                    }
+                });
+                // Make cards keyboard accessible
+                card.setAttribute('tabindex', '0');
+                card.setAttribute('role', 'button');
+                card.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        card.click();
+                    }
+                });
+            });
+
+            // ──────────────────────────────────────
+            // FAQ ACCORDION
+            // ──────────────────────────────────────
+            faqQuestions.forEach(question => {
+                question.addEventListener('click', () => {
+                    const faqItem = question.closest('.faq-item');
+                    const isOpen = faqItem.classList.contains('open');
+                    // Close all FAQ items
+                    document.querySelectorAll('.faq-item').forEach(item => item.classList
+                        .remove('open'));
+                    // Toggle clicked one
+                    if (!isOpen) {
+                        faqItem.classList.add('open');
+                    }
+                });
+            });
+
+            // ──────────────────────────────────────
+            // FOOTER LINKS
+            // ──────────────────────────────────────
+            const footerLinkMessages = {
+                linkAbout: {
+                    body: 'PharmFinder is a location-based healthcare utility web app built to help people find nearby pharmacies quickly — especially during urgent or late-night situations.',
+                    sub: 'Version 1.0 — Built with care for real-world impact.',
+                    action: 'Close'
+                },
+                linkContact: {
+                    body: 'Have feedback or need support? Reach us at support@pharmfinder.app. We respond within 24 hours.',
+                    sub: 'Your feedback helps us improve.',
+                    action: 'Email Support',
+                    callback: () => { showToast('Opening email client…', 'fa-envelope'); }
+                },
+                linkPrivacy: {
+                    body: 'We do not store or share your location data. Location is used only in real-time for finding nearby pharmacies and is immediately discarded after your session.',
+                    sub: 'Your privacy is our priority.',
+                    action: 'Close'
+                },
+                linkTerms: {
+                    body: 'By using PharmFinder, you agree to use the service as a convenience tool. Always consult healthcare professionals for medical advice.',
+                    sub: 'Last updated: ' + new Date().toLocaleDateString(),
+                    action: 'Close'
+                },
+                linkDisclaimer: {
+                    body: 'PharmFinder provides pharmacy location information for convenience only. It is not a substitute for professional medical advice, diagnosis, or treatment.',
+                    sub: 'In emergencies, contact local emergency services.',
+                    action: 'I Understand'
+                }
+            };
+            footerLinks.forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const id = link.id;
+                    const msg = footerLinkMessages[id];
+                    if (msg) {
+                        showModal(
+                            link.textContent.trim(),
+                            msg.body,
+                            msg.action || 'Close',
+                            msg.callback || null,
+                            'Close'
+                        );
+                    }
+                });
+            });
+
+            // ──────────────────────────────────────
+            // STATS COUNTER ANIMATION (Intersection Observer)
+            // ──────────────────────────────────────
+            function animateCounter(el, target, duration = 2000) {
+                const start = 0;
+                const startTime = performance.now();
+
+                function update(now) {
+                    const elapsed = now - startTime;
+                    const progress = Math.min(elapsed / duration, 1);
+                    // Ease-out curve
+                    const eased = 1 - Math.pow(1 - progress, 3);
+                    const current = Math.floor(start + (target - start) * eased);
+                    el.textContent = current.toLocaleString();
+                    if (progress < 1) {
+                        requestAnimationFrame(update);
+                    } else {
+                        el.textContent = target.toLocaleString();
+                    }
+                }
+                requestAnimationFrame(update);
+            }
+
+            let statsAnimated = false;
+            const statsObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting && !statsAnimated) {
+                        statsAnimated = true;
+                        animateCounter(statPharmacies, parseInt(statPharmacies.getAttribute(
+                            'data-target')) || 12480, 2200);
+                        animateCounter(statUsers, parseInt(statUsers.getAttribute('data-target')) ||
+                            89500, 2400);
+                        animateCounter(statSearches, parseInt(statSearches.getAttribute(
+                            'data-target')) || 320000, 2600);
+                        statsObserver.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.5 });
+            const statsSection = document.querySelector('.stats-section');
+            if (statsSection) {
+                statsObserver.observe(statsSection);
+            }
+
+            // ──────────────────────────────────────
+            // HEADER SCROLL EFFECT
+            // ──────────────────────────────────────
+            window.addEventListener('scroll', () => {
+                if (window.scrollY > 20) {
+                    header.classList.add('scrolled');
+                } else {
+                    header.classList.remove('scrolled');
+                }
+            });
+
+            // ──────────────────────────────────────
+            // KEYBOARD SHORTCUT: Press "F" to find
+            // ──────────────────────────────────────
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'f' && e.ctrlKey && !modalOverlay.classList.contains('active')) {
+                    e.preventDefault();
+                    btnFindPharmacy.click();
+                }
+            });
+
+            // ──────────────────────────────────────
+            // INITIAL SETUP
+            // ──────────────────────────────────────
+            console.log('%c PharmFinder %c v1.0 ',
+                'background:#0D6B4E;color:#fff;padding:6px 10px;border-radius:6px 0 0 6px;font-weight:bold;',
+                'background:#22C55E;color:#fff;padding:6px 10px;border-radius:0 6px 6px 0;');
+            console.log('%c Find pharmacies open near you — instantly. %c',
+                'color:#0D6B4E;font-size:14px;', '');
+            console.log('%c Press Ctrl+F to trigger a pharmacy search. %c',
+                'color:#8E8E93;font-size:12px;', '');
+
+            // Show initial welcome toast after a short delay
+            setTimeout(() => {
+                showToast('Welcome! Tap the button to find pharmacies near you', 'fa-location-dot');
+            }, 1200);
+
+            // ──────────────────────────────────────
+            // SERVICE WORKER REGISTRATION PLACEHOLDER
+            // (For PWA offline support in production)
+            // ──────────────────────────────────────
+            if ('serviceWorker' in navigator && window.location.protocol === 'https:') {
+                // In production, register a service worker for offline caching
+                // navigator.serviceWorker.register('/sw.js');
+                console.log('%c PWA-ready: Service worker can be registered in production. %c',
+                    'color:#34C759;', '');
+            }
+
+            // ──────────────────────────────────────
+            // EXPORT KEY FUNCTIONS TO GLOBAL SCOPE
+            // (For potential extension or testing)
+            // ──────────────────────────────────────
+            window.PharmFinder = {
+                showModal,
+                hideModal,
+                showToast,
+                requestGeolocation,
+                setStatus,
+                clearStatus,
+                version: '1.0.0',
+                buildDate: '2026-06-30'
+            };
+
+        })();
+    </script>
+</body>
+</html>

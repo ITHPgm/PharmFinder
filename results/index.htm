@@ -1,0 +1,1725 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>PharmFinder — Nearby Pharmacies Results</title>
+    <meta name="description" content="Nearby pharmacy search results — find open pharmacies, 24/7 locations, and get directions instantly." />
+    <meta name="theme-color" content="#0D6B4E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+    <style>
+        :root {
+            --ios-blue: #007AFF;
+            --ios-green: #34C759;
+            --ios-red: #FF3B30;
+            --ios-orange: #FF9500;
+            --ios-teal: #5AC8FA;
+            --ios-purple: #AF52DE;
+            --ios-gray: #8E8E93;
+            --ios-gray2: #AEAEB2;
+            --ios-gray3: #C7C7CC;
+            --ios-gray4: #D1D1D6;
+            --ios-gray5: #E5E5EA;
+            --ios-gray6: #F2F2F7;
+            --ios-bg: #F9F9FB;
+            --ios-white: #FFFFFF;
+            --ios-black: #1C1C1E;
+            --brand-primary: #0D6B4E;
+            --brand-primary-light: #0F8A63;
+            --brand-accent: #22C55E;
+            --brand-bg-light: #ECFDF5;
+            --brand-gradient: linear-gradient(135deg, #0D6B4E 0%, #0F8A63 30%, #1B9C6B 60%, #22C55E 100%);
+            --glass-bg: rgba(255, 255, 255, 0.75);
+            --glass-border: rgba(255, 255, 255, 0.6);
+            --shadow-ios: 0 1px 3px rgba(0, 0, 0, 0.06), 0 6px 16px rgba(0, 0, 0, 0.06);
+            --shadow-ios-lg: 0 4px 20px rgba(0, 0, 0, 0.10), 0 12px 40px rgba(0, 0, 0, 0.08);
+            --shadow-glow-green: 0 0 40px rgba(13, 107, 78, 0.25), 0 0 80px rgba(34, 197, 94, 0.15);
+            --shadow-glow-red: 0 0 40px rgba(255, 59, 48, 0.2);
+            --radius-sm: 10px;
+            --radius-md: 16px;
+            --radius-lg: 22px;
+            --radius-xl: 28px;
+            --radius-full: 9999px;
+            --transition-fast: 0.18s cubic-bezier(0.25, 0.1, 0.25, 1);
+            --transition-smooth: 0.3s cubic-bezier(0.25, 0.1, 0.25, 1);
+            --transition-bounce: 0.45s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        html {
+            scroll-behavior: smooth;
+            font-size: 16px;
+            -webkit-tap-highlight-color: transparent;
+            -webkit-font-smoothing: antialiased;
+        }
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif;
+            background: var(--ios-bg);
+            color: var(--ios-black);
+            line-height: 1.5;
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Ambient orbs */
+        .bg-orb {
+            position: fixed;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 0;
+            opacity: 0.30;
+            filter: blur(80px);
+            animation: orbFloat 18s ease-in-out infinite;
+        }
+        .bg-orb--1 {
+            width: 380px;
+            height: 380px;
+            background: radial-gradient(circle, rgba(34, 197, 94, 0.30) 0%, transparent 70%);
+            top: -8%;
+            left: -8%;
+        }
+        .bg-orb--2 {
+            width: 320px;
+            height: 320px;
+            background: radial-gradient(circle, rgba(13, 107, 78, 0.25) 0%, transparent 70%);
+            bottom: -6%;
+            right: -6%;
+            animation-delay: -7s;
+            animation-duration: 20s;
+        }
+        @keyframes orbFloat {
+            0%,
+            100% {
+                transform: translate(0, 0) scale(1);
+            }
+            33% {
+                transform: translate(40px, -30px) scale(1.08);
+            }
+            66% {
+                transform: translate(-25px, 25px) scale(0.92);
+            }
+        }
+
+        /* Main wrapper */
+        .app-wrapper {
+            position: relative;
+            z-index: 1;
+            max-width: 560px;
+            margin: 0 auto;
+            padding: 0 14px 40px;
+        }
+
+        /* ── STICKY HEADER ── */
+        .results-header {
+            position: sticky;
+            top: 10px;
+            z-index: 100;
+            background: var(--glass-bg);
+            backdrop-filter: blur(24px) saturate(180%);
+            -webkit-backdrop-filter: blur(24px) saturate(180%);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius-xl);
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            box-shadow: var(--shadow-ios);
+            margin-top: 10px;
+            transition: all var(--transition-smooth);
+        }
+        .results-header.scrolled {
+            box-shadow: var(--shadow-ios-lg);
+            background: rgba(255, 255, 255, 0.90);
+        }
+        .btn-back {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: var(--ios-gray6);
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+            color: var(--ios-black);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all var(--transition-fast);
+            flex-shrink: 0;
+        }
+        .btn-back:hover {
+            background: #e0e0e5;
+            transform: scale(1.05);
+        }
+        .btn-back:active {
+            transform: scale(0.92);
+        }
+        .header-info {
+            flex: 1;
+            min-width: 0;
+        }
+        .header-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            letter-spacing: -0.3px;
+            color: var(--ios-black);
+            line-height: 1.2;
+        }
+        .header-location {
+            font-size: 0.7rem;
+            color: var(--ios-gray);
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .btn-refresh {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: var(--ios-gray6);
+            border: none;
+            cursor: pointer;
+            font-size: 0.95rem;
+            color: var(--brand-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all var(--transition-fast);
+            flex-shrink: 0;
+        }
+        .btn-refresh:hover {
+            background: var(--brand-bg-light);
+            transform: rotate(30deg);
+        }
+        .btn-refresh:active {
+            transform: scale(0.9) rotate(180deg);
+        }
+        .btn-refresh.spinning i {
+            animation: spin 0.8s linear infinite;
+        }
+        @keyframes spin {
+            from {
+                transform: rotate(0deg);
+            }
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* ── LIVE STATUS BANNER ── */
+        .status-banner {
+            margin-top: 14px;
+            border-radius: var(--radius-lg);
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 600;
+            font-size: 0.82rem;
+            transition: all var(--transition-smooth);
+            animation: bannerSlideIn 0.5s var(--transition-bounce);
+        }
+        @keyframes bannerSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .status-banner.good {
+            background: linear-gradient(135deg, #ECFDF5 0%, #D1FAE5 100%);
+            border: 1.5px solid rgba(34, 197, 94, 0.25);
+            color: #065F46;
+        }
+        .status-banner.warning {
+            background: linear-gradient(135deg, #FFFBEB 0%, #FEF3C7 100%);
+            border: 1.5px solid rgba(245, 158, 11, 0.25);
+            color: #92400E;
+        }
+        .status-banner.critical {
+            background: linear-gradient(135deg, #FFF5F5 0%, #FEE2E2 100%);
+            border: 1.5px solid rgba(255, 59, 48, 0.25);
+            color: #991B1B;
+            animation: criticalPulse 2s ease-in-out infinite;
+        }
+        @keyframes criticalPulse {
+            0%,
+            100% {
+                box-shadow: 0 0 0px rgba(255, 59, 48, 0);
+            }
+            50% {
+                box-shadow: 0 0 20px rgba(255, 59, 48, 0.15);
+            }
+        }
+        .status-banner__icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.85rem;
+            flex-shrink: 0;
+        }
+        .status-banner.good .status-banner__icon {
+            background: #D1FAE5;
+            color: #059669;
+        }
+        .status-banner.warning .status-banner__icon {
+            background: #FEF3C7;
+            color: #D97706;
+        }
+        .status-banner.critical .status-banner__icon {
+            background: #FEE2E2;
+            color: #DC2626;
+        }
+
+        /* ── SEARCH & LOCATION CONTROL ── */
+        .search-control {
+            margin-top: 12px;
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+        .search-input-wrap {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            background: var(--ios-white);
+            border: 1.5px solid var(--ios-gray4);
+            border-radius: var(--radius-full);
+            padding: 4px 4px 4px 16px;
+            box-shadow: var(--shadow-ios);
+            transition: all var(--transition-smooth);
+        }
+        .search-input-wrap:focus-within {
+            border-color: var(--brand-primary);
+            box-shadow: 0 0 0 4px rgba(13, 107, 78, 0.07);
+        }
+        .search-input-wrap input {
+            flex: 1;
+            border: none;
+            outline: none;
+            font-size: 0.88rem;
+            font-family: 'Inter', sans-serif;
+            color: var(--ios-black);
+            background: transparent;
+            padding: 10px 8px;
+            min-width: 0;
+        }
+        .search-input-wrap input::placeholder {
+            color: var(--ios-gray3);
+        }
+        .search-input-wrap .search-icon {
+            color: var(--ios-gray2);
+            font-size: 0.85rem;
+            flex-shrink: 0;
+        }
+        .btn-locate-small {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--brand-gradient);
+            border: none;
+            cursor: pointer;
+            color: #fff;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            box-shadow: 0 4px 14px rgba(13, 107, 78, 0.3);
+            transition: all var(--transition-bounce);
+        }
+        .btn-locate-small:hover {
+            transform: scale(1.06);
+            box-shadow: 0 6px 20px rgba(13, 107, 78, 0.4);
+        }
+        .btn-locate-small:active {
+            transform: scale(0.9);
+        }
+
+        /* ── ADVANCED FILTER BAR ── */
+        .filter-scroll {
+            margin-top: 12px;
+            display: flex;
+            gap: 8px;
+            overflow-x: auto;
+            scroll-snap-type: x proximity;
+            -webkit-overflow-scrolling: touch;
+            padding-bottom: 4px;
+            scrollbar-width: none;
+        }
+        .filter-scroll::-webkit-scrollbar {
+            display: none;
+        }
+        .filter-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 9px 15px;
+            border-radius: var(--radius-full);
+            font-weight: 600;
+            font-size: 0.78rem;
+            cursor: pointer;
+            border: 1.5px solid var(--ios-gray4);
+            background: var(--ios-white);
+            color: var(--ios-black);
+            white-space: nowrap;
+            scroll-snap-align: start;
+            transition: all var(--transition-bounce);
+            flex-shrink: 0;
+            font-family: 'Inter', sans-serif;
+        }
+        .filter-chip:hover {
+            border-color: var(--brand-primary);
+            background: var(--brand-bg-light);
+        }
+        .filter-chip.active {
+            background: var(--brand-primary);
+            color: #fff;
+            border-color: var(--brand-primary);
+            box-shadow: 0 4px 14px rgba(13, 107, 78, 0.35);
+        }
+        .filter-chip.emergency-chip {
+            border-color: #FECACA;
+            color: var(--ios-red);
+            background: #FFF5F5;
+            font-weight: 700;
+        }
+        .filter-chip.emergency-chip.active {
+            background: var(--ios-red);
+            border-color: var(--ios-red);
+            color: #fff;
+            box-shadow: var(--shadow-glow-red);
+            animation: subtleShake 0.5s var(--transition-bounce);
+        }
+        @keyframes subtleShake {
+            0%,
+            100% {
+                transform: translateX(0);
+            }
+            25% {
+                transform: translateX(-3px);
+            }
+            75% {
+                transform: translateX(3px);
+            }
+        }
+        .filter-chip .chip-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: var(--brand-accent);
+        }
+        .filter-chip.active .chip-dot {
+            background: #fff;
+            box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.3);
+        }
+        .filter-chip.emergency-chip .chip-dot {
+            background: var(--ios-red);
+        }
+        .filter-chip.emergency-chip.active .chip-dot {
+            background: #fff;
+        }
+
+        /* ── EMERGENCY TOGGLE ── */
+        .emergency-toggle-row {
+            margin-top: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 14px;
+            background: var(--ios-white);
+            border-radius: var(--radius-md);
+            border: 1.5px solid var(--ios-gray5);
+            cursor: pointer;
+            transition: all var(--transition-smooth);
+            box-shadow: var(--shadow-ios);
+        }
+        .emergency-toggle-row:hover {
+            border-color: var(--ios-red);
+            box-shadow: var(--shadow-glow-red);
+        }
+        .emergency-toggle-row.active {
+            background: #FFF5F5;
+            border-color: #FECACA;
+            box-shadow: var(--shadow-glow-red);
+        }
+        .toggle-switch {
+            width: 48px;
+            height: 28px;
+            border-radius: 14px;
+            background: var(--ios-gray4);
+            position: relative;
+            transition: all var(--transition-smooth);
+            flex-shrink: 0;
+        }
+        .emergency-toggle-row.active .toggle-switch {
+            background: var(--ios-red);
+        }
+        .toggle-switch::after {
+            content: '';
+            position: absolute;
+            top: 3px;
+            left: 3px;
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            background: #fff;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+            transition: all var(--transition-smooth);
+        }
+        .emergency-toggle-row.active .toggle-switch::after {
+            left: 23px;
+        }
+        .toggle-label {
+            font-weight: 600;
+            font-size: 0.82rem;
+            color: var(--ios-black);
+        }
+        .emergency-toggle-row.active .toggle-label {
+            color: var(--ios-red);
+        }
+
+        /* ── BEST OPTION HIGHLIGHT CARD ── */
+        .best-option-card {
+            margin-top: 16px;
+            background: linear-gradient(145deg, #0D6B4E 0%, #0F8A63 40%, #089B6C 100%);
+            border-radius: var(--radius-xl);
+            padding: 20px 18px;
+            color: #fff;
+            position: relative;
+            overflow: hidden;
+            box-shadow: var(--shadow-glow-green), 0 12px 32px rgba(13, 107, 78, 0.3);
+            animation: bestCardGlow 3s ease-in-out infinite;
+            cursor: pointer;
+            transition: all var(--transition-bounce);
+        }
+        @keyframes bestCardGlow {
+            0%,
+            100% {
+                box-shadow: var(--shadow-glow-green), 0 12px 32px rgba(13, 107, 78, 0.3);
+            }
+            50% {
+                box-shadow: 0 0 60px rgba(34, 197, 94, 0.35), 0 20px 40px rgba(13, 107, 78, 0.4);
+            }
+        }
+        .best-option-card:hover {
+            transform: translateY(-3px);
+        }
+        .best-option-card::after {
+            content: '';
+            position: absolute;
+            top: -40px;
+            right: -40px;
+            width: 140px;
+            height: 140px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.08);
+            pointer-events: none;
+        }
+        .best-option-card__badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 5px 12px;
+            border-radius: var(--radius-full);
+            font-size: 0.68rem;
+            font-weight: 700;
+            letter-spacing: 0.03em;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+            position: relative;
+            z-index: 1;
+        }
+        .best-option-card__name {
+            font-size: 1.2rem;
+            font-weight: 800;
+            letter-spacing: -0.3px;
+            position: relative;
+            z-index: 1;
+        }
+        .best-option-card__meta {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-top: 6px;
+            font-size: 0.78rem;
+            opacity: 0.9;
+            position: relative;
+            z-index: 1;
+        }
+        .best-option-card__actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 14px;
+            position: relative;
+            z-index: 1;
+        }
+        .best-option-card__btn {
+            flex: 1;
+            padding: 12px;
+            border-radius: var(--radius-full);
+            font-weight: 700;
+            font-size: 0.82rem;
+            cursor: pointer;
+            border: none;
+            transition: all var(--transition-bounce);
+            font-family: 'Inter', sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+        .best-option-card__btn--call {
+            background: #fff;
+            color: var(--brand-primary);
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+        }
+        .best-option-card__btn--call:hover {
+            transform: scale(1.03);
+            box-shadow: 0 6px 22px rgba(0, 0, 0, 0.18);
+        }
+        .best-option-card__btn--directions {
+            background: rgba(255, 255, 255, 0.2);
+            color: #fff;
+            border: 2px solid rgba(255, 255, 255, 0.5);
+        }
+        .best-option-card__btn--directions:hover {
+            background: rgba(255, 255, 255, 0.3);
+            border-color: #fff;
+        }
+
+        /* ── RESULTS LIST ── */
+        .results-section {
+            margin-top: 18px;
+        }
+        .results-section__header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+        .results-section__title {
+            font-size: 1.1rem;
+            font-weight: 800;
+            letter-spacing: -0.3px;
+        }
+        .results-section__count {
+            font-size: 0.75rem;
+            color: var(--ios-gray);
+            font-weight: 500;
+        }
+        .pharmacy-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .pharmacy-card {
+            background: var(--ios-white);
+            border-radius: var(--radius-lg);
+            padding: 16px;
+            box-shadow: var(--shadow-ios);
+            border: 1px solid var(--ios-gray6);
+            display: flex;
+            gap: 12px;
+            align-items: flex-start;
+            transition: all var(--transition-smooth);
+            cursor: pointer;
+            position: relative;
+        }
+        .pharmacy-card:hover {
+            box-shadow: var(--shadow-ios-lg);
+            transform: translateY(-2px);
+            border-color: rgba(13, 107, 78, 0.15);
+        }
+        .pharmacy-card:active {
+            transform: scale(0.985);
+        }
+        .pharmacy-card__icon {
+            width: 44px;
+            height: 44px;
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            font-size: 1.1rem;
+        }
+        .pharmacy-card__icon.open {
+            background: #D1FAE5;
+            color: #059669;
+        }
+        .pharmacy-card__icon.closed {
+            background: #FEE2E2;
+            color: #DC2626;
+        }
+        .pharmacy-card__icon.h24 {
+            background: #DBEAFE;
+            color: #1D4ED8;
+        }
+        .pharmacy-card__info {
+            flex: 1;
+            min-width: 0;
+        }
+        .pharmacy-card__name {
+            font-weight: 700;
+            font-size: 0.9rem;
+            color: var(--ios-black);
+            letter-spacing: -0.2px;
+        }
+        .pharmacy-card__addr {
+            font-size: 0.72rem;
+            color: var(--ios-gray);
+            margin-top: 2px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .pharmacy-card__meta {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 6px;
+            flex-wrap: wrap;
+        }
+        .pharmacy-card__distance {
+            font-size: 0.68rem;
+            font-weight: 600;
+            color: var(--ios-gray);
+            background: var(--ios-gray6);
+            padding: 3px 10px;
+            border-radius: var(--radius-full);
+        }
+        .pharmacy-card__badge {
+            font-size: 0.64rem;
+            font-weight: 700;
+            padding: 3px 10px;
+            border-radius: var(--radius-full);
+            text-transform: uppercase;
+            letter-spacing: 0.02em;
+        }
+        .badge-open {
+            background: #D1FAE5;
+            color: #065F46;
+        }
+        .badge-closed {
+            background: #FEE2E2;
+            color: #991B1B;
+        }
+        .badge-24h {
+            background: #DBEAFE;
+            color: #1E40AF;
+        }
+        .pharmacy-card__reported {
+            font-size: 0.62rem;
+            color: var(--ios-gray3);
+            margin-top: 4px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .pharmacy-card__actions {
+            display: flex;
+            gap: 6px;
+            flex-shrink: 0;
+            align-items: center;
+        }
+        .btn-action-sm {
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            border: 1.5px solid var(--ios-gray4);
+            background: #fff;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all var(--transition-bounce);
+            color: var(--ios-gray);
+            font-size: 0.8rem;
+        }
+        .btn-action-sm:hover {
+            border-color: var(--brand-primary);
+            color: var(--brand-primary);
+            box-shadow: var(--shadow-glow-green);
+            transform: scale(1.1);
+        }
+        .btn-action-sm:active {
+            transform: scale(0.85);
+        }
+
+        /* ── MICRO INSIGHTS ── */
+        .insights-row {
+            margin-top: 16px;
+            display: flex;
+            gap: 10px;
+            overflow-x: auto;
+            scrollbar-width: none;
+            padding-bottom: 4px;
+        }
+        .insights-row::-webkit-scrollbar {
+            display: none;
+        }
+        .insight-chip {
+            flex-shrink: 0;
+            background: var(--ios-white);
+            border: 1px solid var(--ios-gray5);
+            border-radius: var(--radius-full);
+            padding: 8px 14px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            color: var(--ios-gray);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            box-shadow: var(--shadow-ios);
+        }
+        .insight-chip i {
+            color: var(--brand-primary);
+            font-size: 0.7rem;
+        }
+
+        /* ── MAP PREVIEW ── */
+        .map-preview {
+            margin-top: 16px;
+            background: var(--ios-white);
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            border: 1px solid var(--ios-gray5);
+            box-shadow: var(--shadow-ios);
+            transition: all var(--transition-smooth);
+        }
+        .map-preview__placeholder {
+            width: 100%;
+            height: 140px;
+            background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 30%, #a5d6a7 60%, #81c784 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            gap: 6px;
+            color: var(--brand-primary);
+            cursor: pointer;
+            transition: all var(--transition-smooth);
+            position: relative;
+        }
+        .map-preview__placeholder:hover {
+            filter: brightness(0.95);
+        }
+        .map-preview__placeholder i {
+            font-size: 2.5rem;
+            opacity: 0.5;
+        }
+        .map-preview__placeholder span {
+            font-weight: 600;
+            font-size: 0.8rem;
+        }
+        .map-pin-dots {
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+        }
+        .map-pin-dot {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background: var(--ios-red);
+            border-radius: 50%;
+            border: 2px solid #fff;
+            box-shadow: 0 2px 8px rgba(255, 59, 48, 0.4);
+            animation: pinFloat 3s ease-in-out infinite;
+        }
+        .map-pin-dot:nth-child(1) {
+            top: 30%;
+            left: 25%;
+            animation-delay: 0s;
+        }
+        .map-pin-dot:nth-child(2) {
+            top: 50%;
+            left: 55%;
+            animation-delay: -1s;
+        }
+        .map-pin-dot:nth-child(3) {
+            top: 35%;
+            left: 70%;
+            animation-delay: -2s;
+        }
+        @keyframes pinFloat {
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-6px);
+            }
+        }
+
+        /* ── SKELETON LOADING ── */
+        .skeleton-card {
+            background: var(--ios-white);
+            border-radius: var(--radius-lg);
+            padding: 16px;
+            display: flex;
+            gap: 12px;
+            align-items: flex-start;
+            border: 1px solid var(--ios-gray6);
+        }
+        .skeleton-circle {
+            width: 44px;
+            height: 44px;
+            border-radius: var(--radius-md);
+            background: var(--ios-gray5);
+            animation: shimmer 1.6s infinite;
+            flex-shrink: 0;
+        }
+        .skeleton-lines {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .skeleton-line {
+            height: 12px;
+            border-radius: 6px;
+            background: var(--ios-gray5);
+            animation: shimmer 1.6s infinite;
+        }
+        .skeleton-line.short {
+            width: 55%;
+        }
+        .skeleton-line.medium {
+            width: 75%;
+        }
+        @keyframes shimmer {
+            0% {
+                opacity: 0.5;
+            }
+            50% {
+                opacity: 1;
+            }
+            100% {
+                opacity: 0.5;
+            }
+        }
+
+        /* ── EMPTY STATE ── */
+        .empty-state {
+            display: none;
+            text-align: center;
+            padding: 40px 20px;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+        .empty-state.show {
+            display: flex;
+        }
+        .empty-state i {
+            font-size: 3rem;
+            color: var(--ios-gray4);
+            opacity: 0.5;
+        }
+        .empty-state h4 {
+            font-weight: 700;
+            font-size: 1rem;
+        }
+        .empty-state p {
+            font-size: 0.8rem;
+            color: var(--ios-gray);
+        }
+        .empty-state .btn-retry {
+            margin-top: 8px;
+            padding: 10px 22px;
+            border-radius: var(--radius-full);
+            background: var(--brand-primary);
+            color: #fff;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.82rem;
+            transition: all var(--transition-bounce);
+        }
+        .empty-state .btn-retry:hover {
+            transform: scale(1.04);
+            box-shadow: var(--shadow-glow-green);
+        }
+
+        /* ── FOOTER ── */
+        .results-footer {
+            margin-top: 28px;
+            text-align: center;
+            padding: 16px 0;
+            border-top: 1px solid var(--ios-gray5);
+        }
+        .results-footer p {
+            font-size: 0.68rem;
+            color: var(--ios-gray3);
+            line-height: 1.5;
+        }
+        .results-footer a {
+            color: var(--brand-primary);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        /* ── iOS NOTIFICATION MODAL ── */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.55);
+            z-index: 9999;
+            display: flex;
+            align-items: flex-start;
+            justify-content: center;
+            padding-top: 60px;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
+        }
+        .modal-overlay.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+        .modal-notification {
+            background: rgba(255, 255, 255, 0.96);
+            backdrop-filter: blur(30px) saturate(200%);
+            -webkit-backdrop-filter: blur(30px) saturate(200%);
+            border-radius: 22px;
+            padding: 18px 20px;
+            width: 90%;
+            max-width: 400px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            transform: translateY(-30px) scale(0.92);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+        }
+        .modal-overlay.active .modal-notification {
+            transform: translateY(0) scale(1);
+        }
+        .modal-notification__header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        .modal-notification__app-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            background: var(--brand-gradient);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 0.85rem;
+        }
+        .modal-notification__app-name {
+            font-weight: 700;
+            font-size: 0.85rem;
+            color: var(--ios-black);
+        }
+        .modal-notification__time {
+            font-size: 0.7rem;
+            color: var(--ios-gray2);
+            margin-left: auto;
+        }
+        .modal-notification__body {
+            font-size: 0.9rem;
+            color: var(--ios-black);
+            line-height: 1.4;
+            font-weight: 500;
+        }
+        .modal-notification__sub {
+            font-size: 0.75rem;
+            color: var(--ios-gray);
+            margin-top: 4px;
+        }
+        .modal-notification__close {
+            position: absolute;
+            top: 10px;
+            right: 14px;
+            background: rgba(0, 0, 0, 0.06);
+            border: none;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 0.8rem;
+            color: var(--ios-gray);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .modal-notification__actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 12px;
+        }
+        .modal-notification__btn {
+            flex: 1;
+            padding: 10px;
+            border-radius: var(--radius-full);
+            border: none;
+            font-weight: 600;
+            font-size: 0.8rem;
+            cursor: pointer;
+            font-family: 'Inter', sans-serif;
+        }
+        .modal-notification__btn--primary {
+            background: var(--brand-primary);
+            color: #fff;
+        }
+        .modal-notification__btn--secondary {
+            background: var(--ios-gray6);
+            color: var(--ios-black);
+        }
+
+        /* ── iOS TOP BANNER ── */
+        .ios-top-banner {
+            position: fixed;
+            top: 12px;
+            left: 50%;
+            transform: translateX(-50%) translateY(-180px);
+            z-index: 10001;
+            background: rgba(255, 255, 255, 0.96);
+            backdrop-filter: blur(30px);
+            border-radius: 20px;
+            padding: 12px 16px;
+            width: 90%;
+            max-width: 420px;
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.22);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            cursor: pointer;
+        }
+        .ios-top-banner.show {
+            transform: translateX(-50%) translateY(0);
+        }
+        .ios-top-banner__icon {
+            width: 34px;
+            height: 34px;
+            border-radius: 10px;
+            background: var(--brand-gradient);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 0.8rem;
+            flex-shrink: 0;
+        }
+        .ios-top-banner__content {
+            flex: 1;
+            min-width: 0;
+        }
+        .ios-top-banner__app {
+            font-size: 0.65rem;
+            font-weight: 600;
+            color: var(--ios-gray);
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+        }
+        .ios-top-banner__title {
+            font-size: 0.82rem;
+            font-weight: 700;
+            color: var(--ios-black);
+        }
+        .ios-top-banner__body {
+            font-size: 0.7rem;
+            color: var(--ios-gray);
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        @media (max-width: 400px) {
+            .best-option-card__actions {
+                flex-direction: column;
+            }
+            .pharmacy-card__actions {
+                flex-direction: column;
+                gap: 4px;
+            }
+            .btn-action-sm {
+                width: 30px;
+                height: 30px;
+                font-size: 0.7rem;
+            }
+            .filter-chip {
+                padding: 7px 12px;
+                font-size: 0.7rem;
+            }
+        }
+        @media (min-width: 768px) {
+            .app-wrapper {
+                max-width: 620px;
+            }
+            .pharmacy-list {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Ambient orbs -->
+    <div class="bg-orb bg-orb--1"></div>
+    <div class="bg-orb bg-orb--2"></div>
+
+    <!-- iOS Top Notification Banner -->
+    <div class="ios-top-banner" id="iosTopBanner">
+        <div class="ios-top-banner__icon"><i class="fas fa-bell"></i></div>
+        <div class="ios-top-banner__content">
+            <div class="ios-top-banner__app">PharmFinder</div>
+            <div class="ios-top-banner__title" id="iosBannerTitle">Notification</div>
+            <div class="ios-top-banner__body" id="iosBannerBody">Details</div>
+        </div>
+    </div>
+
+    <!-- Main wrapper -->
+    <div class="app-wrapper">
+        <!-- ── STICKY HEADER ── -->
+        <header class="results-header" id="resultsHeader">
+            <button class="btn-back" id="btnBack" aria-label="Go back">
+                <i class="fas fa-arrow-left"></i>
+            </button>
+            <div class="header-info">
+                <div class="header-title">Nearby Pharmacies</div>
+                <div class="header-location">
+                    <i class="fas fa-location-dot"></i> <span id="headerLocation">Lagos, Nigeria</span>
+                </div>
+            </div>
+            <button class="btn-refresh" id="btnRefresh" aria-label="Refresh results">
+                <i class="fas fa-rotate"></i>
+            </button>
+        </header>
+
+        <!-- ── LIVE STATUS BANNER ── -->
+        <div class="status-banner good" id="statusBanner">
+            <div class="status-banner__icon"><i class="fas fa-circle-check"></i></div>
+            <div><span id="statusBannerText">12 pharmacies open near you</span></div>
+        </div>
+
+        <!-- ── SEARCH & LOCATION CONTROL ── -->
+        <div class="search-control">
+            <div class="search-input-wrap">
+                <i class="fas fa-magnifying-glass search-icon"></i>
+                <input type="text" id="searchInput" placeholder="Change location…" />
+            </div>
+            <button class="btn-locate-small" id="btnLocateSmall" aria-label="Use my location">
+                <i class="fas fa-crosshairs"></i>
+            </button>
+        </div>
+
+        <!-- ── FILTER BAR ── -->
+        <div class="filter-scroll" id="filterScroll">
+            <button class="filter-chip active" data-filter="all"><span class="chip-dot"></span> All</button>
+            <button class="filter-chip" data-filter="open-now"><span class="chip-dot"></span> Open Now</button>
+            <button class="filter-chip" data-filter="24h"><span class="chip-dot"></span> 24/7</button>
+            <button class="filter-chip" data-filter="closest"><span class="chip-dot"></span> Closest</button>
+            <button class="filter-chip" data-filter="top-rated"><span class="chip-dot"></span> Top Rated</button>
+            <button class="filter-chip emergency-chip" data-filter="emergency"><span class="chip-dot"></span> Emergency</button>
+        </div>
+
+        <!-- ── EMERGENCY TOGGLE ── -->
+        <div class="emergency-toggle-row" id="emergencyToggleRow">
+            <div class="toggle-switch"></div>
+            <span class="toggle-label">Emergency Mode — Show only open & closest pharmacies</span>
+        </div>
+
+        <!-- ── BEST OPTION CARD ── -->
+        <div class="best-option-card" id="bestOptionCard">
+            <div class="best-option-card__badge">
+                <i class="fas fa-star"></i> Closest Open Pharmacy
+            </div>
+            <div class="best-option-card__name" id="bestName">Rx Emergency Pharm</div>
+            <div class="best-option-card__meta">
+                <span><i class="fas fa-map-pin"></i> <span id="bestAddr">3 Allen Avenue, Ikeja</span></span>
+                <span><i class="fas fa-location-arrow"></i> <span id="bestDist">1.8 km</span></span>
+                <span><i class="fas fa-clock"></i> 24/7</span>
+            </div>
+            <div class="best-option-card__actions">
+                <button class="best-option-card__btn best-option-card__btn--call" id="bestCallBtn">
+                    <i class="fas fa-phone"></i> Call Now
+                </button>
+                <button class="best-option-card__btn best-option-card__btn--directions" id="bestDirBtn">
+                    <i class="fas fa-route"></i> Get Directions
+                </button>
+            </div>
+        </div>
+
+        <!-- ── RESULTS LIST ── -->
+        <section class="results-section">
+            <div class="results-section__header">
+                <h2 class="results-section__title">All Nearby Pharmacies</h2>
+                <span class="results-section__count" id="resultsCount">6 results</span>
+            </div>
+
+            <!-- Loading skeleton -->
+            <div class="pharmacy-list" id="skeletonList">
+                <div class="skeleton-card">
+                    <div class="skeleton-circle"></div>
+                    <div class="skeleton-lines">
+                        <div class="skeleton-line medium"></div>
+                        <div class="skeleton-line short"></div>
+                        <div class="skeleton-line short"></div>
+                    </div>
+                </div>
+                <div class="skeleton-card">
+                    <div class="skeleton-circle"></div>
+                    <div class="skeleton-lines">
+                        <div class="skeleton-line medium"></div>
+                        <div class="skeleton-line short"></div>
+                        <div class="skeleton-line short"></div>
+                    </div>
+                </div>
+                <div class="skeleton-card">
+                    <div class="skeleton-circle"></div>
+                    <div class="skeleton-lines">
+                        <div class="skeleton-line medium"></div>
+                        <div class="skeleton-line short"></div>
+                        <div class="skeleton-line short"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Actual pharmacy list -->
+            <div class="pharmacy-list" id="pharmacyList" style="display:none;"></div>
+
+            <!-- Empty state -->
+            <div class="empty-state" id="emptyState">
+                <i class="fas fa-store-slash"></i>
+                <h4>No pharmacies found</h4>
+                <p>Try changing your location or removing filters.</p>
+                <button class="btn-retry" id="btnRetry">Reset Filters</button>
+            </div>
+        </section>
+
+        <!-- ── MICRO INSIGHTS ── -->
+        <div class="insights-row">
+            <div class="insight-chip"><i class="fas fa-moon"></i> Most close by 10 PM</div>
+            <div class="insight-chip"><i class="fas fa-chart-line"></i> Peak hours: 6–8 PM</div>
+            <div class="insight-chip"><i class="fas fa-shield-halved"></i> 94 pharmacies verified</div>
+            <div class="insight-chip"><i class="fas fa-clock"></i> Avg. response: 2 min</div>
+        </div>
+
+        <!-- ── MAP PREVIEW ── -->
+        <div class="map-preview" id="mapPreview">
+            <div class="map-preview__placeholder" id="mapPlaceholder">
+                <div class="map-pin-dots">
+                    <div class="map-pin-dot"></div>
+                    <div class="map-pin-dot"></div>
+                    <div class="map-pin-dot"></div>
+                </div>
+                <i class="fas fa-map"></i>
+                <span>Tap to view on map</span>
+            </div>
+        </div>
+
+        <!-- ── FOOTER ── -->
+        <footer class="results-footer">
+            <p>
+                <i class="fas fa-circle-exclamation"></i> Information may not always reflect real‑time accuracy. Always call ahead for critical needs.
+            </p>
+            <p style="margin-top:4px;">
+                <a href="index.html">Home</a> · <a href="#">About</a> · <a href="#">Contact</a> · <a href="#">Privacy</a>
+            </p>
+        </footer>
+    </div>
+
+    <!-- iOS Notification Modal -->
+    <div class="modal-overlay" id="modalOverlay">
+        <div class="modal-notification">
+            <button class="modal-notification__close" id="modalCloseBtn"><i class="fas fa-xmark"></i></button>
+            <div class="modal-notification__header">
+                <div class="modal-notification__app-icon"><i class="fas fa-prescription-bottle"></i></div>
+                <span class="modal-notification__app-name">PharmFinder</span>
+                <span class="modal-notification__time" id="modalTime">now</span>
+            </div>
+            <div class="modal-notification__body" id="modalBody">Message</div>
+            <div class="modal-notification__sub" id="modalSub"></div>
+            <div class="modal-notification__actions">
+                <button class="modal-notification__btn modal-notification__btn--secondary" id="modalBtnDismiss">Dismiss</button>
+                <button class="modal-notification__btn modal-notification__btn--primary" id="modalBtnAction">OK</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        (function() {
+            // ─── PHARMACY DATA ───
+            const allPharmacies = [
+                { id: 1, name: 'Rx Emergency Pharm', address: '3 Allen Avenue, Ikeja', distance: '1.8 km',
+                    status: 'open', is24h: true, phone: '+1 (555) 444-5555', rating: 4.9,
+                    reported: '10 mins ago' },
+                { id: 2, name: 'MediCare 24/7 Pharmacy', address: '12 Adeola Odeku St, Victoria Island',
+                    distance: '0.3 km', status: 'open', is24h: true, phone: '+1 (555) 111-2222',
+                    rating: 4.7, reported: '5 mins ago' },
+                { id: 3, name: 'GreenCross Pharmacy', address: '45 Broad Street, Marina, Lagos Island',
+                    distance: '0.7 km', status: 'open', is24h: false, phone: '+1 (555) 222-3333',
+                    rating: 4.4, reported: '22 mins ago' },
+                { id: 4, name: 'NightOwl Drugs', address: '9 Opebi Road, Ikeja', distance: '2.6 km',
+                    status: 'open', is24h: true, phone: '+1 (555) 666-7777', rating: 4.6,
+                reported: '8 mins ago' },
+                { id: 5, name: 'CityCare Pharmacy', address: '22B Admiralty Way, Lekki Phase 1',
+                    distance: '2.2 km', status: 'open', is24h: false, phone: '+1 (555) 555-6666',
+                    rating: 4.3, reported: '15 mins ago' },
+                { id: 6, name: 'HealthPlus Pharmacy', address: '78 Awolowo Road, Ikoyi', distance: '1.1 km',
+                    status: 'closed', is24h: false, phone: '+1 (555) 333-4444', rating: 4.2,
+                    reported: '1 hour ago' },
+                { id: 7, name: 'Sunrise Pharmacy', address: '55 Kingsway Road, Surulere', distance: '3.0 km',
+                    status: 'open', is24h: false, phone: '+1 (555) 777-8888', rating: 4.0,
+                    reported: '30 mins ago' },
+                { id: 8, name: 'PharmaTrust 24/7', address: '88 Marina Rd, Lagos Island', distance: '0.9 km',
+                    status: 'open', is24h: true, phone: '+1 (555) 888-9999', rating: 4.8,
+                reported: '3 mins ago' },
+            ];
+
+            let activeFilter = 'all';
+            let isEmergencyMode = false;
+            let isLoading = false;
+
+            // ─── DOM REFS ───
+            const pharmacyList = document.getElementById('pharmacyList');
+            const skeletonList = document.getElementById('skeletonList');
+            const emptyState = document.getElementById('emptyState');
+            const resultsCount = document.getElementById('resultsCount');
+            const statusBanner = document.getElementById('statusBanner');
+            const statusBannerText = document.getElementById('statusBannerText');
+            const bestOptionCard = document.getElementById('bestOptionCard');
+            const bestName = document.getElementById('bestName');
+            const bestAddr = document.getElementById('bestAddr');
+            const bestDist = document.getElementById('bestDist');
+            const filterChips = document.querySelectorAll('.filter-chip');
+            const emergencyToggleRow = document.getElementById('emergencyToggleRow');
+            const searchInput = document.getElementById('searchInput');
+            const btnRefresh = document.getElementById('btnRefresh');
+            const btnBack = document.getElementById('btnBack');
+            const btnLocateSmall = document.getElementById('btnLocateSmall');
+            const btnRetry = document.getElementById('btnRetry');
+            const mapPlaceholder = document.getElementById('mapPlaceholder');
+            const bestCallBtn = document.getElementById('bestCallBtn');
+            const bestDirBtn = document.getElementById('bestDirBtn');
+            const resultsHeader = document.getElementById('resultsHeader');
+            const headerLocation = document.getElementById('headerLocation');
+
+            // iOS top banner
+            const iosTopBanner = document.getElementById('iosTopBanner');
+            const iosBannerTitle = document.getElementById('iosBannerTitle');
+            const iosBannerBody = document.getElementById('iosBannerBody');
+            let iosBannerTimer;
+
+            // Modal
+            const modalOverlay = document.getElementById('modalOverlay');
+            const modalBody = document.getElementById('modalBody');
+            const modalSub = document.getElementById('modalSub');
+            const modalTime = document.getElementById('modalTime');
+            const modalBtnDismiss = document.getElementById('modalBtnDismiss');
+            const modalBtnAction = document.getElementById('modalBtnAction');
+            const modalCloseBtn = document.getElementById('modalCloseBtn');
+            let modalActionCallback = null;
+
+            function showIOSBanner(title, body) {
+                clearTimeout(iosBannerTimer);
+                iosBannerTitle.textContent = title;
+                iosBannerBody.textContent = body;
+                iosTopBanner.classList.add('show');
+                iosBannerTimer = setTimeout(() => iosTopBanner.classList.remove('show'), 3200);
+            }
+            iosTopBanner.addEventListener('click', () => {
+                iosTopBanner.classList.remove('show');
+                clearTimeout(iosBannerTimer);
+            });
+
+            function showModal(bodyText, subText, actionLabel, callback) {
+                modalBody.textContent = bodyText;
+                modalSub.textContent = subText || '';
+                modalTime.textContent = new Date().toLocaleTimeString([], { hour: '2-digit',
+                minute: '2-digit' });
+                modalBtnAction.textContent = actionLabel || 'OK';
+                modalActionCallback = callback || null;
+                modalOverlay.classList.add('active');
+            }
+
+            function hideModal() {
+                modalOverlay.classList.remove('active');
+                modalActionCallback = null;
+            }
+            modalCloseBtn.addEventListener('click', hideModal);
+            modalBtnDismiss.addEventListener('click', hideModal);
+            modalBtnAction.addEventListener('click', () => {
+                if (modalActionCallback && typeof modalActionCallback === 'function')
+                modalActionCallback();
+                hideModal();
+            });
+            modalOverlay.addEventListener('click', (e) => { if (e.target === modalOverlay)
+            hideModal(); });
+            document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && modalOverlay.classList
+                    .contains('active')) hideModal(); });
+
+            // ─── FILTERING LOGIC ───
+            function getFilteredPharmacies() {
+                let list = [...allPharmacies];
+                if (isEmergencyMode) list = list.filter(p => p.status === 'open');
+                if (activeFilter === 'open-now') list = list.filter(p => p.status === 'open');
+                else if (activeFilter === '24h') list = list.filter(p => p.is24h);
+                else if (activeFilter === 'closest') list.sort((a, b) => parseFloat(a.distance) - parseFloat(
+                    b.distance));
+                else if (activeFilter === 'top-rated') list.sort((a, b) => b.rating - a.rating);
+                else if (activeFilter === 'emergency') list = list.filter(p => p.status === 'open' && p.is24h);
+                const query = searchInput.value.trim().toLowerCase();
+                if (query) list = list.filter(p => p.name.toLowerCase().includes(query) || p.address.toLowerCase()
+                    .includes(query));
+                return list;
+            }
+
+            function updateBestOption(filtered) {
+                const best = filtered.find(p => p.status === 'open');
+                if (best) {
+                    bestOptionCard.style.display = '';
+                    bestName.textContent = best.name;
+                    bestAddr.textContent = best.address;
+                    bestDist.textContent = best.distance;
+                    bestCallBtn.onclick = () => {
+                        showModal('Call Pharmacy', `Calling ${best.name} at ${best.phone}`,
+                            'Call Now', () => window.open('tel:' + best.phone, '_self'));
+                        showIOSBanner('Calling…', `Dialing ${best.name}`);
+                    };
+                    bestDirBtn.onclick = () => {
+                        showModal('Get Directions',
+                            `Opening maps to navigate to ${best.name} — ${best.address}`,
+                            'Open Maps', () => showIOSBanner('Directions',
+                                `Navigating to ${best.name}`));
+                    };
+                } else {
+                    bestOptionCard.style.display = 'none';
+                }
+            }
+
+            function updateStatusBanner(filtered) {
+                const openCount = filtered.filter(p => p.status === 'open').length;
+                const totalCount = filtered.length;
+                statusBanner.classList.remove('good', 'warning', 'critical');
+                if (totalCount === 0) {
+                    statusBanner.classList.add('critical');
+                    statusBannerText.textContent = 'No pharmacies found — try adjusting filters';
+                } else if (openCount === 0) {
+                    statusBanner.classList.add('critical');
+                    statusBannerText.textContent = '⚠️ No pharmacies currently open near you';
+                } else if (openCount <= 2) {
+                    statusBanner.classList.add('warning');
+                    statusBannerText.textContent = `⚠️ Only ${openCount} pharmac${openCount === 1 ? 'y' : 'ies'} open near you`;
+                } else {
+                    statusBanner.classList.add('good');
+                    statusBannerText.textContent = `${openCount} pharmacies open near you`;
+                }
+                const iconEl = statusBanner.querySelector('.status-banner__icon i');
+                if (iconEl) {
+                    iconEl.className = 'fas ' + (totalCount === 0 || openCount === 0 ? 'fa-triangle-exclamation' :
+                        openCount <= 2 ? 'fa-circle-exclamation' : 'fa-circle-check');
+                }
+            }
+
+            function renderPharmacies() {
+                const filtered = getFilteredPharmacies();
+                resultsCount.textContent = filtered.length + ' result' + (filtered.length !== 1 ? 's' : '');
+                updateStatusBanner(filtered);
+                updateBestOption(filtered);
+
+                if (filtered.length === 0) {
+                    pharmacyList.style.display = 'none';
+                    skeletonList.style.display = 'none';
+                    emptyState.classList.add('show');
+                } else {
+                    emptyState.classList.remove('show');
+                    skeletonList.style.display = 'none';
+                    pharmacyList.style.display = '';
+                    pharmacyList.innerHTML = filtered.map(p => {
+                        const iconClass = p.is24h ? 'h24' : (p.status === 'open' ? 'open' :
+                            'closed');
+                        const iconFa = p.is24h ? 'fa-clock' : (p.status === 'open' ?
+                            'fa-door-open' : 'fa-door-closed');
+                        const badgeClass = p.is24h ? 'badge-24h' : (p.status === 'open' ?
+                            'badge-open' : 'badge-closed');
+                        const badgeText = p.is24h ? '24/7' : (p.status === 'open' ? 'Open' :
+                            'Closed');
+                        return `
+                <article class="pharmacy-card" data-id="${p.id}">
+                  <div class="pharmacy-card__icon ${iconClass}"><i class="fas ${iconFa}"></i></div>
+                  <div class="pharmacy-card__info">
+                    <div class="pharmacy-card__name">${p.name}</div>
+                    <div class="pharmacy-card__addr"><i class="fas fa-map-pin"></i> ${p.address}</div>
+                    <div class="pharmacy-card__meta">
+                      <span class="pharmacy-card__distance"><i class="fas fa-location-arrow"></i> ${p.distance}</span>
+                      <span class="pharmacy-card__badge ${badgeClass}">${badgeText}</span>
+                      <span style="font-size:0.65rem;color:#F59E0B;"><i class="fas fa-star"></i> ${p.rating}</span>
+                    </div>
+                    <div class="pharmacy-card__reported"><i class="fas fa-circle-check" style="color:#22C55E;font-size:0.5rem;"></i> Reported open ${p.reported}</div>
+                  </div>
+                  <div class="pharmacy-card__actions">
+                    <button class="btn-action-sm call-btn" data-phone="${p.phone}" data-name="${p.name}" title="Call"><i class="fas fa-phone"></i></button>
+                    <button class="btn-action-sm dir-btn" data-name="${p.name}" data-addr="${p.address}" title="Directions"><i class="fas fa-route"></i></button>
+                  </div>
+                </article>`;
+                    }).join('');
+
+                    // Attach action listeners
+                    pharmacyList.querySelectorAll('.call-btn').forEach(btn => {
+                        btn.addEventListener('click', function(e) {
+                            e.stopPropagation();
+                            const phone = this.getAttribute('data-phone');
+                            const name = this.getAttribute('data-name');
+                            showModal('Call Pharmacy',
+                                `Calling ${name} at ${phone}`,
+                                'Call Now', () => window.open('tel:' + phone,
+                                    '_self'));
+                            showIOSBanner('Calling…', `Dialing ${name}`);
+                        });
+                    });
+                    pharmacyList.querySelectorAll('.dir-btn').forEach(btn => {
+                        btn.addEventListener('click', function(e) {
+                            e.stopPropagation();
+                            const name = this.getAttribute('data-name');
+                            const addr = this.getAttribute('data-addr');
+                            showModal('Get Directions',
+                                `Opening maps to navigate to ${name} — ${addr}`,
+                                'Open Maps', () => showIOSBanner('Directions',
+                                    `Navigating to ${name}`));
+                        });
+                    });
+                }
+            }
+
+            function simulateLoading(callback) {
+                isLoading = true;
+                pharmacyList.style.display = 'none';
+                emptyState.classList.remove('show');
+                skeletonList.style.display = '';
+                btnRefresh.classList.add('spinning');
+                setTimeout(() => {
+                    isLoading = false;
+                    skeletonList.style.display = 'none';
+                    btnRefresh.classList.remove('spinning');
+                    if (callback) callback();
+                }, 1200);
+            }
+
+            // ─── FILTER CHIPS ───
+            filterChips.forEach(chip => {
+                chip.addEventListener('click', function() {
+                    filterChips.forEach(c => c.classList.remove('active'));
+                    this.classList.add('active');
+                    activeFilter = this.getAttribute('data-filter');
+                    if (activeFilter === 'emergency') {
+                        isEmergencyMode = true;
+                        emergencyToggleRow.classList.add('active');
+                    } else if (isEmergencyMode && activeFilter !== 'emergency') {
+                        isEmergencyMode = false;
+                        emergencyToggleRow.classList.remove('active');
+                    }
+                    simulateLoading(() => renderPharmacies());
+                    showIOSBanner('Filter Applied', this.textContent.trim() +
+                        ' — results updated');
+                });
+            });
+
+            // ─── EMERGENCY TOGGLE ───
+            emergencyToggleRow.addEventListener('click', function() {
+                isEmergencyMode = !isEmergencyMode;
+                this.classList.toggle('active', isEmergencyMode);
+                if (isEmergencyMode) {
+                    filterChips.forEach(c => c.classList.remove('active'));
+                    const emergChip = document.querySelector('.filter-chip.emergency-chip');
+                    if (emergChip) emergChip.classList.add('active');
+                    activeFilter = 'emergency';
+                } else {
+                    filterChips.forEach(c => c.classList.remove('active'));
+                    const allChip = document.querySelector('.filter-chip[data-filter="all"]');
+                    if (allChip) allChip.classList.add('active');
+                    activeFilter = 'all';
+                }
+                simulateLoading(() => renderPharmacies());
+                showIOSBanner(isEmergencyMode ? 'Emergency Mode ON' : 'Emergency Mode OFF',
+                    isEmergencyMode ? 'Showing only open & closest pharmacies' :
+                    'Showing all pharmacies');
+            });
+
+            // ─── SEARCH ───
+            searchInput.addEventListener('input', function() {
+                clearTimeout(this._debounce);
+                this._debounce = setTimeout(() => {
+                    simulateLoading(() => renderPharmacies());
+                }, 400);
+            });
+
+            // ─── BUTTONS ───
+            btnRefresh.addEventListener('click', () => {
+                simulateLoading(() => renderPharmacies());
+                showIOSBanner('Refreshed', 'Pharmacy list updated');
+            });
+            btnBack.addEventListener('click', () => {
+                window.location.href = 'index.html';
+            });
+            btnLocateSmall.addEventListener('click', () => {
+                showIOSBanner('Locating…', 'Detecting your current position');
+                simulateLoading(() => {
+                    headerLocation.textContent = '📍 Detected Location';
+                    renderPharmacies();
+                    showIOSBanner('Location Updated',
+                        'Showing pharmacies near your current location');
+                });
+            });
+            btnRetry.addEventListener('click', () => {
+                activeFilter = 'all';
+                isEmergencyMode = false;
+                emergencyToggleRow.classList.remove('active');
+                searchInput.value = '';
+                filterChips.forEach(c => c.classList.remove('active'));
+                document.querySelector('.filter-chip[data-filter="all"]')?.classList.add(
+                'active');
+                simulateLoading(() => renderPharmacies());
+            });
+            mapPlaceholder.addEventListener('click', () => {
+                showModal('Map View',
+                    'Full map integration with pharmacy pins would open here. This is a demo preview.',
+                    'Open Full Map', () => showIOSBanner('Map', 'Opening full map view…'));
+            });
+
+            // ─── HEADER SCROLL ───
+            window.addEventListener('scroll', () => {
+                resultsHeader.classList.toggle('scrolled', window.scrollY > 15);
+            });
+
+            // ─── INIT ───
+            simulateLoading(() => renderPharmacies());
+
+            console.log('%c PharmFinder Results %c v2.0 ',
+                'background:#0D6B4E;color:#fff;padding:6px 10px;border-radius:6px 0 0 6px;font-weight:bold;',
+                'background:#22C55E;color:#fff;padding:6px 10px;border-radius:0 6px 6px 0;');
+            console.log('%c Decision-focused results page ready. %c', 'color:#0D6B4E;font-size:14px;',
+            '');
+        })();
+    </script>
+</body>

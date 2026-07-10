@@ -1,0 +1,1321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>PharmFinder — Profile Details</title>
+    <meta name="description" content="View profile details — trusted identity, activity history, and pharmacy management overview." />
+    <meta name="theme-color" content="#0D6B4E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+    <style>
+        :root {
+            --ios-blue: #007AFF;
+            --ios-green: #34C759;
+            --ios-red: #FF3B30;
+            --ios-orange: #FF9500;
+            --ios-teal: #5AC8FA;
+            --ios-indigo: #5856D6;
+            --ios-purple: #AF52DE;
+            --ios-pink: #FF2D55;
+            --ios-gray: #8E8E93;
+            --ios-gray2: #AEAEB2;
+            --ios-gray3: #C7C7CC;
+            --ios-gray4: #D1D1D6;
+            --ios-gray5: #E5E5EA;
+            --ios-gray6: #F2F2F7;
+            --ios-bg: #F9F9FB;
+            --ios-white: #FFFFFF;
+            --ios-black: #1C1C1E;
+            --ios-dark-card: #2C2C2E;
+            --brand-primary: #0D6B4E;
+            --brand-primary-light: #0F8A63;
+            --brand-secondary: #1B9C6B;
+            --brand-accent: #22C55E;
+            --brand-bg-light: #ECFDF5;
+            --brand-gradient: linear-gradient(135deg, #0D6B4E 0%, #0F8A63 30%, #1B9C6B 60%, #22C55E 100%);
+            --brand-gradient-subtle: linear-gradient(135deg, #ECFDF5 0%, #D1FAE5 50%, #A7F3D0 100%);
+            --glass-bg: rgba(255, 255, 255, 0.74);
+            --glass-border: rgba(255, 255, 255, 0.58);
+            --glass-blur: blur(22px) saturate(180%);
+            --radius-sm: 10px;
+            --radius-md: 16px;
+            --radius-lg: 22px;
+            --radius-xl: 28px;
+            --radius-2xl: 36px;
+            --radius-full: 9999px;
+            --shadow-ios: 0 1px 3px rgba(0, 0, 0, 0.06), 0 6px 16px rgba(0, 0, 0, 0.06);
+            --shadow-ios-lg: 0 4px 20px rgba(0, 0, 0, 0.10), 0 12px 40px rgba(0, 0, 0, 0.08);
+            --shadow-ios-xl: 0 8px 40px rgba(0, 0, 0, 0.14), 0 20px 60px rgba(0, 0, 0, 0.10);
+            --shadow-glow-green: 0 0 40px rgba(13, 107, 78, 0.25), 0 0 80px rgba(34, 197, 94, 0.15);
+            --shadow-glow-blue: 0 0 40px rgba(0, 122, 255, 0.2), 0 0 80px rgba(90, 200, 250, 0.12);
+            --shadow-glow-amber: 0 0 40px rgba(245, 158, 11, 0.2), 0 0 80px rgba(249, 115, 22, 0.10);
+            --transition-fast: 0.18s cubic-bezier(0.25, 0.1, 0.25, 1);
+            --transition-smooth: 0.3s cubic-bezier(0.25, 0.1, 0.25, 1);
+            --transition-bounce: 0.45s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            --transition-spring: 0.55s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        html {
+            scroll-behavior: smooth;
+            font-size: 16px;
+            -webkit-tap-highlight-color: transparent;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Helvetica Neue', sans-serif;
+            background: var(--ios-bg);
+            color: var(--ios-black);
+            line-height: 1.55;
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+            padding-bottom: 80px;
+        }
+        .bg-orb {
+            position: fixed;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 0;
+            opacity: 0.26;
+            filter: blur(90px);
+            animation: orbFloat 18s ease-in-out infinite;
+        }
+        .bg-orb--1 {
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(34, 197, 94, 0.28) 0%, transparent 70%);
+            top: -8%;
+            left: -8%;
+        }
+        .bg-orb--2 {
+            width: 330px;
+            height: 330px;
+            background: radial-gradient(circle, rgba(13, 107, 78, 0.24) 0%, transparent 70%);
+            bottom: -6%;
+            right: -6%;
+            animation-delay: -7s;
+            animation-duration: 20s;
+        }
+        .bg-orb--3 {
+            width: 250px;
+            height: 250px;
+            background: radial-gradient(circle, rgba(88, 86, 214, 0.14) 0%, transparent 70%);
+            top: 45%;
+            left: 58%;
+            animation-delay: -12s;
+            animation-duration: 22s;
+        }
+        @keyframes orbFloat {
+            0%,
+            100% {
+                transform: translate(0, 0) scale(1);
+            }
+            15% {
+                transform: translate(30px, -25px) scale(1.08);
+            }
+            30% {
+                transform: translate(-18px, 20px) scale(0.94);
+            }
+            45% {
+                transform: translate(25px, 15px) scale(1.05);
+            }
+            60% {
+                transform: translate(-30px, -10px) scale(0.92);
+            }
+            75% {
+                transform: translate(10px, -30px) scale(1.06);
+            }
+            90% {
+                transform: translate(-15px, 25px) scale(0.96);
+            }
+        }
+        .app-wrapper {
+            position: relative;
+            z-index: 1;
+            max-width: 560px;
+            margin: 0 auto;
+            padding: 0 14px 40px;
+        }
+        /* ── NAV HEADER ── */
+        .nav-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 0 6px;
+            position: sticky;
+            top: 0;
+            z-index: 90;
+            background: rgba(249, 249, 251, 0.86);
+            backdrop-filter: blur(22px);
+            -webkit-backdrop-filter: blur(22px);
+        }
+        .nav-header .btn-back {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.7);
+            border: 1px solid var(--ios-gray4);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all var(--transition-fast);
+            color: var(--ios-black);
+            font-size: 1rem;
+            flex-shrink: 0;
+        }
+        .nav-header .btn-back:hover {
+            background: #fff;
+            box-shadow: var(--shadow-ios);
+        }
+        .nav-header__title {
+            font-size: 1.05rem;
+            font-weight: 700;
+            letter-spacing: -0.3px;
+            color: var(--ios-black);
+            flex: 1;
+        }
+        .nav-header .btn-more {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: transparent;
+            border: 1px solid var(--ios-gray4);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.85rem;
+            color: var(--ios-gray);
+            transition: all var(--transition-fast);
+            flex-shrink: 0;
+        }
+        .nav-header .btn-more:hover {
+            background: var(--ios-gray6);
+        }
+        /* ── PROFILE HERO ── */
+        .profile-hero {
+            background: var(--brand-gradient);
+            border-radius: var(--radius-xl);
+            padding: 28px 20px 22px;
+            color: #fff;
+            margin-top: 12px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: var(--shadow-glow-green), var(--shadow-ios-lg);
+            text-align: center;
+        }
+        .profile-hero::after {
+            content: '';
+            position: absolute;
+            top: -40px;
+            right: -40px;
+            width: 160px;
+            height: 160px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.06);
+            pointer-events: none;
+        }
+        .profile-hero::before {
+            content: '';
+            position: absolute;
+            bottom: -30px;
+            left: -30px;
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.05);
+            pointer-events: none;
+        }
+        .profile-avatar-lg {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.22);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 1.8rem;
+            margin: 0 auto 14px;
+            border: 4px solid rgba(255, 255, 255, 0.5);
+            position: relative;
+            z-index: 1;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+        }
+        .profile-hero__name {
+            font-size: 1.5rem;
+            font-weight: 900;
+            letter-spacing: -0.5px;
+            position: relative;
+            z-index: 1;
+            margin-bottom: 4px;
+        }
+        .profile-hero__location {
+            font-size: 0.78rem;
+            opacity: 0.85;
+            position: relative;
+            z-index: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+            margin-bottom: 10px;
+        }
+        .profile-hero__badges {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+            flex-wrap: wrap;
+            position: relative;
+            z-index: 1;
+        }
+        .badge-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 6px 14px;
+            border-radius: var(--radius-full);
+            font-size: 0.65rem;
+            font-weight: 700;
+            letter-spacing: 0.03em;
+            text-transform: uppercase;
+        }
+        .badge-pill.role-owner {
+            background: #fff;
+            color: var(--brand-primary);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.12);
+        }
+        .badge-pill.role-user {
+            background: rgba(255, 255, 255, 0.22);
+            color: #fff;
+        }
+        .badge-pill.verified-badge {
+            background: #D1FAE5;
+            color: #065F46;
+        }
+        .badge-pill.pending-badge {
+            background: #FEF3C7;
+            color: #92400E;
+        }
+        .badge-pill.trusted-badge {
+            background: rgba(255, 255, 255, 0.2);
+            color: #fff;
+            border: 1px solid rgba(255, 255, 255, 0.35);
+        }
+        .badge-pill.new-badge {
+            background: rgba(255, 255, 255, 0.15);
+            color: #fff;
+        }
+        .profile-hero__joined {
+            font-size: 0.65rem;
+            opacity: 0.7;
+            margin-top: 10px;
+            position: relative;
+            z-index: 1;
+        }
+        /* ── STATS OVERVIEW ── */
+        .stats-overview {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 10px;
+            margin-top: -18px;
+            position: relative;
+            z-index: 2;
+            padding: 0 4px;
+        }
+        .stat-card {
+            background: var(--glass-bg);
+            backdrop-filter: var(--glass-blur);
+            -webkit-backdrop-filter: var(--glass-blur);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius-lg);
+            padding: 16px 10px;
+            text-align: center;
+            box-shadow: var(--shadow-ios);
+            transition: all var(--transition-bounce);
+        }
+        .stat-card:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-ios-lg);
+        }
+        .stat-card__icon {
+            font-size: 1.2rem;
+            margin-bottom: 6px;
+        }
+        .stat-card__number {
+            font-size: 1.6rem;
+            font-weight: 900;
+            letter-spacing: -0.5px;
+            color: var(--ios-black);
+            line-height: 1;
+        }
+        .stat-card__label {
+            font-size: 0.6rem;
+            color: var(--ios-gray);
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            margin-top: 4px;
+        }
+        /* ── SECTION BLOCKS ── */
+        .section-block {
+            margin-top: 22px;
+        }
+        .section-title {
+            font-size: 0.72rem;
+            font-weight: 700;
+            color: var(--ios-gray);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 7px;
+        }
+        .section-title i {
+            font-size: 0.65rem;
+        }
+        /* ── ABOUT CARD ── */
+        .about-card {
+            background: var(--glass-bg);
+            backdrop-filter: var(--glass-blur);
+            -webkit-backdrop-filter: var(--glass-blur);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius-xl);
+            padding: 18px;
+            box-shadow: var(--shadow-ios);
+        }
+        .about-card p {
+            font-size: 0.82rem;
+            color: var(--ios-black);
+            line-height: 1.6;
+            font-weight: 500;
+        }
+        .about-card__meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 14px;
+            margin-top: 12px;
+            font-size: 0.7rem;
+            color: var(--ios-gray);
+        }
+        .about-card__meta span {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        /* ── MANAGED PHARMACY CARD ── */
+        .pharmacy-managed-card {
+            background: var(--glass-bg);
+            backdrop-filter: var(--glass-blur);
+            -webkit-backdrop-filter: var(--glass-blur);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius-xl);
+            padding: 16px;
+            box-shadow: var(--shadow-ios);
+            margin-bottom: 10px;
+            transition: all var(--transition-smooth);
+            cursor: pointer;
+        }
+        .pharmacy-managed-card:hover {
+            box-shadow: var(--shadow-ios-lg);
+            transform: translateY(-2px);
+            border-color: rgba(13, 107, 78, 0.2);
+        }
+        .pharmacy-managed-card__header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 10px;
+        }
+        .pharmacy-managed-card__icon {
+            width: 42px;
+            height: 42px;
+            border-radius: var(--radius-md);
+            background: var(--brand-gradient);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 1rem;
+            flex-shrink: 0;
+        }
+        .pharmacy-managed-card__name {
+            font-weight: 700;
+            font-size: 0.85rem;
+            color: var(--ios-black);
+            flex: 1;
+        }
+        .pharmacy-managed-card__status {
+            font-size: 0.58rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            padding: 4px 10px;
+            border-radius: var(--radius-full);
+        }
+        .status-active {
+            background: #D1FAE5;
+            color: #065F46;
+        }
+        .status-pending {
+            background: #FEF3C7;
+            color: #92400E;
+        }
+        .pharmacy-managed-card__perf {
+            display: flex;
+            gap: 16px;
+            font-size: 0.65rem;
+            color: var(--ios-gray);
+        }
+        .pharmacy-managed-card__perf strong {
+            color: var(--ios-black);
+            font-weight: 700;
+        }
+        /* ── ACTIVITY TIMELINE ── */
+        .timeline-item {
+            display: flex;
+            gap: 12px;
+            padding: 12px 0;
+            border-bottom: 1px solid var(--ios-gray5);
+            align-items: flex-start;
+        }
+        .timeline-item:last-child {
+            border-bottom: none;
+        }
+        .timeline-dot {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.65rem;
+            flex-shrink: 0;
+        }
+        .timeline-dot.green-dot {
+            background: #D1FAE5;
+            color: #065F46;
+        }
+        .timeline-dot.blue-dot {
+            background: #EBF5FF;
+            color: var(--ios-blue);
+        }
+        .timeline-dot.orange-dot {
+            background: #FED7AA;
+            color: #9A3412;
+        }
+        .timeline-dot.red-dot {
+            background: #FEE2E2;
+            color: #991B1B;
+        }
+        .timeline-dot.purple-dot {
+            background: #EDE9FE;
+            color: #5B21B6;
+        }
+        .timeline-content {
+            flex: 1;
+            min-width: 0;
+        }
+        .timeline-content .action-text {
+            font-size: 0.78rem;
+            font-weight: 500;
+            color: var(--ios-black);
+        }
+        .timeline-content .action-text strong {
+            font-weight: 700;
+        }
+        .timeline-content .time-ago {
+            font-size: 0.62rem;
+            color: var(--ios-gray3);
+            margin-top: 2px;
+        }
+        .timeline-group-label {
+            font-size: 0.65rem;
+            font-weight: 700;
+            color: var(--ios-gray);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            padding: 10px 0 6px;
+        }
+        /* ── REPORTS LIST ── */
+        .report-mini-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 12px;
+            background: var(--ios-white);
+            border-radius: var(--radius-md);
+            border: 1px solid var(--ios-gray5);
+            margin-bottom: 6px;
+            font-size: 0.72rem;
+            box-shadow: var(--shadow-ios);
+            transition: all var(--transition-fast);
+        }
+        .report-mini-item:hover {
+            border-color: var(--ios-gray4);
+            box-shadow: var(--shadow-ios-lg);
+        }
+        .report-mini-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+        .report-mini-dot.green {
+            background: var(--ios-green);
+        }
+        .report-mini-dot.red {
+            background: var(--ios-red);
+        }
+        .report-mini-dot.orange {
+            background: var(--ios-orange);
+        }
+        .report-mini-text {
+            flex: 1;
+            color: var(--ios-black);
+            font-weight: 500;
+        }
+        .report-mini-time {
+            font-size: 0.6rem;
+            color: var(--ios-gray3);
+            white-space: nowrap;
+        }
+        /* ── HORIZONTAL SCROLL ── */
+        .horizontal-scroll {
+            display: flex;
+            gap: 10px;
+            overflow-x: auto;
+            scroll-snap-type: x mandatory;
+            -webkit-overflow-scrolling: touch;
+            padding-bottom: 6px;
+        }
+        .horizontal-scroll::-webkit-scrollbar {
+            display: none;
+        }
+        .mini-pharmacy-card {
+            min-width: 175px;
+            background: var(--ios-white);
+            border-radius: var(--radius-lg);
+            padding: 14px;
+            border: 1px solid var(--ios-gray5);
+            box-shadow: var(--shadow-ios);
+            scroll-snap-align: start;
+            flex-shrink: 0;
+            cursor: pointer;
+            transition: all var(--transition-smooth);
+        }
+        .mini-pharmacy-card:hover {
+            box-shadow: var(--shadow-ios-lg);
+            transform: translateY(-2px);
+            border-color: rgba(13, 107, 78, 0.2);
+        }
+        .mini-pharmacy-card__name {
+            font-weight: 700;
+            font-size: 0.78rem;
+            color: var(--ios-black);
+            margin-bottom: 4px;
+        }
+        .mini-pharmacy-card__addr {
+            font-size: 0.64rem;
+            color: var(--ios-gray);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .mini-pharmacy-card__meta {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            margin-top: 6px;
+            font-size: 0.6rem;
+            font-weight: 600;
+        }
+        .mini-badge-open {
+            background: #D1FAE5;
+            color: #065F46;
+            padding: 2px 7px;
+            border-radius: var(--radius-full);
+        }
+        .mini-badge-closed {
+            background: #FEE2E2;
+            color: #991B1B;
+            padding: 2px 7px;
+            border-radius: var(--radius-full);
+        }
+        /* ── PUBLIC NOTICE ── */
+        .public-notice {
+            background: #FFFBF0;
+            border: 1px solid rgba(245, 158, 11, 0.2);
+            border-radius: var(--radius-lg);
+            padding: 14px 16px;
+            font-size: 0.68rem;
+            color: #92400E;
+            line-height: 1.5;
+            display: flex;
+            gap: 8px;
+            align-items: flex-start;
+            margin-top: 20px;
+        }
+        .public-notice i {
+            color: #F59E0B;
+            flex-shrink: 0;
+            margin-top: 1px;
+        }
+        .footer-note {
+            margin-top: 20px;
+            text-align: center;
+            font-size: 0.62rem;
+            color: var(--ios-gray3);
+            line-height: 1.5;
+        }
+        /* ── MODAL ── */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.55);
+            z-index: 9999;
+            display: flex;
+            align-items: flex-start;
+            justify-content: center;
+            padding-top: 60px;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
+        }
+        .modal-overlay.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+        .modal-notification {
+            background: rgba(255, 255, 255, 0.96);
+            backdrop-filter: blur(30px) saturate(200%);
+            -webkit-backdrop-filter: blur(30px) saturate(200%);
+            border-radius: 22px;
+            padding: 18px 20px;
+            width: 90%;
+            max-width: 400px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(255, 255, 255, 0.6);
+            transform: translateY(-30px) scale(0.92);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+        }
+        .modal-overlay.active .modal-notification {
+            transform: translateY(0) scale(1);
+        }
+        .modal-notification__header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        .modal-notification__app-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            background: var(--brand-gradient);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 0.85rem;
+        }
+        .modal-notification__app-name {
+            font-weight: 700;
+            font-size: 0.85rem;
+            color: var(--ios-black);
+        }
+        .modal-notification__time {
+            font-size: 0.7rem;
+            color: var(--ios-gray2);
+            margin-left: auto;
+        }
+        .modal-notification__body {
+            font-size: 0.9rem;
+            color: var(--ios-black);
+            line-height: 1.4;
+            font-weight: 500;
+        }
+        .modal-notification__sub {
+            font-size: 0.75rem;
+            color: var(--ios-gray);
+            margin-top: 4px;
+        }
+        .modal-notification__close {
+            position: absolute;
+            top: 10px;
+            right: 14px;
+            background: rgba(0, 0, 0, 0.06);
+            border: none;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 0.8rem;
+            color: var(--ios-gray);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .modal-notification__actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 12px;
+        }
+        .modal-notification__btn {
+            flex: 1;
+            padding: 10px;
+            border-radius: var(--radius-full);
+            border: none;
+            font-weight: 600;
+            font-size: 0.8rem;
+            cursor: pointer;
+            font-family: 'Inter', sans-serif;
+        }
+        .modal-notification__btn--primary {
+            background: var(--brand-primary);
+            color: #fff;
+        }
+        .modal-notification__btn--secondary {
+            background: var(--ios-gray6);
+            color: var(--ios-black);
+        }
+        /* ── TOAST ── */
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%) translateY(120px);
+            background: var(--ios-dark-card);
+            color: #fff;
+            padding: 12px 22px;
+            border-radius: var(--radius-full);
+            font-weight: 600;
+            font-size: 0.82rem;
+            z-index: 10000;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .toast.show {
+            transform: translateX(-50%) translateY(0);
+        }
+        @media (max-width: 400px) {
+            .profile-hero {
+                padding: 22px 14px 18px;
+            }
+            .profile-avatar-lg {
+                width: 64px;
+                height: 64px;
+                font-size: 1.4rem;
+            }
+            .profile-hero__name {
+                font-size: 1.25rem;
+            }
+            .stats-overview {
+                grid-template-columns: 1fr 1fr 1fr;
+                gap: 6px;
+            }
+            .stat-card {
+                padding: 12px 6px;
+            }
+            .stat-card__number {
+                font-size: 1.2rem;
+            }
+            .stat-card__label {
+                font-size: 0.52rem;
+            }
+            .pharmacy-managed-card__perf {
+                flex-wrap: wrap;
+                gap: 8px;
+            }
+            .mini-pharmacy-card {
+                min-width: 150px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-orb bg-orb--1"></div>
+    <div class="bg-orb bg-orb--2"></div>
+    <div class="bg-orb bg-orb--3"></div>
+
+    <div class="app-wrapper">
+        <!-- ── NAV HEADER ── -->
+        <div class="nav-header">
+            <button class="btn-back" onclick="history.back()" aria-label="Go back">
+                <i class="fas fa-chevron-left"></i>
+            </button>
+            <span class="nav-header__title">Profile Details</span>
+            <button class="btn-more" id="btnMoreOptions" aria-label="More options" title="More">
+                <i class="fas fa-ellipsis"></i>
+            </button>
+        </div>
+
+        <!-- ── PROFILE HERO ── -->
+        <div class="profile-hero" id="profileHero">
+            <div class="profile-avatar-lg" id="profileAvatarLarge">JD</div>
+            <h1 class="profile-hero__name" id="profileNameLarge">Jane Doe</h1>
+            <div class="profile-hero__location" id="profileLocation">
+                <i class="fas fa-location-dot"></i> Lagos, Nigeria
+            </div>
+            <div class="profile-hero__badges" id="profileBadges">
+                <span class="badge-pill role-owner" id="roleBadgePill">
+                    <i class="fas fa-store"></i> Pharmacy Owner
+                </span>
+                <span class="badge-pill verified-badge" id="verifiedBadgePill">
+                    <i class="fas fa-circle-check"></i> Verified
+                </span>
+                <span class="badge-pill trusted-badge" id="trustedBadgePill">
+                    <i class="fas fa-trophy"></i> Trusted Contributor
+                </span>
+            </div>
+            <div class="profile-hero__joined" id="joinedDate">Member since January 2026</div>
+        </div>
+
+        <!-- ── STATS OVERVIEW ── -->
+        <div class="stats-overview" id="statsOverview">
+            <div class="stat-card">
+                <div class="stat-card__icon">❤️</div>
+                <div class="stat-card__number" id="statSaved">12</div>
+                <div class="stat-card__label">Saved Pharmacies</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-card__icon">📋</div>
+                <div class="stat-card__number" id="statReports">8</div>
+                <div class="stat-card__label">Reports Submitted</div>
+            </div>
+            <div class="stat-card" id="statPharmaciesCard">
+                <div class="stat-card__icon">🏥</div>
+                <div class="stat-card__number" id="statPharmacies">2</div>
+                <div class="stat-card__label">Pharmacies Managed</div>
+            </div>
+        </div>
+
+        <!-- ── ABOUT SECTION ── -->
+        <div class="section-block">
+            <div class="section-title"><i class="fas fa-address-card"></i> About</div>
+            <div class="about-card">
+                <p id="aboutBio">Helping people find open pharmacies quickly. I manage two pharmacy locations in Lagos and contribute regular status updates to keep PharmFinder accurate for everyone.</p>
+                <div class="about-card__meta">
+                    <span><i class="fas fa-envelope"></i> <span id="aboutEmail">jane.doe@email.com</span></span>
+                    <span><i class="fas fa-phone"></i> <span id="aboutPhone">+1 (555) 111-9999</span></span>
+                    <span><i class="fas fa-calendar-check"></i> <span id="aboutJoined">Joined Jan 2026</span></span>
+                </div>
+            </div>
+        </div>
+
+        <!-- ── MANAGED PHARMACIES (OWNER ONLY) ── -->
+        <div class="section-block" id="managedPharmaciesSection">
+            <div class="section-title"><i class="fas fa-store-alt"></i> Managed Pharmacies</div>
+            <div id="managedPharmaciesList">
+                <div class="pharmacy-managed-card" data-id="1" role="button" tabindex="0" aria-label="MediCare 24/7 Pharmacy — Active — 1.2k views">
+                    <div class="pharmacy-managed-card__header">
+                        <div class="pharmacy-managed-card__icon">
+                            <i class="fas fa-prescription-bottle"></i>
+                        </div>
+                        <span class="pharmacy-managed-card__name">MediCare 24/7 Pharmacy</span>
+                        <span class="pharmacy-managed-card__status status-active">● Active</span>
+                    </div>
+                    <div class="pharmacy-managed-card__perf">
+                        <span>📍 Victoria Island, Lagos</span>
+                        <span>👁️ <strong>1.2k</strong> views</span>
+                        <span>📞 <strong>340</strong> calls</span>
+                        <span>⭐ <strong>4.7</strong> rating</span>
+                    </div>
+                </div>
+                <div class="pharmacy-managed-card" data-id="2" role="button" tabindex="0" aria-label="Rx Express Pharmacy — Pending — 89 views">
+                    <div class="pharmacy-managed-card__header">
+                        <div class="pharmacy-managed-card__icon" style="background:linear-gradient(135deg,#5856D6,#AF52DE);">
+                            <i class="fas fa-capsules"></i>
+                        </div>
+                        <span class="pharmacy-managed-card__name">Rx Express Pharmacy</span>
+                        <span class="pharmacy-managed-card__status status-pending">● Pending</span>
+                    </div>
+                    <div class="pharmacy-managed-card__perf">
+                        <span>📍 Ikeja, Lagos</span>
+                        <span>👁️ <strong>89</strong> views</span>
+                        <span>📞 <strong>12</strong> calls</span>
+                        <span>⭐ <strong>—</strong> rating</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ── ACTIVITY TIMELINE ── -->
+        <div class="section-block">
+            <div class="section-title"><i class="fas fa-clock-rotate-left"></i> Recent Activity</div>
+            <div class="about-card" id="activityTimeline">
+                <div class="timeline-group-label">Today</div>
+                <div class="timeline-item">
+                    <div class="timeline-dot green-dot"><i class="fas fa-clipboard-check"></i></div>
+                    <div class="timeline-content">
+                        <div class="action-text">Reported <strong>HealthPlus Pharmacy</strong> as <span style="color:var(--ios-green);">Open</span></div>
+                        <div class="time-ago">2 hours ago</div>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-dot blue-dot"><i class="fas fa-magnifying-glass"></i></div>
+                    <div class="timeline-content">
+                        <div class="action-text">Searched for pharmacies in <strong>Ikeja</strong></div>
+                        <div class="time-ago">5 hours ago</div>
+                    </div>
+                </div>
+                <div class="timeline-group-label">This Week</div>
+                <div class="timeline-item">
+                    <div class="timeline-dot red-dot"><i class="fas fa-heart"></i></div>
+                    <div class="timeline-content">
+                        <div class="action-text">Saved <strong>MediCare 24/7 Pharmacy</strong> to favorites</div>
+                        <div class="time-ago">2 days ago</div>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-dot orange-dot"><i class="fas fa-clipboard-check"></i></div>
+                    <div class="timeline-content">
+                        <div class="action-text">Reported <strong>CityCare Pharmacy</strong> as <span style="color:var(--ios-orange);">Closing Soon</span></div>
+                        <div class="time-ago">3 days ago</div>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-dot purple-dot"><i class="fas fa-store"></i></div>
+                    <div class="timeline-content">
+                        <div class="action-text">Updated pharmacy details for <strong>Rx Express Pharmacy</strong></div>
+                        <div class="time-ago">4 days ago</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ── REPORTS HISTORY ── -->
+        <div class="section-block">
+            <div class="section-title"><i class="fas fa-clipboard-list"></i> Reports History</div>
+            <div id="reportsHistoryList">
+                <div class="report-mini-item">
+                    <span class="report-mini-dot green"></span>
+                    <span class="report-mini-text">Reported <strong>HealthPlus Pharmacy</strong> as Open</span>
+                    <span class="report-mini-time">2h ago</span>
+                </div>
+                <div class="report-mini-item">
+                    <span class="report-mini-dot orange"></span>
+                    <span class="report-mini-text">Reported <strong>CityCare Pharmacy</strong> as Closing Soon</span>
+                    <span class="report-mini-time">3d ago</span>
+                </div>
+                <div class="report-mini-item">
+                    <span class="report-mini-dot green"></span>
+                    <span class="report-mini-text">Confirmed <strong>MediCare 24/7</strong> is Open</span>
+                    <span class="report-mini-time">1w ago</span>
+                </div>
+                <div class="report-mini-item">
+                    <span class="report-mini-dot red"></span>
+                    <span class="report-mini-text">Reported <strong>NightOwl Drugs</strong> as Closed</span>
+                    <span class="report-mini-time">2w ago</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- ── SAVED PHARMACIES PREVIEW ── -->
+        <div class="section-block">
+            <div class="section-title"><i class="fas fa-heart"></i> Saved Pharmacies</div>
+            <div class="horizontal-scroll" id="savedPharmaciesScroll">
+                <div class="mini-pharmacy-card" role="button" tabindex="0" aria-label="MediCare 24/7 Pharmacy — Open — 0.3 km">
+                    <div class="mini-pharmacy-card__name">MediCare 24/7 Pharmacy</div>
+                    <div class="mini-pharmacy-card__addr">📍 12 Adeola Odeku St, VI</div>
+                    <div class="mini-pharmacy-card__meta">
+                        <span class="mini-badge-open">Open</span>
+                        <span style="color:var(--ios-gray);">0.3 km</span>
+                    </div>
+                </div>
+                <div class="mini-pharmacy-card" role="button" tabindex="0" aria-label="Rx Emergency Pharm — Open — 1.8 km">
+                    <div class="mini-pharmacy-card__name">Rx Emergency Pharm</div>
+                    <div class="mini-pharmacy-card__addr">📍 3 Allen Avenue, Ikeja</div>
+                    <div class="mini-pharmacy-card__meta">
+                        <span class="mini-badge-open">Open</span>
+                        <span style="color:var(--ios-gray);">1.8 km</span>
+                    </div>
+                </div>
+                <div class="mini-pharmacy-card" role="button" tabindex="0" aria-label="GreenCross Pharmacy — Open — 0.7 km">
+                    <div class="mini-pharmacy-card__name">GreenCross Pharmacy</div>
+                    <div class="mini-pharmacy-card__addr">📍 45 Broad Street, Marina</div>
+                    <div class="mini-pharmacy-card__meta">
+                        <span class="mini-badge-open">Open</span>
+                        <span style="color:var(--ios-gray);">0.7 km</span>
+                    </div>
+                </div>
+                <div class="mini-pharmacy-card" role="button" tabindex="0" aria-label="CityCare Pharmacy — Open — 2.2 km">
+                    <div class="mini-pharmacy-card__name">CityCare Pharmacy</div>
+                    <div class="mini-pharmacy-card__addr">📍 22B Admiralty Way, Lekki</div>
+                    <div class="mini-pharmacy-card__meta">
+                        <span class="mini-badge-open">Open</span>
+                        <span style="color:var(--ios-gray);">2.2 km</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ── VERIFICATION STATUS ── -->
+        <div class="section-block" id="verificationSection">
+            <div class="section-title"><i class="fas fa-shield-halved"></i> Verification & Trust</div>
+            <div class="about-card">
+                <div style="display:flex;align-items:center;gap:12px;margin-bottom:10px;">
+                    <div style="width:42px;height:42px;border-radius:50%;background:#D1FAE5;display:flex;align-items:center;justify-content:center;color:#065F46;font-size:1rem;"><i class="fas fa-circle-check"></i></div>
+                    <div>
+                        <div style="font-weight:700;font-size:0.85rem;color:var(--ios-black);">Verified Pharmacy Owner</div>
+                        <div style="font-size:0.68rem;color:var(--ios-gray);">Identity and pharmacy ownership confirmed</div>
+                    </div>
+                </div>
+                <p style="font-size:0.7rem;color:var(--ios-gray);line-height:1.5;">
+                    <i class="fas fa-circle-info" style="color:var(--ios-blue);"></i> Verified owners have confirmed their identity and pharmacy registration. This helps build trust in the PharmFinder community.
+                </p>
+            </div>
+        </div>
+
+        <!-- ── PUBLIC NOTICE ── -->
+        <div class="public-notice">
+            <i class="fas fa-circle-exclamation"></i>
+            <div>
+                <strong>Public Profile Notice:</strong> Information displayed on this profile is user-provided. PharmFinder does not independently verify all details. Always confirm pharmacy availability directly before visiting.
+            </div>
+        </div>
+
+        <div class="footer-note">
+            <i class="fas fa-shield-halved"></i> PharmFinder profiles help build trust in the community.<br>
+            Reports and contributions are publicly visible to encourage accuracy.
+        </div>
+    </div>
+
+    <!-- ── iOS MODAL ── -->
+    <div class="modal-overlay" id="modalOverlay">
+        <div class="modal-notification" id="modalNotification">
+            <button class="modal-notification__close" id="modalCloseBtn"><i class="fas fa-xmark"></i></button>
+            <div class="modal-notification__header">
+                <div class="modal-notification__app-icon"><i class="fas fa-prescription-bottle"></i></div>
+                <span class="modal-notification__app-name">PharmFinder</span>
+                <span class="modal-notification__time" id="modalTime">now</span>
+            </div>
+            <div class="modal-notification__body" id="modalBody">Message</div>
+            <div class="modal-notification__sub" id="modalSub"></div>
+            <div class="modal-notification__actions">
+                <button class="modal-notification__btn modal-notification__btn--secondary" id="modalBtnDismiss">Close</button>
+                <button class="modal-notification__btn modal-notification__btn--primary" id="modalBtnAction">OK</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="toast" id="toast"><i class="fas fa-circle-check"></i><span id="toastMsg"></span></div>
+
+    <script>
+        (function() {
+            // ─── PROFILE DATA ───
+            const profileData = {
+                name: 'Jane Doe',
+                initials: 'JD',
+                role: 'owner',
+                verified: true,
+                trustedContributor: true,
+                location: 'Lagos, Nigeria',
+                memberSince: 'January 2026',
+                bio: 'Helping people find open pharmacies quickly. I manage two pharmacy locations in Lagos and contribute regular status updates to keep PharmFinder accurate for everyone.',
+                email: 'jane.doe@email.com',
+                phone: '+1 (555) 111-9999',
+                savedCount: 12,
+                reportsCount: 8,
+                pharmaciesManaged: 2,
+            };
+
+            function loadProfile() {
+                try {
+                    const raw = localStorage.getItem('pharmfinder_profile');
+                    if (raw) {
+                        const data = JSON.parse(raw);
+                        if (data.userData) {
+                            profileData.name = data.userData.name || profileData.name;
+                            profileData.initials = data.userData.initials || profileData.initials;
+                            profileData.email = data.userData.email || profileData.email;
+                            profileData.phone = data.userData.phone || profileData.phone;
+                            profileData.savedCount = data.userData.savedCount || profileData.savedCount;
+                            profileData.reportsCount = data.userData.reportsCount || profileData.reportsCount;
+                        }
+                        if (data.role) profileData.role = data.role;
+                        if (data.ownerData) {
+                            profileData.verified = data.ownerData.verified !== undefined ? data.ownerData
+                                .verified : profileData.verified;
+                            profileData.pharmaciesManaged = data.ownerData.pharmaciesManaged || profileData
+                                .pharmaciesManaged;
+                        }
+                    }
+                } catch (e) {}
+            }
+            loadProfile();
+
+            // ─── APPLY UI ───
+            function applyUI() {
+                document.getElementById('profileAvatarLarge').textContent = profileData.initials;
+                document.getElementById('profileNameLarge').textContent = profileData.name;
+                document.getElementById('profileLocation').innerHTML =
+                    '<i class="fas fa-location-dot"></i> ' + profileData.location;
+                document.getElementById('joinedDate').textContent = 'Member since ' + profileData
+                .memberSince;
+                document.getElementById('aboutBio').textContent = profileData.bio;
+                document.getElementById('aboutEmail').textContent = profileData.email;
+                document.getElementById('aboutPhone').textContent = profileData.phone;
+                document.getElementById('aboutJoined').textContent = 'Joined ' + profileData.memberSince;
+                document.getElementById('statSaved').textContent = profileData.savedCount;
+                document.getElementById('statReports').textContent = profileData.reportsCount;
+                document.getElementById('statPharmacies').textContent = profileData.pharmaciesManaged;
+
+                // Role badges
+                const roleBadgePill = document.getElementById('roleBadgePill');
+                const verifiedBadgePill = document.getElementById('verifiedBadgePill');
+                const trustedBadgePill = document.getElementById('trustedBadgePill');
+                const managedPharmaciesSection = document.getElementById('managedPharmaciesSection');
+                const verificationSection = document.getElementById('verificationSection');
+                const statPharmaciesCard = document.getElementById('statPharmaciesCard');
+
+                if (profileData.role === 'owner') {
+                    roleBadgePill.className = 'badge-pill role-owner';
+                    roleBadgePill.innerHTML = '<i class="fas fa-store"></i> Pharmacy Owner';
+                    managedPharmaciesSection.style.display = 'block';
+                    verificationSection.style.display = 'block';
+                    statPharmaciesCard.style.display = '';
+                    if (profileData.verified) {
+                        verifiedBadgePill.className = 'badge-pill verified-badge';
+                        verifiedBadgePill.innerHTML =
+                        '<i class="fas fa-circle-check"></i> Verified';
+                        verifiedBadgePill.style.display = 'inline-flex';
+                    } else {
+                        verifiedBadgePill.className = 'badge-pill pending-badge';
+                        verifiedBadgePill.innerHTML = '<i class="fas fa-clock"></i> Pending';
+                        verifiedBadgePill.style.display = 'inline-flex';
+                    }
+                } else {
+                    roleBadgePill.className = 'badge-pill role-user';
+                    roleBadgePill.innerHTML = '<i class="fas fa-user"></i> Regular User';
+                    managedPharmaciesSection.style.display = 'none';
+                    verificationSection.style.display = 'none';
+                    statPharmaciesCard.style.display = 'none';
+                    verifiedBadgePill.style.display = 'none';
+                }
+
+                if (profileData.trustedContributor) {
+                    trustedBadgePill.style.display = 'inline-flex';
+                } else {
+                    trustedBadgePill.style.display = 'none';
+                }
+            }
+            applyUI();
+
+            // ─── DOM REFS ───
+            const modalOverlay = document.getElementById('modalOverlay');
+            const modalBody = document.getElementById('modalBody');
+            const modalSub = document.getElementById('modalSub');
+            const modalTime = document.getElementById('modalTime');
+            const modalBtnDismiss = document.getElementById('modalBtnDismiss');
+            const modalBtnAction = document.getElementById('modalBtnAction');
+            const modalCloseBtn = document.getElementById('modalCloseBtn');
+            const toast = document.getElementById('toast');
+            const toastMsg = document.getElementById('toastMsg');
+            let toastTimer;
+            let modalActionCallback = null;
+
+            function showModal(bodyText, subText, actionLabel, callback, dismissLabel = 'Close') {
+                modalBody.innerHTML = bodyText;
+                modalSub.textContent = subText || '';
+                modalTime.textContent = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                modalBtnAction.textContent = actionLabel || 'OK';
+                modalBtnDismiss.textContent = dismissLabel;
+                modalActionCallback = callback || null;
+                modalOverlay.classList.add('active');
+            }
+
+            function hideModal() {
+                modalOverlay.classList.remove('active');
+                modalActionCallback = null;
+            }
+            modalCloseBtn.addEventListener('click', hideModal);
+            modalBtnDismiss.addEventListener('click', hideModal);
+            modalBtnAction.addEventListener('click', () => {
+                if (modalActionCallback && typeof modalActionCallback === 'function') modalActionCallback();
+                hideModal();
+            });
+            modalOverlay.addEventListener('click', (e) => { if (e.target === modalOverlay) hideModal(); });
+            document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && modalOverlay.classList
+                    .contains('active')) hideModal(); });
+
+            function showToast(message, iconClass = 'fa-circle-check') {
+                clearTimeout(toastTimer);
+                toastMsg.textContent = message;
+                const iconEl = toast.querySelector('i');
+                if (iconEl) iconEl.className = 'fas ' + iconClass;
+                toast.classList.add('show');
+                toastTimer = setTimeout(() => toast.classList.remove('show'), 2800);
+            }
+
+            // ─── EVENT LISTENERS ───
+            document.getElementById('btnMoreOptions').addEventListener('click', () => {
+                showModal(
+                    'Profile Options',
+                    'You are viewing a public profile. To edit your own profile, go to My Profile in the dashboard.',
+                    'Open My Profile',
+                    () => { window.location.href = 'profile.html'; }
+                );
+            });
+
+            // Managed pharmacy cards click
+            document.querySelectorAll('.pharmacy-managed-card').forEach(card => {
+                card.addEventListener('click', () => {
+                    const name = card.querySelector('.pharmacy-managed-card__name').textContent;
+                    showToast('Opening ' + name + ' details…', 'fa-store');
+                });
+                card.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault();
+                        card.click(); }
+                });
+            });
+
+            // Saved pharmacy mini cards click
+            document.querySelectorAll('.mini-pharmacy-card').forEach(card => {
+                card.addEventListener('click', () => {
+                    const name = card.querySelector('.mini-pharmacy-card__name').textContent;
+                    showToast('Opening ' + name + '…', 'fa-arrow-right');
+                });
+                card.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault();
+                        card.click(); }
+                });
+            });
+
+            // Report items click
+            document.querySelectorAll('.report-mini-item').forEach(item => {
+                item.addEventListener('click', () => {
+                    showToast('Viewing report details…', 'fa-clipboard-check');
+                });
+            });
+
+            console.log('👤 PharmFinder — Profile View page ready.');
+            console.log('🔍 Viewing profile: ' + profileData.name + ' (' + profileData.role + ')');
+            console.log('💡 This is a read‑only public profile view.');
+
+            setTimeout(() => {
+                showToast('Viewing ' + profileData.name + '\'s profile', 'fa-user');
+            }, 600);
+        })();
+    </script>
+</body>
+
+
+

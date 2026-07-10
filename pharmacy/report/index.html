@@ -1,0 +1,1147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>PharmFinder — Report Pharmacy Status</title>
+    <meta name="description" content="Help keep PharmFinder accurate — report if this pharmacy is open, closed, or closing soon." />
+    <meta name="theme-color" content="#0D6B4E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+    <style>
+        :root {
+            --ios-blue: #007AFF;
+            --ios-green: #34C759;
+            --ios-red: #FF3B30;
+            --ios-orange: #FF9500;
+            --ios-teal: #5AC8FA;
+            --ios-indigo: #5856D6;
+            --ios-purple: #AF52DE;
+            --ios-gray: #8E8E93;
+            --ios-gray2: #AEAEB2;
+            --ios-gray3: #C7C7CC;
+            --ios-gray4: #D1D1D6;
+            --ios-gray5: #E5E5EA;
+            --ios-gray6: #F2F2F7;
+            --ios-bg: #F9F9FB;
+            --ios-white: #FFFFFF;
+            --ios-black: #1C1C1E;
+            --ios-dark-card: #2C2C2E;
+            --brand-primary: #0D6B4E;
+            --brand-primary-light: #0F8A63;
+            --brand-secondary: #1B9C6B;
+            --brand-accent: #22C55E;
+            --brand-bg-light: #ECFDF5;
+            --brand-gradient: linear-gradient(135deg, #0D6B4E 0%, #0F8A63 30%, #1B9C6B 60%, #22C55E 100%);
+            --brand-gradient-subtle: linear-gradient(135deg, #ECFDF5 0%, #D1FAE5 50%, #A7F3D0 100%);
+            --glass-bg: rgba(255, 255, 255, 0.74);
+            --glass-border: rgba(255, 255, 255, 0.58);
+            --glass-blur: blur(22px) saturate(180%);
+            --radius-sm: 10px;
+            --radius-md: 16px;
+            --radius-lg: 22px;
+            --radius-xl: 28px;
+            --radius-2xl: 36px;
+            --radius-full: 9999px;
+            --shadow-ios: 0 1px 3px rgba(0, 0, 0, 0.06), 0 6px 16px rgba(0, 0, 0, 0.06);
+            --shadow-ios-lg: 0 4px 20px rgba(0, 0, 0, 0.10), 0 12px 40px rgba(0, 0, 0, 0.08);
+            --shadow-ios-xl: 0 8px 40px rgba(0, 0, 0, 0.14), 0 20px 60px rgba(0, 0, 0, 0.10);
+            --shadow-glow-green: 0 0 40px rgba(13, 107, 78, 0.25), 0 0 80px rgba(34, 197, 94, 0.15);
+            --shadow-glow-red: 0 0 40px rgba(255, 59, 48, 0.2), 0 0 80px rgba(255, 45, 85, 0.10);
+            --shadow-glow-orange: 0 0 40px rgba(255, 149, 0, 0.2), 0 0 80px rgba(255, 149, 0, 0.08);
+            --transition-fast: 0.18s cubic-bezier(0.25, 0.1, 0.25, 1);
+            --transition-smooth: 0.3s cubic-bezier(0.25, 0.1, 0.25, 1);
+            --transition-bounce: 0.45s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            --transition-spring: 0.55s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        html {
+            scroll-behavior: smooth;
+            font-size: 16px;
+            -webkit-tap-highlight-color: transparent;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Helvetica Neue', sans-serif;
+            background: var(--ios-bg);
+            color: var(--ios-black);
+            line-height: 1.55;
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+            padding-bottom: 60px;
+        }
+
+        /* ── Animated Background Orbs ── */
+        .bg-orb {
+            position: fixed;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 0;
+            opacity: 0.30;
+            filter: blur(85px);
+            animation: orbFloat 18s ease-in-out infinite;
+        }
+        .bg-orb--1 {
+            width: 380px;
+            height: 380px;
+            background: radial-gradient(circle, rgba(34, 197, 94, 0.32) 0%, transparent 70%);
+            top: -8%;
+            left: -8%;
+        }
+        .bg-orb--2 {
+            width: 320px;
+            height: 320px;
+            background: radial-gradient(circle, rgba(13, 107, 78, 0.28) 0%, transparent 70%);
+            bottom: -6%;
+            right: -6%;
+            animation-delay: -7s;
+            animation-duration: 20s;
+        }
+        .bg-orb--3 {
+            width: 240px;
+            height: 240px;
+            background: radial-gradient(circle, rgba(90, 200, 250, 0.18) 0%, transparent 70%);
+            top: 50%;
+            left: 55%;
+            animation-delay: -12s;
+            animation-duration: 22s;
+        }
+        @keyframes orbFloat {
+            0%,
+            100% {
+                transform: translate(0, 0) scale(1);
+            }
+            15% {
+                transform: translate(30px, -25px) scale(1.08);
+            }
+            30% {
+                transform: translate(-18px, 20px) scale(0.94);
+            }
+            45% {
+                transform: translate(25px, 15px) scale(1.05);
+            }
+            60% {
+                transform: translate(-30px, -10px) scale(0.92);
+            }
+            75% {
+                transform: translate(10px, -30px) scale(1.06);
+            }
+            90% {
+                transform: translate(-15px, 25px) scale(0.96);
+            }
+        }
+
+        /* ── Main Container ── */
+        .app-wrapper {
+            position: relative;
+            z-index: 1;
+            max-width: 520px;
+            margin: 0 auto;
+            padding: 0 16px 40px;
+        }
+
+        /* ── Navigation Header ── */
+        .nav-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 0 6px;
+            position: sticky;
+            top: 0;
+            z-index: 90;
+            background: rgba(249, 249, 251, 0.82);
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
+        }
+        .nav-header .btn-back {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.7);
+            border: 1px solid var(--ios-gray4);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all var(--transition-fast);
+            color: var(--ios-black);
+            font-size: 1rem;
+            flex-shrink: 0;
+        }
+        .nav-header .btn-back:hover {
+            background: #fff;
+            box-shadow: var(--shadow-ios);
+        }
+        .nav-header__title {
+            font-size: 1rem;
+            font-weight: 700;
+            letter-spacing: -0.3px;
+            color: var(--ios-black);
+            flex: 1;
+        }
+        .nav-header__badge {
+            font-size: 0.62rem;
+            font-weight: 700;
+            background: var(--brand-bg-light);
+            color: var(--brand-primary);
+            padding: 5px 10px;
+            border-radius: var(--radius-full);
+            letter-spacing: 0.03em;
+            text-transform: uppercase;
+        }
+
+        /* ── Page Intro ── */
+        .page-intro {
+            text-align: center;
+            margin: 18px 0 12px;
+        }
+        .page-intro__icon {
+            width: 56px;
+            height: 56px;
+            border-radius: var(--radius-md);
+            background: var(--brand-gradient);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 12px;
+            color: #fff;
+            font-size: 1.5rem;
+            box-shadow: 0 8px 24px rgba(13, 107, 78, 0.35);
+        }
+        .page-intro h1 {
+            font-size: 1.4rem;
+            font-weight: 800;
+            letter-spacing: -0.4px;
+            color: var(--ios-black);
+            margin-bottom: 4px;
+        }
+        .page-intro p {
+            font-size: 0.82rem;
+            color: var(--ios-gray);
+            max-width: 360px;
+            margin: 0 auto;
+        }
+
+        /* ── Pharmacy Summary Card ── */
+        .pharmacy-summary {
+            background: var(--ios-white);
+            border-radius: var(--radius-lg);
+            padding: 14px 16px;
+            border: 1px solid var(--ios-gray5);
+            box-shadow: var(--shadow-ios);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-top: 16px;
+        }
+        .pharmacy-summary__icon {
+            width: 44px;
+            height: 44px;
+            border-radius: var(--radius-md);
+            background: #D1FAE5;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #065F46;
+            font-size: 1.1rem;
+            flex-shrink: 0;
+        }
+        .pharmacy-summary__info {
+            flex: 1;
+            min-width: 0;
+        }
+        .pharmacy-summary__name {
+            font-weight: 700;
+            font-size: 0.9rem;
+            color: var(--ios-black);
+            letter-spacing: -0.2px;
+        }
+        .pharmacy-summary__addr {
+            font-size: 0.72rem;
+            color: var(--ios-gray);
+        }
+        .pharmacy-summary__status {
+            font-size: 0.7rem;
+            font-weight: 700;
+            padding: 5px 12px;
+            border-radius: var(--radius-full);
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+        }
+        .status-open-badge {
+            background: #D1FAE5;
+            color: #065F46;
+        }
+        .status-closed-badge {
+            background: #FEE2E2;
+            color: #991B1B;
+        }
+
+        /* ── Report Form Card ── */
+        .report-card {
+            background: var(--glass-bg);
+            backdrop-filter: var(--glass-blur);
+            -webkit-backdrop-filter: var(--glass-blur);
+            border-radius: var(--radius-xl);
+            padding: 22px 18px;
+            border: 1px solid var(--glass-border);
+            box-shadow: var(--shadow-ios-lg);
+            margin-top: 16px;
+        }
+        .report-card__section-title {
+            font-size: 0.72rem;
+            font-weight: 700;
+            color: var(--ios-gray);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 12px;
+        }
+
+        /* ── Status Option Buttons ── */
+        .status-options {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .status-option {
+            flex: 1;
+            min-width: 90px;
+            padding: 14px 12px;
+            border-radius: var(--radius-lg);
+            border: 2px solid var(--ios-gray4);
+            background: rgba(255, 255, 255, 0.6);
+            cursor: pointer;
+            text-align: center;
+            transition: all var(--transition-bounce);
+            font-family: 'Inter', sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            position: relative;
+            overflow: hidden;
+        }
+        .status-option:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-ios-lg);
+        }
+        .status-option:active {
+            transform: scale(0.95);
+            transition: all 0.1s ease;
+        }
+        .status-option i {
+            font-size: 1.5rem;
+            transition: all var(--transition-bounce);
+        }
+        .status-option span {
+            font-size: 0.78rem;
+            font-weight: 700;
+            letter-spacing: -0.2px;
+        }
+        .status-option--open {
+            border-color: #BBF7D0;
+        }
+        .status-option--open i {
+            color: var(--ios-green);
+        }
+        .status-option--open.selected {
+            background: #D1FAE5;
+            border-color: var(--ios-green);
+            box-shadow: var(--shadow-glow-green);
+            animation: selectPop 0.45s var(--transition-spring);
+        }
+        .status-option--open.selected i {
+            color: #065F46;
+            transform: scale(1.2);
+        }
+        .status-option--closed {
+            border-color: #FECACA;
+        }
+        .status-option--closed i {
+            color: var(--ios-red);
+        }
+        .status-option--closed.selected {
+            background: #FEE2E2;
+            border-color: var(--ios-red);
+            box-shadow: var(--shadow-glow-red);
+            animation: selectPop 0.45s var(--transition-spring);
+        }
+        .status-option--closed.selected i {
+            color: #991B1B;
+            transform: scale(1.2);
+        }
+        .status-option--closing {
+            border-color: #FED7AA;
+        }
+        .status-option--closing i {
+            color: var(--ios-orange);
+        }
+        .status-option--closing.selected {
+            background: #FFF7ED;
+            border-color: var(--ios-orange);
+            box-shadow: var(--shadow-glow-orange);
+            animation: selectPop 0.45s var(--transition-spring);
+        }
+        .status-option--closing.selected i {
+            color: #C2410C;
+            transform: scale(1.2);
+        }
+        @keyframes selectPop {
+            0% {
+                transform: scale(1);
+            }
+            40% {
+                transform: scale(1.06);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        /* ── Comment Textarea ── */
+        .comment-group {
+            margin-top: 18px;
+        }
+        .comment-group label {
+            font-size: 0.72rem;
+            font-weight: 700;
+            color: var(--ios-gray);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            display: block;
+            margin-bottom: 8px;
+        }
+        .comment-group textarea {
+            width: 100%;
+            border: 1.5px solid var(--ios-gray4);
+            border-radius: var(--radius-md);
+            padding: 14px 16px;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.88rem;
+            color: var(--ios-black);
+            background: rgba(255, 255, 255, 0.7);
+            resize: vertical;
+            min-height: 90px;
+            outline: none;
+            transition: all var(--transition-smooth);
+            line-height: 1.5;
+        }
+        .comment-group textarea:focus {
+            border-color: var(--brand-primary);
+            box-shadow: 0 0 0 4px rgba(13, 107, 78, 0.08);
+        }
+        .comment-group textarea::placeholder {
+            color: var(--ios-gray3);
+        }
+        .comment-group .char-count {
+            text-align: right;
+            font-size: 0.65rem;
+            color: var(--ios-gray3);
+            margin-top: 4px;
+        }
+
+        /* ── Location Confirmation ── */
+        .location-confirm {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 14px;
+            padding: 10px 14px;
+            background: #EBF5FF;
+            border-radius: var(--radius-md);
+            border: 1px solid rgba(0, 122, 255, 0.15);
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #1E40AF;
+        }
+        .location-confirm i {
+            font-size: 1rem;
+            color: var(--ios-blue);
+            animation: locationPulse 2s ease-in-out infinite;
+        }
+        @keyframes locationPulse {
+            0%,
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+            50% {
+                transform: scale(1.2);
+                opacity: 0.6;
+            }
+        }
+        .location-confirm .dot-near {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: var(--ios-blue);
+            animation: dotBlink 1.5s ease-in-out infinite;
+        }
+        @keyframes dotBlink {
+            0%,
+            100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.3;
+            }
+        }
+
+        /* ── Submit Button ── */
+        .btn-submit-report {
+            width: 100%;
+            padding: 15px;
+            background: var(--brand-gradient);
+            color: #fff;
+            font-weight: 700;
+            font-size: 1rem;
+            border: none;
+            border-radius: var(--radius-full);
+            cursor: pointer;
+            transition: all var(--transition-bounce);
+            font-family: 'Inter', sans-serif;
+            box-shadow: var(--shadow-glow-green), 0 6px 20px rgba(13, 107, 78, 0.3);
+            letter-spacing: -0.2px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 18px;
+        }
+        .btn-submit-report:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-glow-green), 0 12px 32px rgba(13, 107, 78, 0.45);
+        }
+        .btn-submit-report:active {
+            transform: scale(0.96);
+        }
+        .btn-submit-report:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        /* ── Trust Notice ── */
+        .trust-notice {
+            margin-top: 14px;
+            padding: 12px 14px;
+            background: #FFFBF0;
+            border-radius: var(--radius-md);
+            border: 1px solid rgba(245, 158, 11, 0.2);
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            font-size: 0.7rem;
+            color: #92400E;
+            line-height: 1.5;
+        }
+        .trust-notice i {
+            color: #F59E0B;
+            font-size: 0.9rem;
+            flex-shrink: 0;
+            margin-top: 1px;
+        }
+
+        /* ── Recent Reports ── */
+        .recent-reports {
+            margin-top: 20px;
+        }
+        .recent-reports h3 {
+            font-size: 0.85rem;
+            font-weight: 700;
+            letter-spacing: -0.2px;
+            color: var(--ios-black);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .recent-reports h3 i {
+            color: var(--brand-primary);
+        }
+        .report-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 12px;
+            background: var(--ios-white);
+            border-radius: var(--radius-md);
+            border: 1px solid var(--ios-gray6);
+            margin-bottom: 6px;
+            font-size: 0.73rem;
+            box-shadow: var(--shadow-ios);
+            transition: all var(--transition-fast);
+        }
+        .report-item:hover {
+            border-color: var(--ios-gray4);
+            box-shadow: var(--shadow-ios-lg);
+        }
+        .report-item__dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+        .report-item__dot.green {
+            background: var(--ios-green);
+        }
+        .report-item__dot.red {
+            background: var(--ios-red);
+        }
+        .report-item__dot.orange {
+            background: var(--ios-orange);
+        }
+        .report-item__text {
+            flex: 1;
+            color: var(--ios-gray);
+        }
+        .report-item__time {
+            font-size: 0.65rem;
+            color: var(--ios-gray3);
+            white-space: nowrap;
+        }
+
+        /* ── Footer ── */
+        .footer-note {
+            margin-top: 28px;
+            text-align: center;
+            font-size: 0.66rem;
+            color: var(--ios-gray3);
+            line-height: 1.5;
+        }
+
+        /* ── iOS Notification Modal ── */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.55);
+            z-index: 9999;
+            display: flex;
+            align-items: flex-start;
+            justify-content: center;
+            padding-top: 60px;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
+        }
+        .modal-overlay.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+        .modal-notification {
+            background: rgba(255, 255, 255, 0.96);
+            backdrop-filter: blur(30px) saturate(200%);
+            -webkit-backdrop-filter: blur(30px) saturate(200%);
+            border-radius: 22px;
+            padding: 18px 20px;
+            width: 90%;
+            max-width: 400px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(255, 255, 255, 0.6);
+            transform: translateY(-30px) scale(0.92);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+        }
+        .modal-overlay.active .modal-notification {
+            transform: translateY(0) scale(1);
+        }
+        .modal-notification__header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        .modal-notification__app-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            background: var(--brand-gradient);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 0.85rem;
+        }
+        .modal-notification__app-name {
+            font-weight: 700;
+            font-size: 0.85rem;
+            color: var(--ios-black);
+        }
+        .modal-notification__time {
+            font-size: 0.7rem;
+            color: var(--ios-gray2);
+            margin-left: auto;
+        }
+        .modal-notification__body {
+            font-size: 0.9rem;
+            color: var(--ios-black);
+            line-height: 1.4;
+            font-weight: 500;
+        }
+        .modal-notification__sub {
+            font-size: 0.75rem;
+            color: var(--ios-gray);
+            margin-top: 4px;
+        }
+        .modal-notification__close {
+            position: absolute;
+            top: 10px;
+            right: 14px;
+            background: rgba(0, 0, 0, 0.06);
+            border: none;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 0.8rem;
+            color: var(--ios-gray);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .modal-notification__actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 12px;
+        }
+        .modal-notification__btn {
+            flex: 1;
+            padding: 10px;
+            border-radius: var(--radius-full);
+            border: none;
+            font-weight: 600;
+            font-size: 0.8rem;
+            cursor: pointer;
+            font-family: 'Inter', sans-serif;
+        }
+        .modal-notification__btn--primary {
+            background: var(--brand-primary);
+            color: #fff;
+        }
+        .modal-notification__btn--secondary {
+            background: var(--ios-gray6);
+            color: var(--ios-black);
+        }
+
+        /* ── Toast ── */
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%) translateY(120px);
+            background: var(--ios-dark-card);
+            color: #fff;
+            padding: 12px 22px;
+            border-radius: var(--radius-full);
+            font-weight: 600;
+            font-size: 0.82rem;
+            z-index: 10000;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .toast.show {
+            transform: translateX(-50%) translateY(0);
+        }
+        .toast i {
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 400px) {
+            .status-options {
+                gap: 6px;
+            }
+            .status-option {
+                padding: 12px 8px;
+                min-width: 70px;
+            }
+            .status-option i {
+                font-size: 1.2rem;
+            }
+            .status-option span {
+                font-size: 0.68rem;
+            }
+            .page-intro h1 {
+                font-size: 1.2rem;
+            }
+            .report-card {
+                padding: 16px 12px;
+            }
+            .btn-submit-report {
+                font-size: 0.9rem;
+                padding: 13px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="bg-orb bg-orb--1"></div>
+    <div class="bg-orb bg-orb--2"></div>
+    <div class="bg-orb bg-orb--3"></div>
+
+    <div class="app-wrapper">
+        <!-- Navigation Header -->
+        <div class="nav-header">
+            <button class="btn-back" onclick="history.back()" aria-label="Go back">
+                <i class="fas fa-chevron-left"></i>
+            </button>
+            <span class="nav-header__title">Report Status</span>
+            <span class="nav-header__badge">Community</span>
+        </div>
+
+        <!-- Page Intro -->
+        <div class="page-intro">
+            <div class="page-intro__icon">
+                <i class="fas fa-clipboard-check"></i>
+            </div>
+            <h1>Help Keep Data Accurate</h1>
+            <p>Your report helps others find pharmacies they can count on — especially during urgent moments.</p>
+        </div>
+
+        <!-- Pharmacy Summary -->
+        <div class="pharmacy-summary" id="pharmacySummary">
+            <div class="pharmacy-summary__icon">
+                <i class="fas fa-prescription-bottle"></i>
+            </div>
+            <div class="pharmacy-summary__info">
+                <div class="pharmacy-summary__name">MediCare 24/7 Pharmacy</div>
+                <div class="pharmacy-summary__addr">12 Adeola Odeku St, Victoria Island, Lagos</div>
+            </div>
+            <span class="pharmacy-summary__status status-open-badge" id="currentStatusBadge">
+                ● Open Now
+            </span>
+        </div>
+
+        <!-- Report Form -->
+        <div class="report-card" id="reportCard">
+            <div class="report-card__section-title">
+                <i class="fas fa-pen-to-square"></i> &nbsp; Update This Pharmacy's Status
+            </div>
+
+            <!-- Status Options -->
+            <div class="status-options" id="statusOptions">
+                <button class="status-option status-option--open" data-status="open" id="optOpen" role="radio" aria-checked="false" aria-label="Report as Open">
+                    <i class="fas fa-circle-check"></i>
+                    <span>Open</span>
+                </button>
+                <button class="status-option status-option--closed" data-status="closed" id="optClosed" role="radio" aria-checked="false" aria-label="Report as Closed">
+                    <i class="fas fa-circle-xmark"></i>
+                    <span>Closed</span>
+                </button>
+                <button class="status-option status-option--closing" data-status="closing" id="optClosing" role="radio" aria-checked="false" aria-label="Report as Closing Soon">
+                    <i class="fas fa-clock"></i>
+                    <span>Closing Soon</span>
+                </button>
+            </div>
+
+            <!-- Comment -->
+            <div class="comment-group">
+                <label for="reportComment">Add Comment <span style="font-weight:400;text-transform:none;">(optional)</span></label>
+                <textarea id="reportComment" placeholder="Example: 'Closed earlier than usual today' or 'Pharmacist confirmed open until midnight'…" maxlength="280"></textarea>
+                <div class="char-count"><span id="charCount">0</span>/280</div>
+            </div>
+
+            <!-- Location Confirmation -->
+            <div class="location-confirm">
+                <i class="fas fa-location-dot"></i>
+                <span>You appear to be <strong>near this pharmacy</strong> (within 200 m)</span>
+                <span class="dot-near"></span>
+            </div>
+
+            <!-- Submit -->
+            <button class="btn-submit-report" id="btnSubmitReport" disabled>
+                <i class="fas fa-paper-plane"></i> Submit Report
+            </button>
+        </div>
+
+        <!-- Trust Notice -->
+        <div class="trust-notice">
+            <i class="fas fa-shield-halved"></i>
+            <div>
+                <strong>Trust &amp; Accuracy Notice:</strong> Reports are reviewed periodically. False or misleading reports may be removed. Your contribution helps the community access reliable pharmacy information — thank you for being honest.
+            </div>
+        </div>
+
+        <!-- Recent Reports -->
+        <div class="recent-reports">
+            <h3><i class="fas fa-history"></i> Recent Community Reports</h3>
+            <div class="report-item">
+                <span class="report-item__dot green"></span>
+                <span class="report-item__text">Confirmed <strong>Open</strong> — "Pharmacist answered the phone"</span>
+                <span class="report-item__time">12 min ago</span>
+            </div>
+            <div class="report-item">
+                <span class="report-item__dot green"></span>
+                <span class="report-item__text">Confirmed <strong>Open</strong> — "Visited in person"</span>
+                <span class="report-item__time">28 min ago</span>
+            </div>
+            <div class="report-item">
+                <span class="report-item__dot orange"></span>
+                <span class="report-item__text">Reported <strong>Closing Soon</strong> — "Closing at 9 PM today instead of 10 PM"</span>
+                <span class="report-item__time">1 hour ago</span>
+            </div>
+            <div class="report-item">
+                <span class="report-item__dot red"></span>
+                <span class="report-item__text">Reported <strong>Closed</strong> — "Unexpectedly closed early"</span>
+                <span class="report-item__time">3 hours ago</span>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer-note">
+            <i class="fas fa-circle-exclamation"></i> PharmFinder community reports are user-submitted.<br>
+            Always call ahead for critical medication needs.
+        </div>
+    </div>
+
+    <!-- iOS Notification Modal -->
+    <div class="modal-overlay" id="modalOverlay">
+        <div class="modal-notification" id="modalNotification">
+            <button class="modal-notification__close" id="modalCloseBtn">
+                <i class="fas fa-xmark"></i>
+            </button>
+            <div class="modal-notification__header">
+                <div class="modal-notification__app-icon">
+                    <i class="fas fa-prescription-bottle"></i>
+                </div>
+                <span class="modal-notification__app-name">PharmFinder</span>
+                <span class="modal-notification__time" id="modalTime">now</span>
+            </div>
+            <div class="modal-notification__body" id="modalBody">Message</div>
+            <div class="modal-notification__sub" id="modalSub"></div>
+            <div class="modal-notification__actions">
+                <button class="modal-notification__btn modal-notification__btn--secondary" id="modalBtnDismiss">Dismiss</button>
+                <button class="modal-notification__btn modal-notification__btn--primary" id="modalBtnAction">OK</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast -->
+    <div class="toast" id="toast"><i class="fas fa-circle-check"></i><span id="toastMsg"></span></div>
+
+    <script>
+        (function() {
+            // ─── STATE ───
+            let selectedStatus = null;
+
+            // ─── DOM REFS ───
+            const statusOptions = document.querySelectorAll('.status-option');
+            const btnSubmitReport = document.getElementById('btnSubmitReport');
+            const reportComment = document.getElementById('reportComment');
+            const charCount = document.getElementById('charCount');
+            const currentStatusBadge = document.getElementById('currentStatusBadge');
+            const modalOverlay = document.getElementById('modalOverlay');
+            const modalBody = document.getElementById('modalBody');
+            const modalSub = document.getElementById('modalSub');
+            const modalTime = document.getElementById('modalTime');
+            const modalBtnDismiss = document.getElementById('modalBtnDismiss');
+            const modalBtnAction = document.getElementById('modalBtnAction');
+            const modalCloseBtn = document.getElementById('modalCloseBtn');
+            const toast = document.getElementById('toast');
+            const toastMsg = document.getElementById('toastMsg');
+
+            let modalActionCallback = null;
+            let toastTimer;
+
+            // ─── MODAL SYSTEM ───
+            function showModal(bodyText, subText, actionLabel, callback, dismissLabel = 'Dismiss') {
+                modalBody.textContent = bodyText;
+                modalSub.textContent = subText || '';
+                const now = new Date();
+                modalTime.textContent = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                modalBtnAction.textContent = actionLabel || 'OK';
+                modalBtnDismiss.textContent = dismissLabel;
+                modalActionCallback = callback || null;
+                modalOverlay.classList.add('active');
+            }
+
+            function hideModal() {
+                modalOverlay.classList.remove('active');
+                modalActionCallback = null;
+            }
+            modalCloseBtn.addEventListener('click', hideModal);
+            modalBtnDismiss.addEventListener('click', hideModal);
+            modalBtnAction.addEventListener('click', () => {
+                if (modalActionCallback && typeof modalActionCallback === 'function') {
+                    modalActionCallback();
+                }
+                hideModal();
+            });
+            modalOverlay.addEventListener('click', (e) => {
+                if (e.target === modalOverlay) hideModal();
+            });
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape' && modalOverlay.classList.contains('active')) hideModal();
+            });
+
+            // ─── TOAST ───
+            function showToast(message, iconClass = 'fa-circle-check') {
+                clearTimeout(toastTimer);
+                toastMsg.textContent = message;
+                const iconEl = toast.querySelector('i');
+                if (iconEl) iconEl.className = 'fas ' + iconClass;
+                toast.classList.add('show');
+                toastTimer = setTimeout(() => toast.classList.remove('show'), 2800);
+            }
+
+            // ─── CHARACTER COUNT ───
+            reportComment.addEventListener('input', () => {
+                const len = reportComment.value.length;
+                charCount.textContent = len;
+                charCount.style.color = len > 250 ? 'var(--ios-orange)' : 'var(--ios-gray3)';
+            });
+
+            // ─── STATUS OPTION SELECTION ───
+            statusOptions.forEach(option => {
+                option.addEventListener('click', function() {
+                    const status = this.getAttribute('data-status');
+                    // Deselect all
+                    statusOptions.forEach(opt => opt.classList.remove('selected'));
+                    // Select clicked
+                    this.classList.add('selected');
+                    selectedStatus = status;
+                    // Enable submit button
+                    btnSubmitReport.disabled = false;
+                    // Update badge preview
+                    updateBadgePreview(status);
+                    // Haptic-style feedback via animation
+                    this.style.transform = 'scale(0.94)';
+                    setTimeout(() => { this.style.transform = ''; }, 150);
+                });
+
+                // Keyboard accessibility
+                option.setAttribute('tabindex', '0');
+                option.addEventListener('keydown', function(e) {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        this.click();
+                    }
+                });
+            });
+
+            function updateBadgePreview(status) {
+                if (status === 'open') {
+                    currentStatusBadge.className = 'pharmacy-summary__status status-open-badge';
+                    currentStatusBadge.textContent = '● Open Now';
+                } else if (status === 'closed') {
+                    currentStatusBadge.className = 'pharmacy-summary__status status-closed-badge';
+                    currentStatusBadge.textContent = '● Closed';
+                } else if (status === 'closing') {
+                    currentStatusBadge.className = 'pharmacy-summary__status';
+                    currentStatusBadge.style.background = '#FFF7ED';
+                    currentStatusBadge.style.color = '#C2410C';
+                    currentStatusBadge.textContent = '● Closing Soon';
+                }
+            }
+
+            // ─── SUBMIT REPORT ───
+            btnSubmitReport.addEventListener('click', () => {
+                if (!selectedStatus) return;
+
+                const comment = reportComment.value.trim();
+                const statusLabels = { open: 'Open', closed: 'Closed', closing: 'Closing Soon' };
+                const statusLabel = statusLabels[selectedStatus] || selectedStatus;
+                const timestamp = new Date().toLocaleString([], {
+                    month: 'short',
+                    day: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                });
+
+                // Disable button during "submission"
+                btnSubmitReport.disabled = true;
+                btnSubmitReport.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Submitting…';
+
+                // Simulate network request
+                setTimeout(() => {
+                    // Success feedback via iOS modal
+                    showModal(
+                        'Report Submitted — Thank You!',
+                        `You reported MediCare 24/7 Pharmacy as "${statusLabel}" on ${timestamp}.${comment ? ' Your comment: "' + comment + '"' : ''} Your contribution helps the community find reliable pharmacy information.`,
+                        'Done',
+                        () => {
+                            // Reset form
+                            statusOptions.forEach(opt => opt.classList.remove('selected'));
+                            selectedStatus = null;
+                            reportComment.value = '';
+                            charCount.textContent = '0';
+                            btnSubmitReport.disabled = true;
+                            btnSubmitReport.innerHTML =
+                                '<i class="fas fa-paper-plane"></i> Submit Report';
+                            currentStatusBadge.className =
+                                'pharmacy-summary__status status-open-badge';
+                            currentStatusBadge.textContent = '● Open Now';
+                            currentStatusBadge.style.background = '';
+                            currentStatusBadge.style.color = '';
+                            showToast('Report submitted successfully!', 'fa-circle-check');
+                            // Scroll to recent reports
+                            document.querySelector('.recent-reports').scrollIntoView({
+                                behavior: 'smooth',
+                                block: 'start'
+                            });
+                        },
+                        'Close'
+                    );
+
+                    // Add new report to the recent list dynamically
+                    const recentReportsContainer = document.querySelector('.recent-reports');
+                    const reportList = recentReportsContainer.querySelectorAll('.report-item');
+                    const newReport = document.createElement('div');
+                    newReport.className = 'report-item';
+                    newReport.style.animation = 'fadeUp 0.5s ease both';
+                    const dotColor = selectedStatus === 'open' ? 'green' : selectedStatus ===
+                        'closed' ? 'red' : 'orange';
+                    newReport.innerHTML = `
+                <span class="report-item__dot ${dotColor}"></span>
+                <span class="report-item__text">Reported <strong>${statusLabel}</strong>${comment ? ' — "' + comment + '"' : ''}</span>
+                <span class="report-item__time">Just now</span>
+              `;
+                    if (reportList.length > 0) {
+                        reportList[0].parentNode.insertBefore(newReport, reportList[0]);
+                    }
+
+                    // Add fadeUp keyframe dynamically if not present
+                    if (!document.getElementById('fadeUpKeyframe')) {
+                        const styleEl = document.createElement('style');
+                        styleEl.id = 'fadeUpKeyframe';
+                        styleEl.textContent = `
+                  @keyframes fadeUp {
+                    from { opacity:0; transform:translateY(12px); }
+                    to { opacity:1; transform:translateY(0); }
+                  }`;
+                        document.head.appendChild(styleEl);
+                    }
+                }, 1200);
+            });
+
+            // ─── INIT ───
+            console.log('📋 PharmFinder — Report Status page ready.');
+            console.log('💡 Select a status option to enable the submit button.');
+            console.log('🤝 Your report helps keep pharmacy data accurate for everyone.');
+
+            // Pre-select hint toast
+            setTimeout(() => {
+                showToast('Select a status to report — Open, Closed, or Closing Soon',
+                'fa-clipboard-check');
+            }, 1000);
+        })();
+    </script>
+</body>
+</html>

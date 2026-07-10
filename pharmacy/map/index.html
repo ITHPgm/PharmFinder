@@ -1,0 +1,1312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>PharmFinder — Map View</title>
+    <meta name="description" content="Visual map of nearby pharmacies — find the closest open pharmacy with spatial awareness." />
+    <meta name="theme-color" content="#0D6B4E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+    <style>
+        :root {
+            --ios-blue: #007AFF;
+            --ios-green: #34C759;
+            --ios-red: #FF3B30;
+            --ios-orange: #FF9500;
+            --ios-teal: #5AC8FA;
+            --ios-indigo: #5856D6;
+            --ios-purple: #AF52DE;
+            --ios-gray: #8E8E93;
+            --ios-gray2: #AEAEB2;
+            --ios-gray3: #C7C7CC;
+            --ios-gray4: #D1D1D6;
+            --ios-gray5: #E5E5EA;
+            --ios-gray6: #F2F2F7;
+            --ios-bg: #F9F9FB;
+            --ios-white: #FFFFFF;
+            --ios-black: #1C1C1E;
+            --ios-dark-bg: #1C1C1E;
+            --ios-dark-card: #2C2C2E;
+            --brand-primary: #0D6B4E;
+            --brand-primary-light: #0F8A63;
+            --brand-secondary: #1B9C6B;
+            --brand-accent: #22C55E;
+            --brand-bg-light: #ECFDF5;
+            --brand-gradient: linear-gradient(135deg, #0D6B4E 0%, #0F8A63 30%, #1B9C6B 60%, #22C55E 100%);
+            --glass-bg: rgba(255, 255, 255, 0.76);
+            --glass-border: rgba(255, 255, 255, 0.60);
+            --glass-blur: blur(22px) saturate(180%);
+            --radius-sm: 10px;
+            --radius-md: 16px;
+            --radius-lg: 22px;
+            --radius-xl: 28px;
+            --radius-2xl: 36px;
+            --radius-full: 9999px;
+            --shadow-ios: 0 1px 3px rgba(0, 0, 0, 0.06), 0 6px 16px rgba(0, 0, 0, 0.06);
+            --shadow-ios-lg: 0 4px 20px rgba(0, 0, 0, 0.10), 0 12px 40px rgba(0, 0, 0, 0.08);
+            --shadow-ios-xl: 0 8px 40px rgba(0, 0, 0, 0.14), 0 20px 60px rgba(0, 0, 0, 0.10);
+            --shadow-glow-green: 0 0 40px rgba(13, 107, 78, 0.25), 0 0 80px rgba(34, 197, 94, 0.15);
+            --shadow-glow-red: 0 0 40px rgba(255, 59, 48, 0.2), 0 0 80px rgba(255, 45, 85, 0.10);
+            --transition-fast: 0.18s cubic-bezier(0.25, 0.1, 0.25, 1);
+            --transition-smooth: 0.3s cubic-bezier(0.25, 0.1, 0.25, 1);
+            --transition-bounce: 0.45s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            --transition-spring: 0.55s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            --bottom-sheet-height: 340px;
+            --bottom-sheet-collapsed: 72px;
+            --safe-bottom: env(safe-area-inset-bottom, 0px);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        html {
+            font-size: 16px;
+            -webkit-tap-highlight-color: transparent;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Helvetica Neue', sans-serif;
+            background: #E8EDE8;
+            color: var(--ios-black);
+            line-height: 1.5;
+            overflow: hidden;
+            height: 100vh;
+            height: 100dvh;
+            position: relative;
+            -webkit-user-select: none;
+            user-select: none;
+        }
+
+        /* ── MAP CANVAS ── */
+        .map-canvas {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(180deg, #E8F0E8 0%, #DDE8DD 30%, #E0EAE0 60%, #EAF2EA 100%);
+            z-index: 0;
+            overflow: hidden;
+        }
+        /* Grid lines to simulate streets */
+        .map-grid {
+            position: absolute;
+            inset: 0;
+            background-image:
+                repeating-linear-gradient(0deg, transparent, transparent 79px, rgba(0, 0, 0, 0.03) 79px, rgba(0, 0, 0, 0.03) 80px),
+                repeating-linear-gradient(90deg, transparent, transparent 79px, rgba(0, 0, 0, 0.03) 79px, rgba(0, 0, 0, 0.03) 80px);
+            z-index: 0;
+        }
+        .map-roads {
+            position: absolute;
+            inset: 0;
+            z-index: 1;
+        }
+        .map-road {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.55);
+            border-radius: 2px;
+        }
+        .map-road--h1 {
+            top: 30%;
+            left: 0;
+            right: 0;
+            height: 10px;
+        }
+        .map-road--h2 {
+            top: 58%;
+            left: 0;
+            right: 0;
+            height: 7px;
+        }
+        .map-road--h3 {
+            top: 78%;
+            left: 0;
+            right: 0;
+            height: 5px;
+        }
+        .map-road--v1 {
+            left: 25%;
+            top: 0;
+            bottom: 0;
+            width: 10px;
+        }
+        .map-road--v2 {
+            left: 52%;
+            top: 0;
+            bottom: 0;
+            width: 7px;
+        }
+        .map-road--v3 {
+            left: 72%;
+            top: 0;
+            bottom: 0;
+            width: 5px;
+        }
+        .map-road--v4 {
+            left: 88%;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+        }
+        .map-park {
+            position: absolute;
+            background: rgba(180, 210, 180, 0.35);
+            border-radius: 50%;
+            z-index: 0;
+        }
+        .map-park--1 {
+            width: 140px;
+            height: 100px;
+            top: 15%;
+            left: 60%;
+            border-radius: 40%;
+        }
+        .map-park--2 {
+            width: 100px;
+            height: 80px;
+            bottom: 22%;
+            left: 8%;
+            border-radius: 35%;
+        }
+        .map-water {
+            position: absolute;
+            background: rgba(170, 210, 230, 0.30);
+            border-radius: 30%;
+            z-index: 0;
+        }
+        .map-water--1 {
+            width: 200px;
+            height: 60px;
+            top: 72%;
+            left: 50%;
+        }
+
+        /* ── MAP MARKERS ── */
+        .map-marker {
+            position: absolute;
+            z-index: 10;
+            cursor: pointer;
+            transition: transform var(--transition-bounce);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2px;
+        }
+        .map-marker:hover {
+            transform: scale(1.15);
+            z-index: 20;
+        }
+        .map-marker.selected {
+            z-index: 25;
+        }
+        .map-marker__pin {
+            width: 36px;
+            height: 36px;
+            border-radius: 50% 50% 50% 0;
+            background: var(--brand-primary);
+            transform: rotate(-45deg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 6px 20px rgba(13, 107, 78, 0.45);
+            position: relative;
+        }
+        .map-marker__pin i {
+            transform: rotate(45deg);
+            color: #fff;
+            font-size: 0.75rem;
+        }
+        .map-marker__pin.open {
+            background: var(--brand-primary);
+        }
+        .map-marker__pin.closed {
+            background: #9CA3AF;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+        .map-marker__pin.emergency {
+            background: var(--ios-red);
+            box-shadow: 0 6px 24px rgba(255, 59, 48, 0.5);
+            animation: markerPulse 1.8s ease-in-out infinite;
+        }
+        @keyframes markerPulse {
+            0%,
+            100% {
+                box-shadow: 0 6px 24px rgba(255, 59, 48, 0.5);
+            }
+            50% {
+                box-shadow: 0 6px 40px rgba(255, 59, 48, 0.75), 0 0 60px rgba(255, 59, 48, 0.3);
+            }
+        }
+        .map-marker__label {
+            font-size: 0.6rem;
+            font-weight: 700;
+            color: var(--ios-black);
+            background: rgba(255, 255, 255, 0.85);
+            padding: 3px 8px;
+            border-radius: var(--radius-full);
+            white-space: nowrap;
+            box-shadow: var(--shadow-ios);
+            letter-spacing: -0.2px;
+        }
+        /* User location marker */
+        .user-location-marker {
+            position: absolute;
+            z-index: 30;
+            width: 24px;
+            height: 24px;
+            background: var(--ios-blue);
+            border-radius: 50%;
+            border: 3px solid #fff;
+            box-shadow: 0 0 0 8px rgba(0, 122, 255, 0.18), 0 4px 16px rgba(0, 0, 0, 0.25);
+            animation: userPulse 2.5s ease-in-out infinite;
+            pointer-events: none;
+        }
+        @keyframes userPulse {
+            0%,
+            100% {
+                box-shadow: 0 0 0 8px rgba(0, 122, 255, 0.18), 0 4px 16px rgba(0, 0, 0, 0.25);
+            }
+            50% {
+                box-shadow: 0 0 0 18px rgba(0, 122, 255, 0.06), 0 4px 20px rgba(0, 0, 0, 0.30);
+            }
+        }
+
+        /* ── HEADER OVERLAY ── */
+        .map-header {
+            position: absolute;
+            top: 12px;
+            left: 12px;
+            right: 12px;
+            z-index: 50;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: var(--glass-bg);
+            backdrop-filter: var(--glass-blur);
+            -webkit-backdrop-filter: var(--glass-blur);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius-xl);
+            padding: 8px 12px;
+            box-shadow: var(--shadow-ios-lg);
+        }
+        .map-header .btn-back {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.7);
+            border: 1px solid var(--ios-gray4);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9rem;
+            color: var(--ios-black);
+            transition: all var(--transition-fast);
+            flex-shrink: 0;
+        }
+        .map-header .btn-back:hover {
+            background: #fff;
+            box-shadow: var(--shadow-ios);
+        }
+        .map-header__title {
+            flex: 1;
+            font-weight: 700;
+            font-size: 0.95rem;
+            letter-spacing: -0.3px;
+            color: var(--ios-black);
+            text-align: center;
+        }
+        .map-header .toggle-group {
+            display: flex;
+            background: rgba(0, 0, 0, 0.04);
+            border-radius: var(--radius-full);
+            padding: 3px;
+            flex-shrink: 0;
+        }
+        .toggle-btn {
+            padding: 7px 14px;
+            border: none;
+            background: transparent;
+            font-weight: 600;
+            font-size: 0.72rem;
+            color: var(--ios-gray);
+            cursor: pointer;
+            border-radius: var(--radius-full);
+            transition: all var(--transition-smooth);
+            font-family: 'Inter', sans-serif;
+            white-space: nowrap;
+        }
+        .toggle-btn.active {
+            background: #fff;
+            color: var(--brand-primary);
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+        }
+
+        /* ── FLOATING ACTION BUTTONS ── */
+        .fab-group {
+            position: absolute;
+            right: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 50;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .fab {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: var(--glass-bg);
+            backdrop-filter: var(--glass-blur);
+            -webkit-backdrop-filter: var(--glass-blur);
+            border: 1px solid var(--glass-border);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            color: var(--ios-black);
+            box-shadow: var(--shadow-ios-lg);
+            transition: all var(--transition-bounce);
+        }
+        .fab:hover {
+            transform: scale(1.08);
+            box-shadow: var(--shadow-ios-xl);
+        }
+        .fab:active {
+            transform: scale(0.92);
+        }
+        .fab--emergency {
+            background: linear-gradient(135deg, #FF3B30, #FF5E5B);
+            color: #fff;
+            border: none;
+            box-shadow: var(--shadow-glow-red);
+            animation: fabGlow 2.5s ease-in-out infinite;
+        }
+        @keyframes fabGlow {
+            0%,
+            100% {
+                box-shadow: var(--shadow-glow-red);
+            }
+            50% {
+                box-shadow: 0 0 50px rgba(255, 59, 48, 0.4), 0 0 90px rgba(255, 45, 85, 0.2);
+            }
+        }
+        .fab--emergency i {
+            animation: heartBeat 1.2s ease-in-out infinite;
+        }
+        @keyframes heartBeat {
+            0%,
+            100% {
+                transform: scale(1);
+            }
+            15% {
+                transform: scale(1.25);
+            }
+            30% {
+                transform: scale(1);
+            }
+        }
+
+        /* ── FILTER OVERLAY ── */
+        .filter-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            z-index: 55;
+            background: var(--glass-bg);
+            backdrop-filter: var(--glass-blur);
+            -webkit-backdrop-filter: var(--glass-blur);
+            border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+            padding: 10px 16px 14px;
+            border: 1px solid var(--glass-border);
+            border-bottom: none;
+            box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.06);
+            transform: translateY(0);
+            transition: transform var(--transition-spring);
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        .filter-overlay.hidden {
+            transform: translateY(100%);
+            pointer-events: none;
+        }
+        .filter-chip-mini {
+            padding: 8px 14px;
+            border-radius: var(--radius-full);
+            font-size: 0.7rem;
+            font-weight: 700;
+            cursor: pointer;
+            border: 1.5px solid var(--ios-gray4);
+            background: rgba(255, 255, 255, 0.7);
+            color: var(--ios-black);
+            transition: all var(--transition-bounce);
+            white-space: nowrap;
+            font-family: 'Inter', sans-serif;
+        }
+        .filter-chip-mini.active {
+            background: var(--brand-primary);
+            color: #fff;
+            border-color: var(--brand-primary);
+            box-shadow: 0 4px 12px rgba(13, 107, 78, 0.30);
+        }
+        .filter-chip-mini.emergency-chip {
+            border-color: #FECACA;
+            color: var(--ios-red);
+        }
+        .filter-chip-mini.emergency-chip.active {
+            background: var(--ios-red);
+            color: #fff;
+            border-color: var(--ios-red);
+        }
+
+        /* ── MARKER INFO POPUP ── */
+        .marker-popup {
+            position: absolute;
+            z-index: 40;
+            background: var(--glass-bg);
+            backdrop-filter: var(--glass-blur);
+            -webkit-backdrop-filter: var(--glass-blur);
+            border-radius: var(--radius-lg);
+            padding: 14px 16px;
+            border: 1px solid var(--glass-border);
+            box-shadow: var(--shadow-ios-xl);
+            min-width: 220px;
+            transform: translate(-50%, -130%);
+            pointer-events: none;
+            opacity: 0;
+            transition: all var(--transition-spring);
+        }
+        .marker-popup.visible {
+            opacity: 1;
+            pointer-events: all;
+        }
+        .marker-popup__name {
+            font-weight: 700;
+            font-size: 0.85rem;
+            color: var(--ios-black);
+            margin-bottom: 4px;
+        }
+        .marker-popup__meta {
+            font-size: 0.7rem;
+            color: var(--ios-gray);
+            display: flex;
+            gap: 10px;
+            margin-bottom: 8px;
+        }
+        .marker-popup__actions {
+            display: flex;
+            gap: 6px;
+        }
+        .marker-popup__btn {
+            flex: 1;
+            padding: 8px;
+            border-radius: var(--radius-full);
+            font-weight: 600;
+            font-size: 0.68rem;
+            border: none;
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            font-family: 'Inter', sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+        }
+        .marker-popup__btn--call {
+            background: var(--brand-gradient);
+            color: #fff;
+        }
+        .marker-popup__btn--dir {
+            background: #fff;
+            color: var(--ios-blue);
+            border: 1.5px solid var(--ios-blue);
+        }
+
+        /* ── BOTTOM SHEET ── */
+        .bottom-sheet {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            z-index: 60;
+            background: var(--glass-bg);
+            backdrop-filter: var(--glass-blur);
+            -webkit-backdrop-filter: var(--glass-blur);
+            border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+            border: 1px solid var(--glass-border);
+            border-bottom: none;
+            box-shadow: 0 -8px 40px rgba(0, 0, 0, 0.10);
+            height: var(--bottom-sheet-height);
+            transform: translateY(calc(var(--bottom-sheet-height) - var(--bottom-sheet-collapsed)));
+            transition: transform 0.45s cubic-bezier(0.22, 0.61, 0.36, 1);
+            display: flex;
+            flex-direction: column;
+            touch-action: pan-y;
+            padding-bottom: var(--safe-bottom);
+        }
+        .bottom-sheet.expanded {
+            transform: translateY(0);
+        }
+        .bottom-sheet__handle {
+            width: 36px;
+            height: 5px;
+            border-radius: 3px;
+            background: var(--ios-gray3);
+            margin: 10px auto;
+            flex-shrink: 0;
+            cursor: grab;
+        }
+        .bottom-sheet__header {
+            padding: 0 18px 10px;
+            font-weight: 800;
+            font-size: 0.95rem;
+            letter-spacing: -0.3px;
+            color: var(--ios-black);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-shrink: 0;
+        }
+        .bottom-sheet__list {
+            flex: 1;
+            overflow-y: auto;
+            padding: 0 14px 10px;
+            -webkit-overflow-scrolling: touch;
+        }
+        .bottom-sheet__list::-webkit-scrollbar {
+            display: none;
+        }
+        .sheet-pharmacy-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 10px;
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            border: 1px solid transparent;
+            margin-bottom: 6px;
+            background: rgba(255, 255, 255, 0.5);
+        }
+        .sheet-pharmacy-item:hover {
+            background: rgba(255, 255, 255, 0.8);
+            border-color: var(--ios-gray4);
+            box-shadow: var(--shadow-ios);
+        }
+        .sheet-pharmacy-item__icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.85rem;
+            flex-shrink: 0;
+        }
+        .sheet-pharmacy-item__icon.open {
+            background: #D1FAE5;
+            color: #065F46;
+        }
+        .sheet-pharmacy-item__icon.closed {
+            background: #FEE2E2;
+            color: #991B1B;
+        }
+        .sheet-pharmacy-item__info {
+            flex: 1;
+            min-width: 0;
+        }
+        .sheet-pharmacy-item__name {
+            font-weight: 700;
+            font-size: 0.82rem;
+            color: var(--ios-black);
+        }
+        .sheet-pharmacy-item__dist {
+            font-size: 0.68rem;
+            color: var(--ios-gray);
+        }
+        .sheet-pharmacy-item__arrow {
+            color: var(--ios-gray2);
+            font-size: 0.7rem;
+        }
+
+        /* ── iOS Notification Modal ── */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.55);
+            z-index: 9999;
+            display: flex;
+            align-items: flex-start;
+            justify-content: center;
+            padding-top: 60px;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
+        }
+        .modal-overlay.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+        .modal-notification {
+            background: rgba(255, 255, 255, 0.96);
+            backdrop-filter: blur(30px) saturate(200%);
+            -webkit-backdrop-filter: blur(30px) saturate(200%);
+            border-radius: 22px;
+            padding: 18px 20px;
+            width: 90%;
+            max-width: 400px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(255, 255, 255, 0.6);
+            transform: translateY(-30px) scale(0.92);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+        }
+        .modal-overlay.active .modal-notification {
+            transform: translateY(0) scale(1);
+        }
+        .modal-notification__header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        .modal-notification__app-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            background: var(--brand-gradient);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 0.85rem;
+        }
+        .modal-notification__app-name {
+            font-weight: 700;
+            font-size: 0.85rem;
+            color: var(--ios-black);
+        }
+        .modal-notification__time {
+            font-size: 0.7rem;
+            color: var(--ios-gray2);
+            margin-left: auto;
+        }
+        .modal-notification__body {
+            font-size: 0.9rem;
+            color: var(--ios-black);
+            line-height: 1.4;
+            font-weight: 500;
+        }
+        .modal-notification__sub {
+            font-size: 0.75rem;
+            color: var(--ios-gray);
+            margin-top: 4px;
+        }
+        .modal-notification__close {
+            position: absolute;
+            top: 10px;
+            right: 14px;
+            background: rgba(0, 0, 0, 0.06);
+            border: none;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 0.8rem;
+            color: var(--ios-gray);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .modal-notification__actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 12px;
+        }
+        .modal-notification__btn {
+            flex: 1;
+            padding: 10px;
+            border-radius: var(--radius-full);
+            border: none;
+            font-weight: 600;
+            font-size: 0.8rem;
+            cursor: pointer;
+            font-family: 'Inter', sans-serif;
+        }
+        .modal-notification__btn--primary {
+            background: var(--brand-primary);
+            color: #fff;
+        }
+        .modal-notification__btn--secondary {
+            background: var(--ios-gray6);
+            color: var(--ios-black);
+        }
+
+        /* ── Toast ── */
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%) translateY(120px);
+            background: var(--ios-dark-card);
+            color: #fff;
+            padding: 12px 22px;
+            border-radius: var(--radius-full);
+            font-weight: 600;
+            font-size: 0.82rem;
+            z-index: 10000;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .toast.show {
+            transform: translateX(-50%) translateY(0);
+        }
+        .toast i {
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 400px) {
+            .map-header {
+                padding: 6px 10px;
+                gap: 6px;
+            }
+            .toggle-btn {
+                padding: 6px 10px;
+                font-size: 0.65rem;
+            }
+            .fab {
+                width: 38px;
+                height: 38px;
+                font-size: 0.85rem;
+            }
+            .fab-group {
+                right: 8px;
+                gap: 8px;
+            }
+            .marker-popup {
+                min-width: 180px;
+                padding: 10px 12px;
+            }
+            .filter-overlay {
+                padding: 8px 10px 12px;
+                gap: 5px;
+            }
+            .filter-chip-mini {
+                padding: 6px 10px;
+                font-size: 0.65rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ── MAP CANVAS ── -->
+    <div class="map-canvas" id="mapCanvas">
+        <!-- Grid -->
+        <div class="map-grid"></div>
+        <!-- Roads -->
+        <div class="map-roads">
+            <div class="map-road map-road--h1"></div>
+            <div class="map-road map-road--h2"></div>
+            <div class="map-road map-road--h3"></div>
+            <div class="map-road map-road--v1"></div>
+            <div class="map-road map-road--v2"></div>
+            <div class="map-road map-road--v3"></div>
+            <div class="map-road map-road--v4"></div>
+        </div>
+        <!-- Parks -->
+        <div class="map-park map-park--1"></div>
+        <div class="map-park map-park--2"></div>
+        <div class="map-water map-water--1"></div>
+
+        <!-- User location marker -->
+        <div class="user-location-marker" id="userLocationMarker" style="top:48%;left:44%;"></div>
+
+        <!-- Pharmacy markers injected by JS -->
+        <div id="markersContainer"></div>
+
+        <!-- Marker popup -->
+        <div class="marker-popup" id="markerPopup">
+            <div class="marker-popup__name" id="popupName">Pharmacy Name</div>
+            <div class="marker-popup__meta">
+                <span id="popupDist">0.3 km</span>
+                <span id="popupStatus" style="color:var(--ios-green);">● Open</span>
+            </div>
+            <div class="marker-popup__actions">
+                <button class="marker-popup__btn marker-popup__btn--call" id="popupCallBtn">
+                    <i class="fas fa-phone"></i> Call
+                </button>
+                <button class="marker-popup__btn marker-popup__btn--dir" id="popupDirBtn">
+                    <i class="fas fa-route"></i> Directions
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ── HEADER ── -->
+    <div class="map-header" id="mapHeader">
+        <button class="btn-back" onclick="history.back()" aria-label="Go back">
+            <i class="fas fa-chevron-left"></i>
+        </button>
+        <span class="map-header__title">Map View</span>
+        <div class="toggle-group">
+            <button class="toggle-btn" id="toggleList">📋 List</button>
+            <button class="toggle-btn active" id="toggleMap">🗺️ Map</button>
+        </div>
+    </div>
+
+    <!-- ── FLOATING ACTION BUTTONS ── -->
+    <div class="fab-group">
+        <button class="fab" id="fabMyLocation" title="My Location" aria-label="Center on my location">
+            <i class="fas fa-location-crosshairs"></i>
+        </button>
+        <button class="fab" id="fabRefresh" title="Refresh" aria-label="Refresh map">
+            <i class="fas fa-rotate"></i>
+        </button>
+        <button class="fab fab--emergency" id="fabEmergency" title="Emergency Mode" aria-label="Activate emergency mode">
+            <i class="fas fa-heart-pulse"></i>
+        </button>
+    </div>
+
+    <!-- ── FILTER OVERLAY ── -->
+    <div class="filter-overlay" id="filterOverlay">
+        <button class="filter-chip-mini active" data-map-filter="all">All</button>
+        <button class="filter-chip-mini" data-map-filter="open">Open Now</button>
+        <button class="filter-chip-mini" data-map-filter="24h">24/7</button>
+        <button class="filter-chip-mini" data-map-filter="closest">Closest</button>
+        <button class="filter-chip-mini emergency-chip" data-map-filter="emergency">Emergency</button>
+    </div>
+
+    <!-- ── BOTTOM SHEET ── -->
+    <div class="bottom-sheet" id="bottomSheet">
+        <div class="bottom-sheet__handle" id="sheetHandle"></div>
+        <div class="bottom-sheet__header">
+            <span>Nearby Pharmacies</span>
+            <span style="font-size:0.7rem;color:var(--ios-gray);" id="sheetCount">6 found</span>
+        </div>
+        <div class="bottom-sheet__list" id="sheetList">
+            <!-- Injected by JS -->
+        </div>
+    </div>
+
+    <!-- ── iOS Notification Modal ── -->
+    <div class="modal-overlay" id="modalOverlay">
+        <div class="modal-notification" id="modalNotification">
+            <button class="modal-notification__close" id="modalCloseBtn"><i class="fas fa-xmark"></i></button>
+            <div class="modal-notification__header">
+                <div class="modal-notification__app-icon"><i class="fas fa-prescription-bottle"></i></div>
+                <span class="modal-notification__app-name">PharmFinder</span>
+                <span class="modal-notification__time" id="modalTime">now</span>
+            </div>
+            <div class="modal-notification__body" id="modalBody">Message</div>
+            <div class="modal-notification__sub" id="modalSub"></div>
+            <div class="modal-notification__actions">
+                <button class="modal-notification__btn modal-notification__btn--secondary" id="modalBtnDismiss">Dismiss</button>
+                <button class="modal-notification__btn modal-notification__btn--primary" id="modalBtnAction">OK</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast -->
+    <div class="toast" id="toast"><i class="fas fa-circle-check"></i><span id="toastMsg"></span></div>
+
+    <script>
+        (function() {
+            // ─── PHARMACY DATA ───
+            const pharmacies = [
+                { id: 1, name: 'MediCare 24/7 Pharmacy', lat: 42, lng: 48, status: 'open', is24h: true,
+                    distance: '0.3 km', phone: '+1 (555) 111-2222', address: '12 Adeola Odeku St, VI' },
+                { id: 2, name: 'GreenCross Pharmacy', lat: 28, lng: 68, status: 'open', is24h: false,
+                    distance: '0.7 km', phone: '+1 (555) 222-3333', address: '45 Broad Street, Marina' },
+                { id: 3, name: 'HealthPlus Pharmacy', lat: 62, lng: 30, status: 'closed', is24h: false,
+                    distance: '1.1 km', phone: '+1 (555) 333-4444', address: '78 Awolowo Road, Ikoyi' },
+                { id: 4, name: 'Rx Emergency Pharm', lat: 55, lng: 75, status: 'open', is24h: true,
+                    distance: '1.8 km', phone: '+1 (555) 444-5555', address: '3 Allen Avenue, Ikeja' },
+                { id: 5, name: 'CityCare Pharmacy', lat: 72, lng: 55, status: 'open', is24h: false,
+                    distance: '2.2 km', phone: '+1 (555) 555-6666', address: '22B Admiralty Way, Lekki' },
+                { id: 6, name: 'NightOwl Drugs', lat: 38, lng: 85, status: 'open', is24h: true,
+                    distance: '2.6 km', phone: '+1 (555) 666-7777', address: '9 Opebi Road, Ikeja' },
+            ];
+
+            let activeMapFilter = 'all';
+            let selectedMarkerId = null;
+            let isEmergencyMode = false;
+
+            // ─── DOM REFS ───
+            const markersContainer = document.getElementById('markersContainer');
+            const markerPopup = document.getElementById('markerPopup');
+            const popupName = document.getElementById('popupName');
+            const popupDist = document.getElementById('popupDist');
+            const popupStatus = document.getElementById('popupStatus');
+            const popupCallBtn = document.getElementById('popupCallBtn');
+            const popupDirBtn = document.getElementById('popupDirBtn');
+            const bottomSheet = document.getElementById('bottomSheet');
+            const sheetList = document.getElementById('sheetList');
+            const sheetCount = document.getElementById('sheetCount');
+            const filterOverlay = document.getElementById('filterOverlay');
+            const filterChips = document.querySelectorAll('.filter-chip-mini');
+            const toast = document.getElementById('toast');
+            const toastMsg = document.getElementById('toastMsg');
+            const modalOverlay = document.getElementById('modalOverlay');
+            const modalBody = document.getElementById('modalBody');
+            const modalSub = document.getElementById('modalSub');
+            const modalTime = document.getElementById('modalTime');
+            const modalBtnDismiss = document.getElementById('modalBtnDismiss');
+            const modalBtnAction = document.getElementById('modalBtnAction');
+            const modalCloseBtn = document.getElementById('modalCloseBtn');
+            const userLocationMarker = document.getElementById('userLocationMarker');
+
+            let modalActionCallback = null;
+            let toastTimer;
+
+            // ─── MODAL SYSTEM ───
+            function showModal(bodyText, subText, actionLabel, callback, dismissLabel = 'Dismiss') {
+                modalBody.textContent = bodyText;
+                modalSub.textContent = subText || '';
+                modalTime.textContent = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                modalBtnAction.textContent = actionLabel || 'OK';
+                modalBtnDismiss.textContent = dismissLabel;
+                modalActionCallback = callback || null;
+                modalOverlay.classList.add('active');
+            }
+
+            function hideModal() {
+                modalOverlay.classList.remove('active');
+                modalActionCallback = null;
+            }
+            modalCloseBtn.addEventListener('click', hideModal);
+            modalBtnDismiss.addEventListener('click', hideModal);
+            modalBtnAction.addEventListener('click', () => {
+                if (modalActionCallback && typeof modalActionCallback === 'function') modalActionCallback();
+                hideModal();
+            });
+            modalOverlay.addEventListener('click', (e) => { if (e.target === modalOverlay) hideModal(); });
+            document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && modalOverlay.classList
+                    .contains('active')) hideModal(); });
+
+            function showToast(message, iconClass = 'fa-circle-check') {
+                clearTimeout(toastTimer);
+                toastMsg.textContent = message;
+                const iconEl = toast.querySelector('i');
+                if (iconEl) iconEl.className = 'fas ' + iconClass;
+                toast.classList.add('show');
+                toastTimer = setTimeout(() => toast.classList.remove('show'), 2800);
+            }
+
+            // ─── GET FILTERED PHARMACIES ───
+            function getFilteredPharmacies() {
+                let list = [...pharmacies];
+                if (isEmergencyMode) list = list.filter(p => p.status === 'open' || p.is24h);
+                if (activeMapFilter === 'open') list = list.filter(p => p.status === 'open');
+                else if (activeMapFilter === '24h') list = list.filter(p => p.is24h);
+                else if (activeMapFilter === 'closest') list.sort((a, b) => parseFloat(a.distance) - parseFloat(
+                    b.distance));
+                else if (activeMapFilter === 'emergency') list = list.filter(p => p.status === 'open' && p.is24h);
+                return list;
+            }
+
+            // ─── RENDER MARKERS ───
+            function renderMarkers() {
+                const filtered = getFilteredPharmacies();
+                markersContainer.innerHTML = filtered.map(p => {
+                    let pinClass = p.status === 'open' ? 'open' : 'closed';
+                    if (isEmergencyMode || (activeMapFilter === 'emergency')) pinClass = 'emergency';
+                    if (p.is24h && p.status === 'open') pinClass = 'open';
+                    const iconType = p.is24h ? 'fa-clock' : 'fa-prescription-bottle';
+                    return `
+                <div class="map-marker" 
+                     id="marker-${p.id}" 
+                     style="top:${p.lat}%;left:${p.lng}%;" 
+                     data-id="${p.id}"
+                     data-name="${p.name}"
+                     data-status="${p.status}"
+                     data-distance="${p.distance}"
+                     data-phone="${p.phone}"
+                     data-address="${p.address}"
+                     role="button"
+                     tabindex="0"
+                     aria-label="${p.name} — ${p.status === 'open' ? 'Open' : 'Closed'} — ${p.distance}">
+                  <div class="map-marker__pin ${pinClass}">
+                    <i class="fas ${iconType}"></i>
+                  </div>
+                  <span class="map-marker__label">${p.name.split(' ')[0]}</span>
+                </div>`;
+                }).join('');
+
+                // Attach click listeners to markers
+                document.querySelectorAll('.map-marker').forEach(marker => {
+                    marker.addEventListener('click', function(e) {
+                        e.stopPropagation();
+                        const id = parseInt(this.getAttribute('data-id'));
+                        selectMarker(id, this);
+                    });
+                    marker.addEventListener('keydown', function(e) {
+                        if (e.key === 'Enter' || e.key === ' ') {
+                            e.preventDefault();
+                            this.click();
+                        }
+                    });
+                });
+            }
+
+            // ─── SELECT MARKER ───
+            function selectMarker(id, markerEl) {
+                // Deselect all
+                document.querySelectorAll('.map-marker').forEach(m => m.classList.remove('selected'));
+                if (markerEl) markerEl.classList.add('selected');
+                selectedMarkerId = id;
+
+                const pharmacy = pharmacies.find(p => p.id === id);
+                if (!pharmacy) return;
+
+                // Update popup
+                popupName.textContent = pharmacy.name;
+                popupDist.textContent = pharmacy.distance;
+                popupStatus.innerHTML = pharmacy.status === 'open' ?
+                    '<span style="color:var(--ios-green);">● Open</span>' :
+                    '<span style="color:var(--ios-red);">● Closed</span>';
+                if (pharmacy.is24h) popupStatus.innerHTML +=
+                    ' <span style="color:var(--ios-blue);font-weight:700;">24/7</span>';
+
+                // Position popup near marker
+                const markerRect = markerEl.getBoundingClientRect();
+                const mapRect = document.getElementById('mapCanvas').getBoundingClientRect();
+                const popupLeft = markerRect.left - mapRect.left + markerRect.width / 2;
+                const popupTop = markerRect.top - mapRect.top;
+                markerPopup.style.left = popupLeft + 'px';
+                markerPopup.style.top = popupTop + 'px';
+                markerPopup.classList.add('visible');
+
+                // Store current pharmacy for action buttons
+                markerPopup.setAttribute('data-current-id', id);
+                markerPopup.setAttribute('data-current-phone', pharmacy.phone);
+                markerPopup.setAttribute('data-current-name', pharmacy.name);
+
+                // Scroll bottom sheet to item
+                const sheetItem = document.getElementById('sheet-item-' + id);
+                if (sheetItem) {
+                    sheetItem.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
+            }
+
+            function deselectAll() {
+                document.querySelectorAll('.map-marker').forEach(m => m.classList.remove('selected'));
+                markerPopup.classList.remove('visible');
+                selectedMarkerId = null;
+            }
+
+            // Map canvas click to deselect
+            document.getElementById('mapCanvas').addEventListener('click', function(e) {
+                if (!e.target.closest('.map-marker') && !e.target.closest('.marker-popup')) {
+                    deselectAll();
+                }
+            });
+
+            // Popup action buttons
+            popupCallBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const phone = markerPopup.getAttribute('data-current-phone');
+                const name = markerPopup.getAttribute('data-current-name');
+                showModal('Call Pharmacy', `Calling ${name} at ${phone}.`, 'Call Now', () => {
+                    window.open('tel:' + phone.replace(/[^0-9+]/g, ''), '_self');
+                });
+            });
+            popupDirBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const name = markerPopup.getAttribute('data-current-name');
+                showModal('Get Directions', `Opening directions to ${name} in your maps app.`,
+                    'Open Maps', () => {
+                        window.open('https://www.google.com/maps/dir/?api=1&destination=6.4281,3.4215',
+                            '_blank');
+                    });
+            });
+
+            // ─── RENDER BOTTOM SHEET LIST ───
+            function renderSheetList() {
+                const filtered = getFilteredPharmacies();
+                sheetCount.textContent = filtered.length + ' found';
+                sheetList.innerHTML = filtered.map(p => {
+                    const iconClass = p.status === 'open' ? 'open' : 'closed';
+                    const iconType = p.is24h ? 'fa-clock' : 'fa-prescription-bottle';
+                    return `
+                <div class="sheet-pharmacy-item" id="sheet-item-${p.id}" data-id="${p.id}">
+                  <div class="sheet-pharmacy-item__icon ${iconClass}">
+                    <i class="fas ${iconType}"></i>
+                  </div>
+                  <div class="sheet-pharmacy-item__info">
+                    <div class="sheet-pharmacy-item__name">${p.name}</div>
+                    <div class="sheet-pharmacy-item__dist">📍 ${p.distance} · ${p.status === 'open' ? '🟢 Open' : '🔴 Closed'}${p.is24h ? ' · 24/7' : ''}</div>
+                  </div>
+                  <div class="sheet-pharmacy-item__arrow"><i class="fas fa-chevron-right"></i></div>
+                </div>`;
+                }).join('');
+
+                // Attach click to sheet items
+                document.querySelectorAll('.sheet-pharmacy-item').forEach(item => {
+                    item.addEventListener('click', function() {
+                        const id = parseInt(this.getAttribute('data-id'));
+                        const marker = document.getElementById('marker-' + id);
+                        if (marker) {
+                            selectMarker(id, marker);
+                            // Expand sheet
+                            bottomSheet.classList.add('expanded');
+                        }
+                    });
+                });
+            }
+
+            // ─── BOTTOM SHEET DRAG ───
+            let sheetStartY = 0;
+            let sheetStartTransform = 0;
+            let isDragging = false;
+
+            const sheetHandle = document.getElementById('sheetHandle');
+            sheetHandle.addEventListener('pointerdown', function(e) {
+                isDragging = true;
+                sheetStartY = e.clientY;
+                const computed = getComputedStyle(bottomSheet).transform;
+                sheetStartTransform = computed !== 'none' ? parseInt(computed.split(',')[5] || '0') : 0;
+                bottomSheet.style.transition = 'none';
+                this.style.cursor = 'grabbing';
+            });
+
+            window.addEventListener('pointermove', function(e) {
+                if (!isDragging) return;
+                const deltaY = e.clientY - sheetStartY;
+                const newTransform = Math.min(0, Math.max(-(parseInt(getComputedStyle(document.documentElement)
+                    .getPropertyValue('--bottom-sheet-height')) - parseInt(getComputedStyle(document
+                    .documentElement).getPropertyValue('--bottom-sheet-collapsed'))), sheetStartTransform +
+                    deltaY));
+                bottomSheet.style.transform = `translateY(${newTransform}px)`;
+            });
+
+            window.addEventListener('pointerup', function() {
+                if (!isDragging) return;
+                isDragging = false;
+                bottomSheet.style.transition = 'transform 0.45s cubic-bezier(0.22, 0.61, 0.36, 1)';
+                sheetHandle.style.cursor = 'grab';
+                const currentTransform = parseInt(getComputedStyle(bottomSheet).transform.split(',')[5] ||
+                    '0');
+                const threshold = -(parseInt(getComputedStyle(document.documentElement).getPropertyValue(
+                    '--bottom-sheet-height')) / 2);
+                if (currentTransform < threshold) {
+                    bottomSheet.classList.add('expanded');
+                } else {
+                    bottomSheet.classList.remove('expanded');
+                }
+            });
+
+            // Double-tap handle to toggle
+            sheetHandle.addEventListener('dblclick', function() {
+                bottomSheet.classList.toggle('expanded');
+            });
+
+            // ─── FILTER CHIPS ───
+            filterChips.forEach(chip => {
+                chip.addEventListener('click', function() {
+                    filterChips.forEach(c => c.classList.remove('active'));
+                    this.classList.add('active');
+                    activeMapFilter = this.getAttribute('data-map-filter');
+                    if (activeMapFilter === 'emergency') isEmergencyMode = true;
+                    else isEmergencyMode = false;
+                    deselectAll();
+                    renderMarkers();
+                    renderSheetList();
+                    showToast('Filter: ' + this.textContent.trim() + ' applied', 'fa-filter');
+                });
+            });
+
+            // ─── FAB BUTTONS ───
+            document.getElementById('fabMyLocation').addEventListener('click', () => {
+                // Animate user marker
+                userLocationMarker.style.transform = 'scale(1.4)';
+                setTimeout(() => { userLocationMarker.style.transform = 'scale(1)'; }, 400);
+                showToast('Centering on your location…', 'fa-location-crosshairs');
+            });
+
+            document.getElementById('fabRefresh').addEventListener('click', () => {
+                const icon = this.querySelector('i');
+                icon.classList.add('fa-spin');
+                setTimeout(() => {
+                    icon.classList.remove('fa-spin');
+                    renderMarkers();
+                    renderSheetList();
+                    deselectAll();
+                    showToast('Map refreshed', 'fa-rotate');
+                }, 600);
+            });
+
+            document.getElementById('fabEmergency').addEventListener('click', () => {
+                isEmergencyMode = !isEmergencyMode;
+                if (isEmergencyMode) {
+                    activeMapFilter = 'emergency';
+                    filterChips.forEach(c => c.classList.remove('active'));
+                    document.querySelector('.filter-chip-mini.emergency-chip')?.classList.add('active');
+                } else {
+                    activeMapFilter = 'all';
+                    filterChips.forEach(c => c.classList.remove('active'));
+                    document.querySelector('.filter-chip-mini[data-map-filter="all"]')?.classList.add(
+                        'active');
+                }
+                deselectAll();
+                renderMarkers();
+                renderSheetList();
+                showToast(isEmergencyMode ? 'Emergency mode activated!' : 'Emergency mode deactivated',
+                    isEmergencyMode ? 'fa-heart-pulse' : 'fa-circle-check');
+            });
+
+            // ─── TOGGLE BUTTONS ───
+            document.getElementById('toggleList').addEventListener('click', function() {
+                document.getElementById('toggleList').classList.add('active');
+                document.getElementById('toggleMap').classList.remove('active');
+                showToast('Switching to list view…', 'fa-list');
+                setTimeout(() => { window.location.href = 'index.html'; }, 400);
+            });
+            document.getElementById('toggleMap').addEventListener('click', function() {
+                this.classList.add('active');
+                document.getElementById('toggleList').classList.remove('active');
+            });
+
+            // ─── KEYBOARD SHORTCUTS ───
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'e' && e.ctrlKey) {
+                    e.preventDefault();
+                    document.getElementById('fabEmergency').click();
+                }
+                if (e.key === 'l' && e.ctrlKey) {
+                    e.preventDefault();
+                    document.getElementById('fabMyLocation').click();
+                }
+            });
+
+            // ─── INIT ───
+            renderMarkers();
+            renderSheetList();
+            console.log('🗺️ PharmFinder Map View ready.');
+            console.log('📍 Shortcuts: Ctrl+E (Emergency) | Ctrl+L (My Location)');
+            console.log('💡 Tap a marker or sheet item to select a pharmacy.');
+            console.log('👆 Swipe the bottom sheet to expand/collapse.');
+
+            // Show initial toast
+            setTimeout(() => {
+                showToast('Tap markers to see pharmacy details', 'fa-map-pin');
+            }, 800);
+        })();
+    </script>
+</body>
+</html>

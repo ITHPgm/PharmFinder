@@ -1,0 +1,1451 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>PharmFinder — My Profile</title>
+    <meta name="description" content="Manage your PharmFinder profile — switch between user and pharmacy owner roles, manage your pharmacy listing, and track your activity." />
+    <meta name="theme-color" content="#0D6B4E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+    <style>
+        :root {
+            --ios-blue: #007AFF;
+            --ios-green: #34C759;
+            --ios-red: #FF3B30;
+            --ios-orange: #FF9500;
+            --ios-teal: #5AC8FA;
+            --ios-indigo: #5856D6;
+            --ios-purple: #AF52DE;
+            --ios-pink: #FF2D55;
+            --ios-gray: #8E8E93;
+            --ios-gray2: #AEAEB2;
+            --ios-gray3: #C7C7CC;
+            --ios-gray4: #D1D1D6;
+            --ios-gray5: #E5E5EA;
+            --ios-gray6: #F2F2F7;
+            --ios-bg: #F9F9FB;
+            --ios-white: #FFFFFF;
+            --ios-black: #1C1C1E;
+            --ios-dark-card: #2C2C2E;
+            --brand-primary: #0D6B4E;
+            --brand-primary-light: #0F8A63;
+            --brand-secondary: #1B9C6B;
+            --brand-accent: #22C55E;
+            --brand-bg-light: #ECFDF5;
+            --brand-gradient: linear-gradient(135deg, #0D6B4E 0%, #0F8A63 30%, #1B9C6B 60%, #22C55E 100%);
+            --brand-gradient-subtle: linear-gradient(135deg, #ECFDF5 0%, #D1FAE5 50%, #A7F3D0 100%);
+            --amber-gradient: linear-gradient(135deg, #F59E0B 0%, #F97316 50%, #EF4444 100%);
+            --glass-bg: rgba(255, 255, 255, 0.74);
+            --glass-border: rgba(255, 255, 255, 0.58);
+            --glass-blur: blur(22px) saturate(180%);
+            --radius-sm: 10px;
+            --radius-md: 16px;
+            --radius-lg: 22px;
+            --radius-xl: 28px;
+            --radius-2xl: 36px;
+            --radius-full: 9999px;
+            --shadow-ios: 0 1px 3px rgba(0, 0, 0, 0.06), 0 6px 16px rgba(0, 0, 0, 0.06);
+            --shadow-ios-lg: 0 4px 20px rgba(0, 0, 0, 0.10), 0 12px 40px rgba(0, 0, 0, 0.08);
+            --shadow-ios-xl: 0 8px 40px rgba(0, 0, 0, 0.14), 0 20px 60px rgba(0, 0, 0, 0.10);
+            --shadow-glow-green: 0 0 40px rgba(13, 107, 78, 0.25), 0 0 80px rgba(34, 197, 94, 0.15);
+            --shadow-glow-blue: 0 0 40px rgba(0, 122, 255, 0.2), 0 0 80px rgba(90, 200, 250, 0.12);
+            --shadow-glow-red: 0 0 40px rgba(255, 59, 48, 0.2), 0 0 80px rgba(255, 45, 85, 0.10);
+            --shadow-glow-amber: 0 0 40px rgba(245, 158, 11, 0.2), 0 0 80px rgba(249, 115, 22, 0.10);
+            --transition-fast: 0.18s cubic-bezier(0.25, 0.1, 0.25, 1);
+            --transition-smooth: 0.3s cubic-bezier(0.25, 0.1, 0.25, 1);
+            --transition-bounce: 0.45s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            --transition-spring: 0.55s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        html {
+            scroll-behavior: smooth;
+            font-size: 16px;
+            -webkit-tap-highlight-color: transparent;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Helvetica Neue', sans-serif;
+            background: var(--ios-bg);
+            color: var(--ios-black);
+            line-height: 1.55;
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+            padding-bottom: 80px;
+        }
+
+        .bg-orb {
+            position: fixed;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 0;
+            opacity: 0.26;
+            filter: blur(90px);
+            animation: orbFloat 18s ease-in-out infinite;
+        }
+        .bg-orb--1 {
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(34, 197, 94, 0.28) 0%, transparent 70%);
+            top: -8%;
+            left: -8%;
+        }
+        .bg-orb--2 {
+            width: 330px;
+            height: 330px;
+            background: radial-gradient(circle, rgba(13, 107, 78, 0.24) 0%, transparent 70%);
+            bottom: -6%;
+            right: -6%;
+            animation-delay: -7s;
+            animation-duration: 20s;
+        }
+        .bg-orb--3 {
+            width: 250px;
+            height: 250px;
+            background: radial-gradient(circle, rgba(88, 86, 214, 0.14) 0%, transparent 70%);
+            top: 45%;
+            left: 58%;
+            animation-delay: -12s;
+            animation-duration: 22s;
+        }
+        @keyframes orbFloat {
+            0%,
+            100% {
+                transform: translate(0, 0) scale(1);
+            }
+            15% {
+                transform: translate(30px, -25px) scale(1.08);
+            }
+            30% {
+                transform: translate(-18px, 20px) scale(0.94);
+            }
+            45% {
+                transform: translate(25px, 15px) scale(1.05);
+            }
+            60% {
+                transform: translate(-30px, -10px) scale(0.92);
+            }
+            75% {
+                transform: translate(10px, -30px) scale(1.06);
+            }
+            90% {
+                transform: translate(-15px, 25px) scale(0.96);
+            }
+        }
+
+        .app-wrapper {
+            position: relative;
+            z-index: 1;
+            max-width: 560px;
+            margin: 0 auto;
+            padding: 0 14px 40px;
+        }
+
+        /* ── NAV HEADER ── */
+        .nav-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 0 6px;
+            position: sticky;
+            top: 0;
+            z-index: 90;
+            background: rgba(249, 249, 251, 0.86);
+            backdrop-filter: blur(22px);
+            -webkit-backdrop-filter: blur(22px);
+        }
+        .nav-header .btn-back {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.7);
+            border: 1px solid var(--ios-gray4);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all var(--transition-fast);
+            color: var(--ios-black);
+            font-size: 1rem;
+            flex-shrink: 0;
+        }
+        .nav-header .btn-back:hover {
+            background: #fff;
+            box-shadow: var(--shadow-ios);
+        }
+        .nav-header__title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            letter-spacing: -0.3px;
+            color: var(--ios-black);
+            flex: 1;
+        }
+        .nav-header .btn-logout-sm {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: transparent;
+            border: 1px solid var(--ios-red);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            color: var(--ios-red);
+            transition: all var(--transition-fast);
+            flex-shrink: 0;
+        }
+        .nav-header .btn-logout-sm:hover {
+            background: #FFF5F5;
+        }
+
+        /* ── PROFILE HERO CARD ── */
+        .profile-hero {
+            background: var(--brand-gradient);
+            border-radius: var(--radius-xl);
+            padding: 24px 20px;
+            color: #fff;
+            margin-top: 12px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: var(--shadow-glow-green), var(--shadow-ios-lg);
+        }
+        .profile-hero::after {
+            content: '';
+            position: absolute;
+            top: -30px;
+            right: -30px;
+            width: 130px;
+            height: 130px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.07);
+            pointer-events: none;
+        }
+        .profile-hero__top {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            position: relative;
+            z-index: 1;
+        }
+        .profile-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 1.3rem;
+            border: 3px solid rgba(255, 255, 255, 0.5);
+            flex-shrink: 0;
+        }
+        .profile-hero__info h2 {
+            font-size: 1.2rem;
+            font-weight: 800;
+            letter-spacing: -0.3px;
+        }
+        .profile-hero__info .email {
+            font-size: 0.72rem;
+            opacity: 0.8;
+            margin-top: 2px;
+        }
+        .role-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 6px 14px;
+            border-radius: var(--radius-full);
+            font-size: 0.65rem;
+            font-weight: 700;
+            letter-spacing: 0.03em;
+            text-transform: uppercase;
+            margin-top: 8px;
+            position: relative;
+            z-index: 1;
+        }
+        .role-badge.user {
+            background: rgba(255, 255, 255, 0.2);
+            color: #fff;
+        }
+        .role-badge.owner {
+            background: #fff;
+            color: var(--brand-primary);
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.15);
+        }
+        .verification-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 0.6rem;
+            font-weight: 600;
+            padding: 4px 10px;
+            border-radius: var(--radius-full);
+            margin-left: 8px;
+        }
+        .verification-badge.verified {
+            background: #D1FAE5;
+            color: #065F46;
+        }
+        .verification-badge.pending {
+            background: #FEF3C7;
+            color: #92400E;
+        }
+
+        /* ── ROLE UPGRADE CARD ── */
+        .role-upgrade-card {
+            margin-top: 12px;
+            background: linear-gradient(135deg, #FFF7ED 0%, #FFEDD5 100%);
+            border: 2px dashed rgba(249, 115, 22, 0.25);
+            border-radius: var(--radius-xl);
+            padding: 18px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            cursor: pointer;
+            transition: all var(--transition-bounce);
+            box-shadow: var(--shadow-ios);
+        }
+        .role-upgrade-card:hover {
+            border-color: #F97316;
+            box-shadow: var(--shadow-glow-amber);
+            transform: translateY(-2px);
+        }
+        .role-upgrade-card__icon {
+            width: 46px;
+            height: 46px;
+            border-radius: 50%;
+            background: var(--amber-gradient);
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            flex-shrink: 0;
+            box-shadow: 0 4px 16px rgba(249, 115, 22, 0.30);
+        }
+        .role-upgrade-card__text {
+            flex: 1;
+        }
+        .role-upgrade-card__text h4 {
+            font-weight: 700;
+            font-size: 0.85rem;
+            color: #9A3412;
+        }
+        .role-upgrade-card__text p {
+            font-size: 0.68rem;
+            color: #C2410C;
+            opacity: 0.8;
+            margin-top: 2px;
+        }
+        .role-upgrade-card__arrow {
+            color: #F97316;
+            font-size: 0.8rem;
+        }
+
+        /* ── SECTION HEADER ── */
+        .section-block {
+            margin-top: 24px;
+        }
+        .section-title {
+            font-size: 0.72rem;
+            font-weight: 700;
+            color: var(--ios-gray);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 7px;
+        }
+        .section-title i {
+            font-size: 0.65rem;
+        }
+
+        /* ── INFO CARD ── */
+        .info-card {
+            background: var(--glass-bg);
+            backdrop-filter: var(--glass-blur);
+            -webkit-backdrop-filter: var(--glass-blur);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius-xl);
+            overflow: hidden;
+            box-shadow: var(--shadow-ios);
+        }
+        .info-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px 18px;
+            border-bottom: 1px solid var(--ios-gray5);
+            cursor: pointer;
+            transition: background var(--transition-fast);
+        }
+        .info-row:last-child {
+            border-bottom: none;
+        }
+        .info-row:hover {
+            background: rgba(128, 128, 128, 0.04);
+        }
+        .info-row__icon {
+            width: 34px;
+            height: 34px;
+            border-radius: var(--radius-sm);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.85rem;
+            flex-shrink: 0;
+        }
+        .info-row__icon.blue {
+            background: #EBF5FF;
+            color: var(--ios-blue);
+        }
+        .info-row__icon.green {
+            background: #D1FAE5;
+            color: #065F46;
+        }
+        .info-row__icon.purple {
+            background: #EDE9FE;
+            color: #5B21B6;
+        }
+        .info-row__icon.red {
+            background: #FEE2E2;
+            color: #991B1B;
+        }
+        .info-row__icon.orange {
+            background: #FED7AA;
+            color: #9A3412;
+        }
+        .info-row__icon.teal {
+            background: #CCFBF1;
+            color: #0F766E;
+        }
+        .info-row__label {
+            flex: 1;
+            font-size: 0.84rem;
+            font-weight: 600;
+            color: var(--ios-black);
+            letter-spacing: -0.2px;
+        }
+        .info-row__value {
+            font-size: 0.72rem;
+            color: var(--ios-gray);
+            font-weight: 500;
+        }
+        .info-row__arrow {
+            color: var(--ios-gray3);
+            font-size: 0.6rem;
+        }
+
+        /* ── OWNER DASHBOARD PANEL ── */
+        .owner-panel {
+            display: none;
+        }
+        .owner-panel.active {
+            display: block;
+        }
+        .pharmacy-manage-card {
+            background: var(--glass-bg);
+            backdrop-filter: var(--glass-blur);
+            -webkit-backdrop-filter: var(--glass-blur);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius-xl);
+            padding: 18px;
+            box-shadow: var(--shadow-ios);
+        }
+        .pharmacy-manage-card__header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 14px;
+        }
+        .pharmacy-manage-card__icon {
+            width: 44px;
+            height: 44px;
+            border-radius: var(--radius-md);
+            background: var(--brand-gradient);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 1.1rem;
+            flex-shrink: 0;
+        }
+        .pharmacy-manage-card__name {
+            font-weight: 700;
+            font-size: 0.9rem;
+            color: var(--ios-black);
+        }
+        .pharmacy-manage-card__status {
+            font-size: 0.62rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            padding: 4px 10px;
+            border-radius: var(--radius-full);
+        }
+        .pharmacy-manage-card__status.active-status {
+            background: #D1FAE5;
+            color: #065F46;
+        }
+        .pharmacy-manage-card__status.pending-status {
+            background: #FEF3C7;
+            color: #92400E;
+        }
+
+        /* ── ANALYTICS MINI CARDS ── */
+        .analytics-mini-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 8px;
+            margin-top: 12px;
+        }
+        .analytics-mini-card {
+            background: var(--ios-white);
+            border-radius: var(--radius-md);
+            padding: 14px 10px;
+            text-align: center;
+            border: 1px solid var(--ios-gray5);
+            box-shadow: var(--shadow-ios);
+        }
+        .analytics-mini-card__number {
+            font-size: 1.4rem;
+            font-weight: 900;
+            color: var(--brand-primary);
+            letter-spacing: -0.5px;
+        }
+        .analytics-mini-card__label {
+            font-size: 0.58rem;
+            color: var(--ios-gray);
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            margin-top: 2px;
+        }
+
+        /* ── EDIT FORM INSIDE MODAL ── */
+        .edit-form-group {
+            margin-bottom: 14px;
+        }
+        .edit-form-group label {
+            font-size: 0.7rem;
+            font-weight: 700;
+            color: var(--ios-gray);
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            display: block;
+            margin-bottom: 5px;
+        }
+        .edit-form-group input,
+        .edit-form-group textarea,
+        .edit-form-group select {
+            width: 100%;
+            border: 1.5px solid var(--ios-gray4);
+            border-radius: var(--radius-md);
+            padding: 11px 14px;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.85rem;
+            color: var(--ios-black);
+            background: rgba(255, 255, 255, 0.7);
+            outline: none;
+            transition: all var(--transition-smooth);
+            resize: vertical;
+        }
+        .edit-form-group input:focus,
+        .edit-form-group textarea:focus,
+        .edit-form-group select:focus {
+            border-color: var(--brand-primary);
+            box-shadow: 0 0 0 4px rgba(13, 107, 78, 0.08);
+        }
+        .btn-save-inline {
+            width: 100%;
+            padding: 12px;
+            background: var(--brand-gradient);
+            color: #fff;
+            font-weight: 700;
+            font-size: 0.85rem;
+            border: none;
+            border-radius: var(--radius-full);
+            cursor: pointer;
+            transition: all var(--transition-bounce);
+            font-family: 'Inter', sans-serif;
+        }
+        .btn-save-inline:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-glow-green);
+        }
+
+        /* ── TOGGLE SWITCH ── */
+        .ios-toggle {
+            position: relative;
+            width: 46px;
+            height: 26px;
+            flex-shrink: 0;
+        }
+        .ios-toggle input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        .ios-toggle .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: var(--ios-gray4);
+            border-radius: 26px;
+            transition: 0.25s;
+        }
+        .ios-toggle .slider:before {
+            position: absolute;
+            content: "";
+            height: 22px;
+            width: 22px;
+            left: 2px;
+            bottom: 2px;
+            background-color: white;
+            border-radius: 50%;
+            transition: 0.25s;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+        }
+        .ios-toggle input:checked+.slider {
+            background-color: var(--ios-green);
+        }
+        .ios-toggle input:checked+.slider:before {
+            transform: translateX(20px);
+        }
+
+        /* ── MODAL ── */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.55);
+            z-index: 9999;
+            display: flex;
+            align-items: flex-start;
+            justify-content: center;
+            padding-top: 50px;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
+        }
+        .modal-overlay.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+        .modal-notification {
+            background: rgba(255, 255, 255, 0.96);
+            backdrop-filter: blur(30px) saturate(200%);
+            -webkit-backdrop-filter: blur(30px) saturate(200%);
+            border-radius: 22px;
+            padding: 18px 20px;
+            width: 90%;
+            max-width: 420px;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(255, 255, 255, 0.6);
+            transform: translateY(-30px) scale(0.92);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+        }
+        .modal-overlay.active .modal-notification {
+            transform: translateY(0) scale(1);
+        }
+        .modal-notification__header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        .modal-notification__app-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            background: var(--brand-gradient);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 0.85rem;
+        }
+        .modal-notification__app-name {
+            font-weight: 700;
+            font-size: 0.85rem;
+            color: var(--ios-black);
+        }
+        .modal-notification__time {
+            font-size: 0.7rem;
+            color: var(--ios-gray2);
+            margin-left: auto;
+        }
+        .modal-notification__body {
+            font-size: 0.9rem;
+            color: var(--ios-black);
+            line-height: 1.4;
+            font-weight: 500;
+        }
+        .modal-notification__sub {
+            font-size: 0.75rem;
+            color: var(--ios-gray);
+            margin-top: 4px;
+        }
+        .modal-notification__close {
+            position: absolute;
+            top: 10px;
+            right: 14px;
+            background: rgba(0, 0, 0, 0.06);
+            border: none;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 0.8rem;
+            color: var(--ios-gray);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .modal-notification__actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 12px;
+        }
+        .modal-notification__btn {
+            flex: 1;
+            padding: 10px;
+            border-radius: var(--radius-full);
+            border: none;
+            font-weight: 600;
+            font-size: 0.8rem;
+            cursor: pointer;
+            font-family: 'Inter', sans-serif;
+        }
+        .modal-notification__btn--primary {
+            background: var(--brand-primary);
+            color: #fff;
+        }
+        .modal-notification__btn--secondary {
+            background: var(--ios-gray6);
+            color: var(--ios-black);
+        }
+        .modal-notification__btn--danger {
+            background: var(--ios-red);
+            color: #fff;
+        }
+
+        /* ── TOAST ── */
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%) translateY(120px);
+            background: var(--ios-dark-card);
+            color: #fff;
+            padding: 12px 22px;
+            border-radius: var(--radius-full);
+            font-weight: 600;
+            font-size: 0.82rem;
+            z-index: 10000;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .toast.show {
+            transform: translateX(-50%) translateY(0);
+        }
+
+        /* ── DISCLAIMER ── */
+        .disclaimer-card {
+            margin-top: 20px;
+            background: #FFFBF0;
+            border: 1px solid rgba(245, 158, 11, 0.2);
+            border-radius: var(--radius-lg);
+            padding: 14px 16px;
+            font-size: 0.68rem;
+            color: #92400E;
+            line-height: 1.5;
+            display: flex;
+            gap: 8px;
+            align-items: flex-start;
+        }
+        .disclaimer-card i {
+            color: #F59E0B;
+            flex-shrink: 0;
+            margin-top: 1px;
+        }
+
+        .footer-note {
+            margin-top: 24px;
+            text-align: center;
+            font-size: 0.62rem;
+            color: var(--ios-gray3);
+        }
+
+        @media (max-width: 400px) {
+            .profile-hero {
+                padding: 18px 14px;
+            }
+            .profile-avatar {
+                width: 48px;
+                height: 48px;
+                font-size: 1rem;
+            }
+            .analytics-mini-row {
+                grid-template-columns: 1fr 1fr 1fr;
+                gap: 5px;
+            }
+            .analytics-mini-card {
+                padding: 10px 6px;
+            }
+            .analytics-mini-card__number {
+                font-size: 1.1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-orb bg-orb--1"></div>
+    <div class="bg-orb bg-orb--2"></div>
+    <div class="bg-orb bg-orb--3"></div>
+
+    <div class="app-wrapper">
+        <!-- ── NAV HEADER ── -->
+        <div class="nav-header">
+            <button class="btn-back" onclick="history.back()" aria-label="Go back">
+                <i class="fas fa-chevron-left"></i>
+            </button>
+            <span class="nav-header__title">My Profile</span>
+            <button class="btn-logout-sm" id="btnLogoutTop" title="Logout" aria-label="Logout">
+                <i class="fas fa-arrow-right-from-bracket"></i>
+            </button>
+        </div>
+
+        <!-- ── PROFILE HERO ── -->
+        <div class="profile-hero" id="profileHero">
+            <div class="profile-hero__top">
+                <div class="profile-avatar" id="profileAvatar">JD</div>
+                <div class="profile-hero__info">
+                    <h2 id="profileName">John Doe</h2>
+                    <div class="email" id="profileEmail">john.doe@email.com</div>
+                </div>
+            </div>
+            <span class="role-badge user" id="roleBadge">
+                <i class="fas fa-user"></i> Regular User
+            </span>
+            <span class="verification-badge verified" id="verificationBadge" style="display:none;">
+                <i class="fas fa-circle-check"></i> Verified
+            </span>
+            <span class="verification-badge pending" id="pendingBadge" style="display:none;">
+                <i class="fas fa-clock"></i> Pending Verification
+            </span>
+        </div>
+
+        <!-- ── ROLE UPGRADE CARD (shown for regular users) ── -->
+        <div class="role-upgrade-card" id="roleUpgradeCard" role="button" tabindex="0" aria-label="Register your pharmacy — become a pharmacy owner">
+            <div class="role-upgrade-card__icon">
+                <i class="fas fa-store"></i>
+            </div>
+            <div class="role-upgrade-card__text">
+                <h4>Are you a pharmacy owner?</h4>
+                <p>Register your pharmacy to manage your listing and connect with patients.</p>
+            </div>
+            <div class="role-upgrade-card__arrow">
+                <i class="fas fa-chevron-right"></i>
+            </div>
+        </div>
+
+        <!-- ── OWNER PANEL (shown for pharmacy owners) ── -->
+        <div class="owner-panel" id="ownerPanel">
+            <!-- Pharmacy Management Card -->
+            <div class="section-block">
+                <div class="section-title"><i class="fas fa-store"></i> My Pharmacy</div>
+                <div class="pharmacy-manage-card">
+                    <div class="pharmacy-manage-card__header">
+                        <div class="pharmacy-manage-card__icon">
+                            <i class="fas fa-prescription-bottle"></i>
+                        </div>
+                        <div>
+                            <div class="pharmacy-manage-card__name" id="ownerPharmacyName">MediCare 24/7 Pharmacy</div>
+                            <span class="pharmacy-manage-card__status active-status" id="ownerPharmacyStatus">● Active</span>
+                        </div>
+                    </div>
+                    <div class="analytics-mini-row">
+                        <div class="analytics-mini-card">
+                            <div class="analytics-mini-card__number" id="analyticsViews">1.2k</div>
+                            <div class="analytics-mini-card__label">Profile Views</div>
+                        </div>
+                        <div class="analytics-mini-card">
+                            <div class="analytics-mini-card__number" id="analyticsCalls">340</div>
+                            <div class="analytics-mini-card__label">Calls Made</div>
+                        </div>
+                        <div class="analytics-mini-card">
+                            <div class="analytics-mini-card__number" id="analyticsReviews">48</div>
+                            <div class="analytics-mini-card__label">Reviews</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Owner Actions -->
+            <div class="section-block">
+                <div class="section-title"><i class="fas fa-sliders"></i> Manage Pharmacy</div>
+                <div class="info-card">
+                    <div class="info-row" id="editPharmacyDetails" role="button" tabindex="0" aria-label="Edit pharmacy details">
+                        <div class="info-row__icon green"><i class="fas fa-pen-to-square"></i></div>
+                        <span class="info-row__label">Edit Pharmacy Details</span>
+                        <i class="fas fa-chevron-right info-row__arrow"></i>
+                    </div>
+                    <div class="info-row" id="manageHours" role="button" tabindex="0" aria-label="Manage operating hours">
+                        <div class="info-row__icon blue"><i class="fas fa-clock"></i></div>
+                        <span class="info-row__label">Operating Hours</span>
+                        <span class="info-row__value">24 Hours</span>
+                        <i class="fas fa-chevron-right info-row__arrow"></i>
+                    </div>
+                    <div class="info-row" id="manageLocation" role="button" tabindex="0" aria-label="Update pharmacy location">
+                        <div class="info-row__icon orange"><i class="fas fa-location-dot"></i></div>
+                        <span class="info-row__label">Location & Map Pin</span>
+                        <span class="info-row__value">Victoria Island</span>
+                        <i class="fas fa-chevron-right info-row__arrow"></i>
+                    </div>
+                    <div class="info-row" id="manageServices" role="button" tabindex="0" aria-label="Manage services & inventory">
+                        <div class="info-row__icon purple"><i class="fas fa-capsules"></i></div>
+                        <span class="info-row__label">Services & Inventory</span>
+                        <span class="info-row__value">6 services</span>
+                        <i class="fas fa-chevron-right info-row__arrow"></i>
+                    </div>
+                    <div class="info-row" id="addNewPharmacy" role="button" tabindex="0" aria-label="Add another pharmacy">
+                        <div class="info-row__icon teal"><i class="fas fa-plus-circle"></i></div>
+                        <span class="info-row__label">Add Another Pharmacy</span>
+                        <i class="fas fa-chevron-right info-row__arrow"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ── PERSONAL INFO ── -->
+        <div class="section-block">
+            <div class="section-title"><i class="fas fa-address-card"></i> Personal Information</div>
+            <div class="info-card">
+                <div class="info-row" id="editName" role="button" tabindex="0" aria-label="Edit name">
+                    <div class="info-row__icon blue"><i class="fas fa-user"></i></div>
+                    <span class="info-row__label">Full Name</span>
+                    <span class="info-row__value" id="displayName">John Doe</span>
+                    <i class="fas fa-chevron-right info-row__arrow"></i>
+                </div>
+                <div class="info-row" id="editEmail" role="button" tabindex="0" aria-label="Edit email">
+                    <div class="info-row__icon green"><i class="fas fa-envelope"></i></div>
+                    <span class="info-row__label">Email Address</span>
+                    <span class="info-row__value" id="displayEmail">john.doe@email.com</span>
+                    <i class="fas fa-chevron-right info-row__arrow"></i>
+                </div>
+                <div class="info-row" id="editPhone" role="button" tabindex="0" aria-label="Edit phone">
+                    <div class="info-row__icon purple"><i class="fas fa-phone"></i></div>
+                    <span class="info-row__label">Phone Number</span>
+                    <span class="info-row__value" id="displayPhone">+1 (555) 000-1111</span>
+                    <i class="fas fa-chevron-right info-row__arrow"></i>
+                </div>
+            </div>
+        </div>
+
+        <!-- ── QUICK LINKS ── -->
+        <div class="section-block">
+            <div class="section-title"><i class="fas fa-link"></i> Quick Links</div>
+            <div class="info-card">
+                <div class="info-row" onclick="window.location.href='favorites.html'" role="button" tabindex="0" aria-label="View saved pharmacies">
+                    <div class="info-row__icon red"><i class="fas fa-heart"></i></div>
+                    <span class="info-row__label">Saved Pharmacies</span>
+                    <span class="info-row__value" id="savedCountDisplay">3 saved</span>
+                    <i class="fas fa-chevron-right info-row__arrow"></i>
+                </div>
+                <div class="info-row" onclick="window.location.href='report.html'" role="button" tabindex="0" aria-label="View your reports">
+                    <div class="info-row__icon orange"><i class="fas fa-clipboard-check"></i></div>
+                    <span class="info-row__label">My Reports</span>
+                    <span class="info-row__value">2 submitted</span>
+                    <i class="fas fa-chevron-right info-row__arrow"></i>
+                </div>
+                <div class="info-row" onclick="window.location.href='settings.html'" role="button" tabindex="0" aria-label="Open settings">
+                    <div class="info-row__icon teal"><i class="fas fa-gear"></i></div>
+                    <span class="info-row__label">Settings & Preferences</span>
+                    <i class="fas fa-chevron-right info-row__arrow"></i>
+                </div>
+            </div>
+        </div>
+
+        <!-- ── SECURITY ── -->
+        <div class="section-block">
+            <div class="section-title"><i class="fas fa-shield-halved"></i> Security</div>
+            <div class="info-card">
+                <div class="info-row" id="changePassword" role="button" tabindex="0" aria-label="Change password">
+                    <div class="info-row__icon blue"><i class="fas fa-lock"></i></div>
+                    <span class="info-row__label">Change Password</span>
+                    <i class="fas fa-chevron-right info-row__arrow"></i>
+                </div>
+                <div class="info-row" id="logoutBtn" role="button" tabindex="0" aria-label="Logout from account">
+                    <div class="info-row__icon red"><i class="fas fa-arrow-right-from-bracket"></i></div>
+                    <span class="info-row__label">Logout</span>
+                    <i class="fas fa-chevron-right info-row__arrow"></i>
+                </div>
+            </div>
+        </div>
+
+        <!-- ── SUPPORT ── -->
+        <div class="section-block">
+            <div class="section-title"><i class="fas fa-circle-question"></i> Support</div>
+            <div class="info-card">
+                <div class="info-row" onclick="window.location.href='help.html'" role="button" tabindex="0" aria-label="Help center">
+                    <div class="info-row__icon green"><i class="fas fa-comments"></i></div>
+                    <span class="info-row__label">Help & Support</span>
+                    <i class="fas fa-chevron-right info-row__arrow"></i>
+                </div>
+            </div>
+        </div>
+
+        <!-- ── DISCLAIMER ── -->
+        <div class="disclaimer-card" id="disclaimerCard">
+            <i class="fas fa-circle-exclamation"></i>
+            <div>
+                <strong>Responsibility Notice:</strong> As a pharmacy owner, you are responsible for maintaining accurate information. PharmFinder is not liable for discrepancies in listed data. Always ensure your pharmacy details are up to date.
+            </div>
+        </div>
+
+        <div class="footer-note">
+            <i class="fas fa-shield-halved"></i> Your data is stored securely and never shared without consent.
+        </div>
+    </div>
+
+    <!-- ── iOS MODAL ── -->
+    <div class="modal-overlay" id="modalOverlay">
+        <div class="modal-notification" id="modalNotification">
+            <button class="modal-notification__close" id="modalCloseBtn"><i class="fas fa-xmark"></i></button>
+            <div class="modal-notification__header">
+                <div class="modal-notification__app-icon"><i class="fas fa-prescription-bottle"></i></div>
+                <span class="modal-notification__app-name">PharmFinder</span>
+                <span class="modal-notification__time" id="modalTime">now</span>
+            </div>
+            <div class="modal-notification__body" id="modalBody">Message</div>
+            <div class="modal-notification__sub" id="modalSub"></div>
+            <div class="modal-notification__actions" id="modalActions">
+                <button class="modal-notification__btn modal-notification__btn--secondary" id="modalBtnDismiss">Cancel</button>
+                <button class="modal-notification__btn modal-notification__btn--primary" id="modalBtnAction">Confirm</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast -->
+    <div class="toast" id="toast"><i class="fas fa-circle-check"></i><span id="toastMsg"></span></div>
+
+    <script>
+        (function() {
+            // ─── STATE ───
+            let userRole = 'user'; // 'user' or 'owner'
+            let userData = {
+                name: 'John Doe',
+                email: 'john.doe@email.com',
+                phone: '+1 (555) 000-1111',
+                initials: 'JD',
+                savedCount: 3,
+                reportsCount: 2,
+            };
+            let ownerData = {
+                pharmacyName: 'MediCare 24/7 Pharmacy',
+                status: 'active', // 'active' or 'pending'
+                verified: true,
+                views: '1.2k',
+                calls: '340',
+                reviews: '48',
+                hours: '24 Hours',
+                location: 'Victoria Island, Lagos',
+                services: 6,
+            };
+
+            // Load from localStorage
+            function loadProfile() {
+                try {
+                    const raw = localStorage.getItem('pharmfinder_profile');
+                    if (raw) {
+                        const data = JSON.parse(raw);
+                        userRole = data.role || 'user';
+                        userData = { ...userData, ...data.userData };
+                        ownerData = { ...ownerData, ...data.ownerData };
+                    }
+                } catch (e) {}
+            }
+
+            function saveProfile() {
+                localStorage.setItem('pharmfinder_profile', JSON.stringify({
+                    role: userRole,
+                    userData,
+                    ownerData,
+                }));
+            }
+            loadProfile();
+
+            // ─── DOM REFS ───
+            const modalOverlay = document.getElementById('modalOverlay');
+            const modalBody = document.getElementById('modalBody');
+            const modalSub = document.getElementById('modalSub');
+            const modalTime = document.getElementById('modalTime');
+            const modalBtnDismiss = document.getElementById('modalBtnDismiss');
+            const modalBtnAction = document.getElementById('modalBtnAction');
+            const modalCloseBtn = document.getElementById('modalCloseBtn');
+            const modalActions = document.getElementById('modalActions');
+            const toast = document.getElementById('toast');
+            const toastMsg = document.getElementById('toastMsg');
+            const roleBadge = document.getElementById('roleBadge');
+            const verificationBadge = document.getElementById('verificationBadge');
+            const pendingBadge = document.getElementById('pendingBadge');
+            const roleUpgradeCard = document.getElementById('roleUpgradeCard');
+            const ownerPanel = document.getElementById('ownerPanel');
+            const disclaimerCard = document.getElementById('disclaimerCard');
+            const profileAvatar = document.getElementById('profileAvatar');
+            const profileName = document.getElementById('profileName');
+            const profileEmail = document.getElementById('profileEmail');
+            const displayName = document.getElementById('displayName');
+            const displayEmail = document.getElementById('displayEmail');
+            const displayPhone = document.getElementById('displayPhone');
+            const savedCountDisplay = document.getElementById('savedCountDisplay');
+            const ownerPharmacyName = document.getElementById('ownerPharmacyName');
+            const ownerPharmacyStatus = document.getElementById('ownerPharmacyStatus');
+            const analyticsViews = document.getElementById('analyticsViews');
+            const analyticsCalls = document.getElementById('analyticsCalls');
+            const analyticsReviews = document.getElementById('analyticsReviews');
+
+            let toastTimer;
+            let modalActionCallback = null;
+
+            // ─── MODAL SYSTEM ───
+            function showModal(bodyText, subText, actionLabel, callback, dismissLabel = 'Cancel', danger = false) {
+                modalBody.innerHTML = bodyText;
+                modalSub.textContent = subText || '';
+                modalTime.textContent = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                modalBtnAction.textContent = actionLabel || 'Confirm';
+                modalBtnDismiss.textContent = dismissLabel;
+                modalBtnAction.className = 'modal-notification__btn ' + (danger ?
+                    'modal-notification__btn--danger' : 'modal-notification__btn--primary');
+                modalActionCallback = callback || null;
+                modalActions.style.display = 'flex';
+                modalOverlay.classList.add('active');
+            }
+
+            function showAlert(bodyText, subText) {
+                modalBody.innerHTML = bodyText;
+                modalSub.textContent = subText || '';
+                modalTime.textContent = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                modalActions.style.display = 'none';
+                modalActionCallback = null;
+                modalOverlay.classList.add('active');
+            }
+
+            function hideModal() {
+                modalOverlay.classList.remove('active');
+                modalActionCallback = null;
+                modalActions.style.display = 'flex';
+            }
+            modalCloseBtn.addEventListener('click', hideModal);
+            modalBtnDismiss.addEventListener('click', hideModal);
+            modalBtnAction.addEventListener('click', () => {
+                if (modalActionCallback && typeof modalActionCallback === 'function') modalActionCallback();
+                hideModal();
+            });
+            modalOverlay.addEventListener('click', (e) => { if (e.target === modalOverlay) hideModal(); });
+            document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && modalOverlay.classList
+                    .contains('active')) hideModal(); });
+
+            function showToast(message, iconClass = 'fa-circle-check') {
+                clearTimeout(toastTimer);
+                toastMsg.textContent = message;
+                const iconEl = toast.querySelector('i');
+                if (iconEl) iconEl.className = 'fas ' + iconClass;
+                toast.classList.add('show');
+                toastTimer = setTimeout(() => toast.classList.remove('show'), 2800);
+            }
+
+            // ─── APPLY ROLE UI ───
+            function applyRoleUI() {
+                if (userRole === 'owner') {
+                    roleBadge.className = 'role-badge owner';
+                    roleBadge.innerHTML = '<i class="fas fa-store"></i> Pharmacy Owner';
+                    roleUpgradeCard.style.display = 'none';
+                    ownerPanel.classList.add('active');
+                    disclaimerCard.style.display = 'flex';
+                    if (ownerData.verified) {
+                        verificationBadge.style.display = 'inline-flex';
+                        pendingBadge.style.display = 'none';
+                    } else {
+                        verificationBadge.style.display = 'none';
+                        pendingBadge.style.display = 'inline-flex';
+                    }
+                } else {
+                    roleBadge.className = 'role-badge user';
+                    roleBadge.innerHTML = '<i class="fas fa-user"></i> Regular User';
+                    roleUpgradeCard.style.display = 'flex';
+                    ownerPanel.classList.remove('active');
+                    disclaimerCard.style.display = 'none';
+                    verificationBadge.style.display = 'none';
+                    pendingBadge.style.display = 'none';
+                }
+                // Update owner panel data
+                ownerPharmacyName.textContent = ownerData.pharmacyName;
+                ownerPharmacyStatus.textContent = ownerData.status === 'active' ? '● Active' : '● Pending';
+                ownerPharmacyStatus.className = 'pharmacy-manage-card__status ' + (ownerData.status ===
+                    'active' ? 'active-status' : 'pending-status');
+                analyticsViews.textContent = ownerData.views;
+                analyticsCalls.textContent = ownerData.calls;
+                analyticsReviews.textContent = ownerData.reviews;
+            }
+
+            function applyUserDataUI() {
+                profileAvatar.textContent = userData.initials;
+                profileName.textContent = userData.name;
+                profileEmail.textContent = userData.email;
+                displayName.textContent = userData.name;
+                displayEmail.textContent = userData.email;
+                displayPhone.textContent = userData.phone;
+                savedCountDisplay.textContent = userData.savedCount + ' saved';
+            }
+
+            applyRoleUI();
+            applyUserDataUI();
+
+            // ─── ROLE UPGRADE ───
+            roleUpgradeCard.addEventListener('click', () => {
+                showModal(
+                    'Become a Pharmacy Owner',
+                    'This will upgrade your account to a pharmacy owner role. You\'ll be able to list and manage your pharmacy on PharmFinder. Continue?',
+                    'Upgrade Now',
+                    () => {
+                        userRole = 'owner';
+                        ownerData.verified = false;
+                        ownerData.status = 'pending';
+                        saveProfile();
+                        applyRoleUI();
+                        showToast('You are now a pharmacy owner! Set up your pharmacy.',
+                            'fa-store');
+                    }
+                );
+            });
+            roleUpgradeCard.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e
+                    .preventDefault();
+                    roleUpgradeCard.click(); } });
+
+            // ─── EDIT PERSONAL INFO ───
+            document.getElementById('editName').addEventListener('click', () => {
+                showModal(
+                    `<div class="edit-form-group"><label>Full Name</label><input type="text" id="editNameInput" value="${userData.name}" /></div>`,
+                    'Update your display name.',
+                    'Save',
+                    () => {
+                        const inp = document.getElementById('editNameInput');
+                        if (inp && inp.value.trim()) {
+                            userData.name = inp.value.trim();
+                            userData.initials = userData.name.split(' ').map(n => n[0]).join(
+                                '').toUpperCase().slice(0, 2);
+                            saveProfile();
+                            applyUserDataUI();
+                            showToast('Name updated!', 'fa-user');
+                        }
+                    }
+                );
+            });
+            document.getElementById('editEmail').addEventListener('click', () => {
+                showModal(
+                    `<div class="edit-form-group"><label>Email Address</label><input type="email" id="editEmailInput" value="${userData.email}" /></div>`,
+                    'Update your email address.',
+                    'Save',
+                    () => {
+                        const inp = document.getElementById('editEmailInput');
+                        if (inp && inp.value.trim() && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(inp.value
+                                .trim())) {
+                            userData.email = inp.value.trim();
+                            saveProfile();
+                            applyUserDataUI();
+                            showToast('Email updated!', 'fa-envelope');
+                        } else {
+                            showToast('Please enter a valid email.', 'fa-circle-exclamation');
+                        }
+                    }
+                );
+            });
+            document.getElementById('editPhone').addEventListener('click', () => {
+                showModal(
+                    `<div class="edit-form-group"><label>Phone Number</label><input type="tel" id="editPhoneInput" value="${userData.phone}" /></div>`,
+                    'Update your phone number.',
+                    'Save',
+                    () => {
+                        const inp = document.getElementById('editPhoneInput');
+                        if (inp && inp.value.trim()) {
+                            userData.phone = inp.value.trim();
+                            saveProfile();
+                            applyUserDataUI();
+                            showToast('Phone updated!', 'fa-phone');
+                        }
+                    }
+                );
+            });
+
+            // ─── OWNER ACTIONS ───
+            document.getElementById('editPharmacyDetails').addEventListener('click', () => {
+                showModal(
+                    `<div class="edit-form-group"><label>Pharmacy Name</label><input type="text" id="editPharmName" value="${ownerData.pharmacyName}" /></div>
+             <div class="edit-form-group"><label>Address</label><input type="text" id="editPharmAddr" value="${ownerData.location}" /></div>`,
+                    'Edit your pharmacy details.',
+                    'Save Changes',
+                    () => {
+                        const nameInp = document.getElementById('editPharmName');
+                        const addrInp = document.getElementById('editPharmAddr');
+                        if (nameInp && nameInp.value.trim()) ownerData.pharmacyName = nameInp
+                            .value.trim();
+                        if (addrInp && addrInp.value.trim()) ownerData.location = addrInp.value
+                            .trim();
+                        saveProfile();
+                        applyRoleUI();
+                        showToast('Pharmacy details updated!', 'fa-pen-to-square');
+                    }
+                );
+            });
+            document.getElementById('manageHours').addEventListener('click', () => {
+                showModal(
+                    `<div class="edit-form-group"><label>Operating Hours</label><select id="editHours"><option ${ownerData.hours==='24 Hours'?'selected':''}>24 Hours</option><option ${ownerData.hours==='8AM-10PM'?'selected':''}>8AM - 10PM</option><option ${ownerData.hours==='9AM-9PM'?'selected':''}>9AM - 9PM</option><option ${ownerData.hours==='Custom'?'selected':''}>Custom</option></select></div>`,
+                    'Set your pharmacy operating hours.',
+                    'Save',
+                    () => {
+                        const sel = document.getElementById('editHours');
+                        if (sel) { ownerData.hours = sel.value;
+                            saveProfile();
+                            applyRoleUI();
+                            showToast('Hours updated!', 'fa-clock'); }
+                    }
+                );
+            });
+            document.getElementById('manageLocation').addEventListener('click', () => {
+                showModal(
+                    `<div class="edit-form-group"><label>Pharmacy Location</label><input type="text" id="editLocInput" value="${ownerData.location}" /></div>
+             <p style="font-size:0.7rem;color:var(--ios-gray);">Enter a full address for accurate map placement.</p>`,
+                    'Update pharmacy location.',
+                    'Save',
+                    () => {
+                        const inp = document.getElementById('editLocInput');
+                        if (inp && inp.value.trim()) { ownerData.location = inp.value.trim();
+                            saveProfile();
+                            applyRoleUI();
+                            showToast('Location updated!', 'fa-location-dot'); }
+                    }
+                );
+            });
+            document.getElementById('manageServices').addEventListener('click', () => {
+                showAlert(
+                    '<i class="fas fa-capsules" style="font-size:2rem;display:block;margin-bottom:12px;color:var(--brand-primary);"></i>',
+                    'Manage your pharmacy services and inventory. This feature will be available in the next update.'
+                );
+            });
+            document.getElementById('addNewPharmacy').addEventListener('click', () => {
+                showModal(
+                    'Add Another Pharmacy',
+                    'You can list multiple pharmacy locations under your owner account. This feature is coming soon.',
+                    'OK'
+                );
+            });
+
+            // ─── SECURITY ───
+            document.getElementById('changePassword').addEventListener('click', () => {
+                showModal(
+                    `<div class="edit-form-group"><label>Current Password</label><input type="password" id="currentPass" placeholder="••••••••" /></div>
+             <div class="edit-form-group"><label>New Password</label><input type="password" id="newPass" placeholder="At least 8 characters" /></div>
+             <div class="edit-form-group"><label>Confirm New Password</label><input type="password" id="confirmPass" placeholder="Re-enter password" /></div>`,
+                    'Change your account password.',
+                    'Update Password',
+                    () => {
+                        const curr = document.getElementById('currentPass')?.value;
+                        const newP = document.getElementById('newPass')?.value;
+                        const conf = document.getElementById('confirmPass')?.value;
+                        if (!curr || !newP || !conf) {
+                            showToast('Please fill all fields.', 'fa-circle-exclamation');
+                            return;
+                        }
+                        if (newP.length < 8) {
+                            showToast('Password must be at least 8 characters.',
+                                'fa-circle-exclamation');
+                            return;
+                        }
+                        if (newP !== conf) {
+                            showToast('Passwords do not match.', 'fa-circle-exclamation');
+                            return;
+                        }
+                        showToast('Password updated successfully!', 'fa-lock');
+                    }
+                );
+            });
+
+            function handleLogout() {
+                showModal(
+                    'Logout Confirmation',
+                    'Are you sure you want to logout? You\'ll need to sign in again to access your profile.',
+                    'Logout',
+                    () => {
+                        showToast('Logged out successfully.', 'fa-arrow-right-from-bracket');
+                        setTimeout(() => { window.location.href = 'login.html'; }, 600);
+                    },
+                    'Cancel',
+                    true
+                );
+            }
+            document.getElementById('logoutBtn').addEventListener('click', handleLogout);
+            document.getElementById('btnLogoutTop').addEventListener('click', handleLogout);
+
+            // ─── KEYBOARD SHORTCUTS ───
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'l' && e.ctrlKey) {
+                    e.preventDefault();
+                    handleLogout();
+                }
+            });
+
+            // ─── INIT ───
+            console.log('👤 PharmFinder Profile ready.');
+            console.log('🔑 Current role: ' + userRole);
+            console.log('💡 Upgrade to pharmacy owner to manage your listing.');
+            console.log('⌨️ Shortcut: Ctrl+L (Logout)');
+
+            setTimeout(() => {
+                showToast('Welcome to your profile, ' + userData.name + '!',
+                    userRole === 'owner' ? 'fa-store' : 'fa-user');
+            }, 800);
+
+            window.PharmFinderProfile = {
+                getRole: () => userRole,
+                getUserData: () => userData,
+                getOwnerData: () => ownerData,
+                upgradeToOwner: () => {
+                    userRole = 'owner';
+                    ownerData.verified = false;
+                    ownerData.status = 'pending';
+                    saveProfile();
+                    applyRoleUI();
+                },
+                save: saveProfile,
+                reload: () => { loadProfile();
+                    applyRoleUI();
+                    applyUserDataUI(); },
+            };
+        })();
+    </script>
+</body>

@@ -1,0 +1,1665 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>PharmFinder — Dashboard</title>
+    <meta name="description" content="Your PharmFinder dashboard — quick access to nearby pharmacies, saved locations, and personalized insights." />
+    <meta name="theme-color" content="#0D6B4E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+    <style>
+        :root {
+            --ios-blue: #007AFF;
+            --ios-green: #34C759;
+            --ios-red: #FF3B30;
+            --ios-orange: #FF9500;
+            --ios-teal: #5AC8FA;
+            --ios-indigo: #5856D6;
+            --ios-purple: #AF52DE;
+            --ios-pink: #FF2D55;
+            --ios-gray: #8E8E93;
+            --ios-gray2: #AEAEB2;
+            --ios-gray3: #C7C7CC;
+            --ios-gray4: #D1D1D6;
+            --ios-gray5: #E5E5EA;
+            --ios-gray6: #F2F2F7;
+            --ios-bg: #F9F9FB;
+            --ios-white: #FFFFFF;
+            --ios-black: #1C1C1E;
+            --ios-dark-card: #2C2C2E;
+            --brand-primary: #0D6B4E;
+            --brand-primary-light: #0F8A63;
+            --brand-secondary: #1B9C6B;
+            --brand-accent: #22C55E;
+            --brand-bg-light: #ECFDF5;
+            --brand-gradient: linear-gradient(135deg, #0D6B4E 0%, #0F8A63 30%, #1B9C6B 60%, #22C55E 100%);
+            --brand-gradient-subtle: linear-gradient(135deg, #ECFDF5 0%, #D1FAE5 50%, #A7F3D0 100%);
+            --glass-bg: rgba(255, 255, 255, 0.74);
+            --glass-border: rgba(255, 255, 255, 0.58);
+            --glass-blur: blur(22px) saturate(180%);
+            --radius-sm: 10px;
+            --radius-md: 16px;
+            --radius-lg: 22px;
+            --radius-xl: 28px;
+            --radius-2xl: 36px;
+            --radius-full: 9999px;
+            --shadow-ios: 0 1px 3px rgba(0, 0, 0, 0.06), 0 6px 16px rgba(0, 0, 0, 0.06);
+            --shadow-ios-lg: 0 4px 20px rgba(0, 0, 0, 0.10), 0 12px 40px rgba(0, 0, 0, 0.08);
+            --shadow-ios-xl: 0 8px 40px rgba(0, 0, 0, 0.14), 0 20px 60px rgba(0, 0, 0, 0.10);
+            --shadow-glow-green: 0 0 40px rgba(13, 107, 78, 0.25), 0 0 80px rgba(34, 197, 94, 0.15);
+            --shadow-glow-blue: 0 0 40px rgba(0, 122, 255, 0.2), 0 0 80px rgba(90, 200, 250, 0.12);
+            --shadow-glow-red: 0 0 40px rgba(255, 59, 48, 0.2), 0 0 80px rgba(255, 45, 85, 0.10);
+            --shadow-glow-orange: 0 0 40px rgba(255, 149, 0, 0.2), 0 0 80px rgba(255, 149, 0, 0.08);
+            --transition-fast: 0.18s cubic-bezier(0.25, 0.1, 0.25, 1);
+            --transition-smooth: 0.3s cubic-bezier(0.25, 0.1, 0.25, 1);
+            --transition-bounce: 0.45s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            --transition-spring: 0.55s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        html {
+            scroll-behavior: smooth;
+            font-size: 16px;
+            -webkit-tap-highlight-color: transparent;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Helvetica Neue', sans-serif;
+            background: var(--ios-bg);
+            color: var(--ios-black);
+            line-height: 1.55;
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+            padding-bottom: 80px;
+        }
+
+        .bg-orb {
+            position: fixed;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 0;
+            opacity: 0.28;
+            filter: blur(90px);
+            animation: orbFloat 18s ease-in-out infinite;
+        }
+        .bg-orb--1 {
+            width: 420px;
+            height: 420px;
+            background: radial-gradient(circle, rgba(34, 197, 94, 0.30) 0%, transparent 70%);
+            top: -8%;
+            left: -8%;
+        }
+        .bg-orb--2 {
+            width: 340px;
+            height: 340px;
+            background: radial-gradient(circle, rgba(13, 107, 78, 0.26) 0%, transparent 70%);
+            bottom: -6%;
+            right: -6%;
+            animation-delay: -7s;
+            animation-duration: 20s;
+        }
+        .bg-orb--3 {
+            width: 260px;
+            height: 260px;
+            background: radial-gradient(circle, rgba(0, 122, 255, 0.14) 0%, transparent 70%);
+            top: 45%;
+            left: 58%;
+            animation-delay: -12s;
+            animation-duration: 22s;
+        }
+        .bg-orb--4 {
+            width: 200px;
+            height: 200px;
+            background: radial-gradient(circle, rgba(255, 149, 0, 0.12) 0%, transparent 70%);
+            top: 20%;
+            right: 10%;
+            animation-delay: -4s;
+            animation-duration: 16s;
+        }
+        @keyframes orbFloat {
+            0%,
+            100% {
+                transform: translate(0, 0) scale(1);
+            }
+            15% {
+                transform: translate(30px, -25px) scale(1.08);
+            }
+            30% {
+                transform: translate(-18px, 20px) scale(0.94);
+            }
+            45% {
+                transform: translate(25px, 15px) scale(1.05);
+            }
+            60% {
+                transform: translate(-30px, -10px) scale(0.92);
+            }
+            75% {
+                transform: translate(10px, -30px) scale(1.06);
+            }
+            90% {
+                transform: translate(-15px, 25px) scale(0.96);
+            }
+        }
+
+        .app-wrapper {
+            position: relative;
+            z-index: 1;
+            max-width: 560px;
+            margin: 0 auto;
+            padding: 0 14px 40px;
+        }
+
+        /* ── HEADER ── */
+        .dashboard-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 0 6px;
+            position: sticky;
+            top: 0;
+            z-index: 90;
+            background: rgba(249, 249, 251, 0.86);
+            backdrop-filter: blur(22px);
+            -webkit-backdrop-filter: blur(22px);
+        }
+        .dashboard-header__logo {
+            width: 40px;
+            height: 40px;
+            border-radius: var(--radius-md);
+            background: var(--brand-gradient);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 1.1rem;
+            box-shadow: 0 4px 14px rgba(13, 107, 78, 0.35);
+            flex-shrink: 0;
+        }
+        .dashboard-header__title {
+            font-size: 1.15rem;
+            font-weight: 800;
+            letter-spacing: -0.3px;
+            color: var(--ios-black);
+            flex: 1;
+        }
+        .dashboard-header__actions {
+            display: flex;
+            gap: 8px;
+        }
+        .header-icon-btn {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: var(--ios-gray6);
+            border: 1px solid var(--ios-gray5);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9rem;
+            color: var(--ios-black);
+            transition: all var(--transition-fast);
+            position: relative;
+        }
+        .header-icon-btn:hover {
+            background: #e0e0e5;
+            transform: scale(1.06);
+        }
+        .header-icon-btn .notif-dot {
+            position: absolute;
+            top: 6px;
+            right: 6px;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--ios-red);
+            border: 2px solid #fff;
+            animation: dotBlink 2s ease-in-out infinite;
+        }
+        @keyframes dotBlink {
+            0%,
+            100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.3;
+            }
+        }
+        .avatar-btn {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #5856D6, #AF52DE);
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            font-weight: 700;
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all var(--transition-bounce);
+            box-shadow: 0 3px 12px rgba(88, 86, 214, 0.30);
+        }
+        .avatar-btn:hover {
+            transform: scale(1.08);
+            box-shadow: 0 6px 20px rgba(88, 86, 214, 0.40);
+        }
+
+        /* ── WELCOME BLOCK ── */
+        .welcome-block {
+            margin-top: 16px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+        .welcome-block__text h1 {
+            font-size: 1.5rem;
+            font-weight: 900;
+            letter-spacing: -0.5px;
+            color: var(--ios-black);
+            line-height: 1.2;
+        }
+        .welcome-block__text h1 .wave {
+            display: inline-block;
+            animation: waveAnim 1.8s ease-in-out infinite;
+        }
+        @keyframes waveAnim {
+            0%,
+            100% {
+                transform: rotate(0deg);
+            }
+            25% {
+                transform: rotate(20deg);
+            }
+            50% {
+                transform: rotate(-10deg);
+            }
+            75% {
+                transform: rotate(15deg);
+            }
+        }
+        .welcome-block__text p {
+            font-size: 0.8rem;
+            color: var(--ios-gray);
+            margin-top: 2px;
+        }
+        .welcome-block__streak {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            background: var(--brand-bg-light);
+            padding: 8px 14px;
+            border-radius: var(--radius-full);
+            font-size: 0.7rem;
+            font-weight: 700;
+            color: var(--brand-primary);
+            white-space: nowrap;
+            flex-shrink: 0;
+            border: 1px solid rgba(13, 107, 78, 0.12);
+        }
+        .welcome-block__streak i {
+            color: #F59E0B;
+        }
+
+        /* ── LOCATION STATUS CARD ── */
+        .location-status-card {
+            margin-top: 12px;
+            background: var(--glass-bg);
+            backdrop-filter: var(--glass-blur);
+            -webkit-backdrop-filter: var(--glass-blur);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius-xl);
+            padding: 14px 18px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            box-shadow: var(--shadow-ios);
+            cursor: pointer;
+            transition: all var(--transition-bounce);
+        }
+        .location-status-card:hover {
+            box-shadow: var(--shadow-ios-lg);
+            transform: translateY(-2px);
+        }
+        .location-status-card__icon {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            background: #EBF5FF;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--ios-blue);
+            font-size: 1rem;
+            flex-shrink: 0;
+        }
+        .location-status-card__info {
+            flex: 1;
+            min-width: 0;
+        }
+        .location-status-card__label {
+            font-size: 0.7rem;
+            font-weight: 600;
+            color: var(--ios-gray);
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+        }
+        .location-status-card__value {
+            font-size: 0.88rem;
+            font-weight: 700;
+            color: var(--ios-black);
+        }
+        .location-status-card__status {
+            font-size: 0.62rem;
+            font-weight: 700;
+            color: var(--ios-green);
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .location-status-card__status .dot-live {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: var(--ios-green);
+            animation: pulseLive 2s infinite;
+        }
+        @keyframes pulseLive {
+            0%,
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+            50% {
+                opacity: 0.4;
+                transform: scale(1.8);
+            }
+        }
+
+        /* ── PRIMARY ACTION BUTTON ── */
+        .primary-action-area {
+            margin-top: 16px;
+            text-align: center;
+        }
+        .btn-primary-action {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: var(--brand-gradient);
+            color: #fff;
+            font-weight: 800;
+            font-size: 1.05rem;
+            padding: 18px 36px;
+            border-radius: var(--radius-full);
+            border: none;
+            cursor: pointer;
+            box-shadow: var(--shadow-glow-green), var(--shadow-ios-lg);
+            transition: all var(--transition-bounce);
+            letter-spacing: -0.3px;
+            position: relative;
+            overflow: hidden;
+            font-family: 'Inter', sans-serif;
+            width: 100%;
+            justify-content: center;
+        }
+        .btn-primary-action::before {
+            content: '';
+            position: absolute;
+            top: -60%;
+            left: -60%;
+            width: 220%;
+            height: 220%;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.22) 0%, transparent 60%);
+            animation: btnShimmer 3s linear infinite;
+            z-index: 0;
+        }
+        @keyframes btnShimmer {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+        .btn-primary-action span {
+            position: relative;
+            z-index: 1;
+        }
+        .btn-primary-action i {
+            position: relative;
+            z-index: 1;
+        }
+        .btn-primary-action:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-glow-green), 0 14px 44px rgba(0, 0, 0, 0.18);
+        }
+        .btn-primary-action:active {
+            transform: scale(0.96);
+        }
+
+        /* ── QUICK ACTIONS GRID ── */
+        .quick-actions-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr 1fr;
+            gap: 10px;
+            margin-top: 14px;
+        }
+        .quick-action-item {
+            background: var(--ios-white);
+            border-radius: var(--radius-lg);
+            padding: 16px 8px;
+            text-align: center;
+            border: 1px solid var(--ios-gray5);
+            cursor: pointer;
+            transition: all var(--transition-bounce);
+            box-shadow: var(--shadow-ios);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+        }
+        .quick-action-item:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-ios-lg);
+            border-color: rgba(13, 107, 78, 0.2);
+        }
+        .quick-action-item:active {
+            transform: scale(0.94);
+        }
+        .quick-action-item__icon {
+            width: 40px;
+            height: 40px;
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+        }
+        .quick-action-item__icon.blue {
+            background: #EBF5FF;
+            color: var(--ios-blue);
+        }
+        .quick-action-item__icon.green {
+            background: #D1FAE5;
+            color: #065F46;
+        }
+        .quick-action-item__icon.red {
+            background: #FEE2E2;
+            color: #991B1B;
+        }
+        .quick-action-item__icon.purple {
+            background: #EDE9FE;
+            color: #5B21B6;
+        }
+        .quick-action-item__label {
+            font-size: 0.65rem;
+            font-weight: 700;
+            color: var(--ios-black);
+            letter-spacing: -0.1px;
+            line-height: 1.2;
+        }
+
+        /* ── EMERGENCY SHORTCUT BANNER ── */
+        .emergency-shortcut {
+            margin-top: 14px;
+            background: linear-gradient(135deg, #FFF5F5 0%, #FFE8E8 100%);
+            border: 1.5px solid rgba(255, 59, 48, 0.22);
+            border-radius: var(--radius-xl);
+            padding: 16px 18px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            transition: all var(--transition-bounce);
+            animation: bannerGlow 3s ease-in-out infinite;
+            position: relative;
+            overflow: hidden;
+        }
+        @keyframes bannerGlow {
+            0%,
+            100% {
+                box-shadow: 0 0 0px rgba(255, 59, 48, 0);
+            }
+            50% {
+                box-shadow: 0 0 30px rgba(255, 59, 48, 0.16), 0 0 60px rgba(255, 59, 48, 0.06);
+            }
+        }
+        .emergency-shortcut:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-glow-red);
+        }
+        .emergency-shortcut__icon {
+            width: 46px;
+            height: 46px;
+            border-radius: 50%;
+            background: var(--ios-red);
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            flex-shrink: 0;
+            animation: emergencyBeat 1.4s ease-in-out infinite;
+            z-index: 1;
+        }
+        @keyframes emergencyBeat {
+            0%,
+            100% {
+                transform: scale(1);
+            }
+            15% {
+                transform: scale(1.2);
+            }
+            30% {
+                transform: scale(1);
+            }
+            45% {
+                transform: scale(1.18);
+            }
+            60% {
+                transform: scale(1);
+            }
+        }
+        .emergency-shortcut__text {
+            z-index: 1;
+            flex: 1;
+        }
+        .emergency-shortcut__title {
+            font-weight: 700;
+            font-size: 0.88rem;
+            color: #C0392B;
+        }
+        .emergency-shortcut__sub {
+            font-size: 0.7rem;
+            color: #8B3A3A;
+            opacity: 0.8;
+        }
+        .emergency-shortcut__arrow {
+            z-index: 1;
+            color: var(--ios-red);
+            font-size: 1rem;
+            animation: arrowNudge 1.5s ease-in-out infinite;
+        }
+        @keyframes arrowNudge {
+            0%,
+            100% {
+                transform: translateX(0);
+            }
+            50% {
+                transform: translateX(6px);
+            }
+        }
+
+        /* ── SECTION HEADERS ── */
+        .section-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: 24px;
+            margin-bottom: 10px;
+        }
+        .section-header h2 {
+            font-size: 1rem;
+            font-weight: 800;
+            letter-spacing: -0.3px;
+            color: var(--ios-black);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .section-header h2 i {
+            font-size: 0.8rem;
+            color: var(--brand-primary);
+        }
+        .section-header .view-all {
+            font-size: 0.72rem;
+            font-weight: 600;
+            color: var(--brand-primary);
+            cursor: pointer;
+            text-decoration: none;
+            padding: 5px 12px;
+            border-radius: var(--radius-full);
+            transition: all var(--transition-fast);
+            background: var(--brand-bg-light);
+            border: 1px solid rgba(13, 107, 78, 0.10);
+        }
+        .section-header .view-all:hover {
+            background: #D1FAE5;
+        }
+
+        /* ── HORIZONTAL SCROLL ROW ── */
+        .horizontal-scroll {
+            display: flex;
+            gap: 10px;
+            overflow-x: auto;
+            scroll-snap-type: x mandatory;
+            -webkit-overflow-scrolling: touch;
+            padding-bottom: 6px;
+        }
+        .horizontal-scroll::-webkit-scrollbar {
+            display: none;
+        }
+
+        /* ── SAVED PHARMACY MINI CARD ── */
+        .mini-pharmacy-card {
+            min-width: 180px;
+            background: var(--ios-white);
+            border-radius: var(--radius-lg);
+            padding: 14px;
+            border: 1px solid var(--ios-gray5);
+            box-shadow: var(--shadow-ios);
+            scroll-snap-align: start;
+            flex-shrink: 0;
+            cursor: pointer;
+            transition: all var(--transition-smooth);
+        }
+        .mini-pharmacy-card:hover {
+            box-shadow: var(--shadow-ios-lg);
+            transform: translateY(-2px);
+            border-color: rgba(13, 107, 78, 0.2);
+        }
+        .mini-pharmacy-card__name {
+            font-weight: 700;
+            font-size: 0.8rem;
+            color: var(--ios-black);
+            margin-bottom: 4px;
+        }
+        .mini-pharmacy-card__addr {
+            font-size: 0.66rem;
+            color: var(--ios-gray);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .mini-pharmacy-card__meta {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin-top: 6px;
+            font-size: 0.62rem;
+            font-weight: 600;
+        }
+        .mini-badge-open {
+            background: #D1FAE5;
+            color: #065F46;
+            padding: 3px 8px;
+            border-radius: var(--radius-full);
+        }
+        .mini-badge-closed {
+            background: #FEE2E2;
+            color: #991B1B;
+            padding: 3px 8px;
+            border-radius: var(--radius-full);
+        }
+
+        /* ── RECENT SEARCH CHIP ── */
+        .recent-search-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 9px 16px;
+            border-radius: var(--radius-full);
+            font-size: 0.73rem;
+            font-weight: 600;
+            cursor: pointer;
+            border: 1.5px solid var(--ios-gray4);
+            background: rgba(255, 255, 255, 0.7);
+            color: var(--ios-black);
+            transition: all var(--transition-bounce);
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+        .recent-search-chip:hover {
+            border-color: var(--brand-primary);
+            background: var(--brand-bg-light);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-ios);
+        }
+        .recent-search-chip i {
+            font-size: 0.65rem;
+            color: var(--ios-gray);
+        }
+
+        /* ── INSIGHT CARDS ── */
+        .insight-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+        .insight-card {
+            background: var(--ios-white);
+            border-radius: var(--radius-lg);
+            padding: 16px 14px;
+            border: 1px solid var(--ios-gray5);
+            box-shadow: var(--shadow-ios);
+            transition: all var(--transition-smooth);
+            cursor: default;
+        }
+        .insight-card:hover {
+            box-shadow: var(--shadow-ios-lg);
+            transform: translateY(-2px);
+        }
+        .insight-card__icon {
+            font-size: 1.3rem;
+            margin-bottom: 8px;
+        }
+        .insight-card__value {
+            font-size: 1.3rem;
+            font-weight: 900;
+            color: var(--ios-black);
+            letter-spacing: -0.5px;
+        }
+        .insight-card__label {
+            font-size: 0.65rem;
+            color: var(--ios-gray);
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            margin-top: 2px;
+        }
+
+        /* ── ACTIVITY SUMMARY ── */
+        .activity-summary {
+            background: var(--glass-bg);
+            backdrop-filter: var(--glass-blur);
+            -webkit-backdrop-filter: var(--glass-blur);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius-xl);
+            padding: 16px 18px;
+            box-shadow: var(--shadow-ios);
+        }
+        .activity-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 0;
+            border-bottom: 1px solid var(--ios-gray5);
+            font-size: 0.78rem;
+            font-weight: 500;
+            color: var(--ios-black);
+        }
+        .activity-row:last-child {
+            border-bottom: none;
+        }
+        .activity-row i {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.65rem;
+            flex-shrink: 0;
+        }
+        .activity-row i.green-bg {
+            background: #D1FAE5;
+            color: #065F46;
+        }
+        .activity-row i.blue-bg {
+            background: #EBF5FF;
+            color: var(--ios-blue);
+        }
+        .activity-row i.orange-bg {
+            background: #FED7AA;
+            color: #9A3412;
+        }
+        .activity-row .time-ago {
+            margin-left: auto;
+            font-size: 0.65rem;
+            color: var(--ios-gray3);
+            white-space: nowrap;
+        }
+
+        /* ── CONTRIBUTION BADGE ── */
+        .contribution-card {
+            margin-top: 14px;
+            background: linear-gradient(135deg, #FFF7ED 0%, #FFEDD5 100%);
+            border: 1px solid rgba(249, 115, 22, 0.15);
+            border-radius: var(--radius-xl);
+            padding: 16px 18px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            box-shadow: var(--shadow-ios);
+            transition: all var(--transition-bounce);
+            cursor: pointer;
+        }
+        .contribution-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-ios-lg);
+        }
+        .contribution-card__icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #F97316, #FB923C);
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            flex-shrink: 0;
+            box-shadow: 0 4px 16px rgba(249, 115, 22, 0.30);
+        }
+        .contribution-card__info h4 {
+            font-weight: 700;
+            font-size: 0.85rem;
+            color: #9A3412;
+        }
+        .contribution-card__info p {
+            font-size: 0.68rem;
+            color: #C2410C;
+            opacity: 0.8;
+        }
+        .contribution-card__arrow {
+            color: #F97316;
+            font-size: 0.8rem;
+        }
+
+        /* ── SETTINGS & PROFILE SHORTCUT ROW ── */
+        .shortcut-row {
+            display: flex;
+            gap: 10px;
+        }
+        .shortcut-card {
+            flex: 1;
+            background: var(--ios-white);
+            border-radius: var(--radius-lg);
+            padding: 14px;
+            border: 1px solid var(--ios-gray5);
+            cursor: pointer;
+            transition: all var(--transition-bounce);
+            box-shadow: var(--shadow-ios);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .shortcut-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-ios-lg);
+            border-color: rgba(13, 107, 78, 0.2);
+        }
+        .shortcut-card__icon {
+            width: 36px;
+            height: 36px;
+            border-radius: var(--radius-sm);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9rem;
+            flex-shrink: 0;
+        }
+        .shortcut-card__icon.purple-bg {
+            background: #EDE9FE;
+            color: #5B21B6;
+        }
+        .shortcut-card__icon.teal-bg {
+            background: #CCFBF1;
+            color: #0F766E;
+        }
+        .shortcut-card__label {
+            font-weight: 700;
+            font-size: 0.78rem;
+            color: var(--ios-black);
+            letter-spacing: -0.2px;
+        }
+
+        /* ── EMERGENCY INFO ── */
+        .emergency-info-card {
+            margin-top: 14px;
+            background: #FFFBF0;
+            border: 1px solid rgba(245, 158, 11, 0.2);
+            border-radius: var(--radius-lg);
+            padding: 14px 16px;
+            display: flex;
+            gap: 10px;
+            font-size: 0.7rem;
+            color: #92400E;
+            line-height: 1.5;
+            align-items: flex-start;
+        }
+        .emergency-info-card i {
+            color: #F59E0B;
+            font-size: 0.85rem;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
+        /* ── FOOTER ── */
+        .dashboard-footer {
+            margin-top: 28px;
+            text-align: center;
+            padding: 16px 0;
+            border-top: 1px solid var(--ios-gray5);
+        }
+        .dashboard-footer__links {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            justify-content: center;
+            margin-bottom: 6px;
+        }
+        .dashboard-footer__links a {
+            font-size: 0.68rem;
+            color: var(--ios-gray);
+            text-decoration: none;
+            font-weight: 500;
+            cursor: pointer;
+            transition: color var(--transition-fast);
+        }
+        .dashboard-footer__links a:hover {
+            color: var(--brand-primary);
+        }
+        .dashboard-footer__copy {
+            font-size: 0.62rem;
+            color: var(--ios-gray3);
+        }
+
+        /* ── iOS MODAL ── */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.55);
+            z-index: 9999;
+            display: flex;
+            align-items: flex-start;
+            justify-content: center;
+            padding-top: 60px;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
+        }
+        .modal-overlay.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+        .modal-notification {
+            background: rgba(255, 255, 255, 0.96);
+            backdrop-filter: blur(30px) saturate(200%);
+            -webkit-backdrop-filter: blur(30px) saturate(200%);
+            border-radius: 22px;
+            padding: 18px 20px;
+            width: 90%;
+            max-width: 400px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(255, 255, 255, 0.6);
+            transform: translateY(-30px) scale(0.92);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+        }
+        .modal-overlay.active .modal-notification {
+            transform: translateY(0) scale(1);
+        }
+        .modal-notification__header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        .modal-notification__app-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            background: var(--brand-gradient);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 0.85rem;
+        }
+        .modal-notification__app-name {
+            font-weight: 700;
+            font-size: 0.85rem;
+            color: var(--ios-black);
+        }
+        .modal-notification__time {
+            font-size: 0.7rem;
+            color: var(--ios-gray2);
+            margin-left: auto;
+        }
+        .modal-notification__body {
+            font-size: 0.9rem;
+            color: var(--ios-black);
+            line-height: 1.4;
+            font-weight: 500;
+        }
+        .modal-notification__sub {
+            font-size: 0.75rem;
+            color: var(--ios-gray);
+            margin-top: 4px;
+        }
+        .modal-notification__close {
+            position: absolute;
+            top: 10px;
+            right: 14px;
+            background: rgba(0, 0, 0, 0.06);
+            border: none;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 0.8rem;
+            color: var(--ios-gray);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .modal-notification__actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 12px;
+        }
+        .modal-notification__btn {
+            flex: 1;
+            padding: 10px;
+            border-radius: var(--radius-full);
+            border: none;
+            font-weight: 600;
+            font-size: 0.8rem;
+            cursor: pointer;
+            font-family: 'Inter', sans-serif;
+        }
+        .modal-notification__btn--primary {
+            background: var(--brand-primary);
+            color: #fff;
+        }
+        .modal-notification__btn--secondary {
+            background: var(--ios-gray6);
+            color: var(--ios-black);
+        }
+
+        /* ── TOAST ── */
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%) translateY(120px);
+            background: var(--ios-dark-card);
+            color: #fff;
+            padding: 12px 22px;
+            border-radius: var(--radius-full);
+            font-weight: 600;
+            font-size: 0.82rem;
+            z-index: 10000;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .toast.show {
+            transform: translateX(-50%) translateY(0);
+        }
+
+        @media (max-width: 400px) {
+            .quick-actions-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+            .insight-row {
+                grid-template-columns: 1fr 1fr;
+            }
+            .welcome-block__text h1 {
+                font-size: 1.25rem;
+            }
+            .btn-primary-action {
+                font-size: 0.9rem;
+                padding: 15px 24px;
+            }
+            .shortcut-row {
+                flex-direction: column;
+            }
+            .dashboard-header__title {
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="bg-orb bg-orb--1"></div>
+    <div class="bg-orb bg-orb--2"></div>
+    <div class="bg-orb bg-orb--3"></div>
+    <div class="bg-orb bg-orb--4"></div>
+
+    <div class="app-wrapper">
+        <!-- ── HEADER ── -->
+        <header class="dashboard-header">
+            <div class="dashboard-header__logo">
+                <i class="fas fa-prescription-bottle"></i>
+            </div>
+            <span class="dashboard-header__title">PharmFinder</span>
+            <div class="dashboard-header__actions">
+                <button class="header-icon-btn" id="btnNotifications" aria-label="Notifications">
+                    <i class="fas fa-bell"></i>
+                    <span class="notif-dot"></span>
+                </button>
+                <button class="avatar-btn" id="btnProfile" aria-label="Profile">JD</button>
+            </div>
+        </header>
+
+        <!-- ── WELCOME BLOCK ── -->
+        <div class="welcome-block">
+            <div class="welcome-block__text">
+                <h1>Hi, <span id="userNameDisplay">John</span> <span class="wave">👋</span></h1>
+                <p>Find pharmacies near you quickly</p>
+            </div>
+            <div class="welcome-block__streak" id="streakBadge">
+                <i class="fas fa-fire"></i> <span id="streakCount">5</span> searches this week
+            </div>
+        </div>
+
+        <!-- ── LOCATION STATUS ── -->
+        <div class="location-status-card" id="locationStatusCard" role="button" tabindex="0" aria-label="Current location: Lagos — tap to change">
+            <div class="location-status-card__icon">
+                <i class="fas fa-location-dot"></i>
+            </div>
+            <div class="location-status-card__info">
+                <div class="location-status-card__label">Current Location</div>
+                <div class="location-status-card__value" id="currentLocationDisplay">Lagos, Nigeria</div>
+            </div>
+            <div class="location-status-card__status">
+                <span class="dot-live"></span> Active
+            </div>
+            <i class="fas fa-chevron-right" style="color:var(--ios-gray3);font-size:0.65rem;"></i>
+        </div>
+
+        <!-- ── PRIMARY ACTION ── -->
+        <div class="primary-action-area">
+            <button class="btn-primary-action" id="btnFindPharmacy">
+                <i class="fas fa-magnifying-glass-location"></i>
+                <span>Find Pharmacy Near Me</span>
+            </button>
+        </div>
+
+        <!-- ── QUICK ACTIONS GRID ── -->
+        <div class="quick-actions-grid">
+            <div class="quick-action-item" data-action="search" role="button" tabindex="0" aria-label="Search location">
+                <div class="quick-action-item__icon blue"><i class="fas fa-magnifying-glass"></i></div>
+                <span class="quick-action-item__label">Search<br>Location</span>
+            </div>
+            <div class="quick-action-item" data-action="map" role="button" tabindex="0" aria-label="View map">
+                <div class="quick-action-item__icon green"><i class="fas fa-map"></i></div>
+                <span class="quick-action-item__label">View<br>Map</span>
+            </div>
+            <div class="quick-action-item" data-action="saved" role="button" tabindex="0" aria-label="Saved pharmacies">
+                <div class="quick-action-item__icon purple"><i class="fas fa-heart"></i></div>
+                <span class="quick-action-item__label">Saved<br>Pharmacies</span>
+            </div>
+            <div class="quick-action-item" data-action="emergency" role="button" tabindex="0" aria-label="Emergency mode">
+                <div class="quick-action-item__icon red"><i class="fas fa-heart-pulse"></i></div>
+                <span class="quick-action-item__label">Emergency<br>Mode</span>
+            </div>
+        </div>
+
+        <!-- ── EMERGENCY SHORTCUT BANNER ── -->
+        <div class="emergency-shortcut" id="emergencyShortcut" role="button" tabindex="0" aria-label="Find open pharmacies now — emergency shortcut">
+            <div class="emergency-shortcut__icon">
+                <i class="fas fa-heart-pulse"></i>
+            </div>
+            <div class="emergency-shortcut__text">
+                <div class="emergency-shortcut__title">Find open pharmacies now</div>
+                <div class="emergency-shortcut__sub">One tap to see only currently open locations</div>
+            </div>
+            <div class="emergency-shortcut__arrow">
+                <i class="fas fa-chevron-right"></i>
+            </div>
+        </div>
+
+        <!-- ── SAVED PHARMACIES PREVIEW ── -->
+        <div class="section-header">
+            <h2><i class="fas fa-heart"></i> Saved Pharmacies</h2>
+            <a class="view-all" href="favorites.html">View All <i class="fas fa-arrow-right"></i></a>
+        </div>
+        <div class="horizontal-scroll" id="savedPreviewList">
+            <!-- Injected by JS -->
+        </div>
+        <div id="noSavedMessage" style="display:none; text-align:center; padding:20px; font-size:0.78rem; color:var(--ios-gray3); background:rgba(255,255,255,0.5); border-radius:var(--radius-lg); border:1px dashed var(--ios-gray4);">
+            <i class="fas fa-heart-circle-plus" style="display:block; font-size:1.5rem; opacity:0.3; margin-bottom:8px;"></i>
+            No saved pharmacies yet. Tap the heart icon on any pharmacy to save it here.
+        </div>
+
+        <!-- ── RECENT SEARCHES ── -->
+        <div class="section-header">
+            <h2><i class="fas fa-clock-rotate-left"></i> Recent Searches</h2>
+            <a class="view-all" href="search.html">Search <i class="fas fa-arrow-right"></i></a>
+        </div>
+        <div class="horizontal-scroll" id="recentSearchesScroll">
+            <!-- Injected by JS -->
+        </div>
+
+        <!-- ── SMART INSIGHTS ── -->
+        <div class="section-header">
+            <h2><i class="fas fa-chart-line"></i> Your Insights</h2>
+        </div>
+        <div class="insight-row">
+            <div class="insight-card">
+                <div class="insight-card__icon">🔍</div>
+                <div class="insight-card__value" id="insightSearches">5</div>
+                <div class="insight-card__label">Searches This Week</div>
+            </div>
+            <div class="insight-card">
+                <div class="insight-card__icon">❤️</div>
+                <div class="insight-card__value" id="insightSaved">3</div>
+                <div class="insight-card__label">Saved Pharmacies</div>
+            </div>
+            <div class="insight-card">
+                <div class="insight-card__icon">📋</div>
+                <div class="insight-card__value" id="insightReports">2</div>
+                <div class="insight-card__label">Reports Submitted</div>
+            </div>
+            <div class="insight-card">
+                <div class="insight-card__icon">⏰</div>
+                <div class="insight-card__value" id="insightBestTime">Now</div>
+                <div class="insight-card__label">Best Time to Visit</div>
+            </div>
+        </div>
+
+        <!-- ── ACTIVITY SUMMARY ── -->
+        <div class="section-header">
+            <h2><i class="fas fa-list-check"></i> Recent Activity</h2>
+        </div>
+        <div class="activity-summary" id="activitySummary">
+            <div class="activity-row">
+                <i class="fas fa-magnifying-glass green-bg"></i>
+                <span>Searched <strong>"Ikeja"</strong></span>
+                <span class="time-ago">2 hours ago</span>
+            </div>
+            <div class="activity-row">
+                <i class="fas fa-heart blue-bg"></i>
+                <span>Saved <strong>MediCare 24/7 Pharmacy</strong></span>
+                <span class="time-ago">5 hours ago</span>
+            </div>
+            <div class="activity-row">
+                <i class="fas fa-clipboard-check orange-bg"></i>
+                <span>Reported <strong>Rx Emergency Pharm</strong> as open</span>
+                <span class="time-ago">Yesterday</span>
+            </div>
+        </div>
+
+        <!-- ── CONTRIBUTION BADGE ── -->
+        <div class="contribution-card" id="contributionCard" role="button" tabindex="0" aria-label="You've helped 3 users — view your impact">
+            <div class="contribution-card__icon">
+                <i class="fas fa-trophy"></i>
+            </div>
+            <div class="contribution-card__info">
+                <h4>You've helped 3 users!</h4>
+                <p>Your status reports make PharmFinder more reliable for everyone.</p>
+            </div>
+            <div class="contribution-card__arrow">
+                <i class="fas fa-chevron-right"></i>
+            </div>
+        </div>
+
+        <!-- ── SETTINGS & PROFILE SHORTCUTS ── -->
+        <div class="section-header">
+            <h2><i class="fas fa-gear"></i> Quick Settings</h2>
+        </div>
+        <div class="shortcut-row">
+            <div class="shortcut-card" data-action="profile" role="button" tabindex="0" aria-label="View profile">
+                <div class="shortcut-card__icon purple-bg"><i class="fas fa-user"></i></div>
+                <span class="shortcut-card__label">My Profile</span>
+            </div>
+            <div class="shortcut-card" data-action="settings" role="button" tabindex="0" aria-label="Open settings">
+                <div class="shortcut-card__icon teal-bg"><i class="fas fa-sliders"></i></div>
+                <span class="shortcut-card__label">Settings</span>
+            </div>
+            <div class="shortcut-card" data-action="help" role="button" tabindex="0" aria-label="Help & support">
+                <div class="shortcut-card__icon" style="background:#EBF5FF;color:var(--ios-blue);"><i class="fas fa-circle-question"></i></div>
+                <span class="shortcut-card__label">Help</span>
+            </div>
+        </div>
+
+        <!-- ── EMERGENCY INFO ── -->
+        <div class="emergency-info-card">
+            <i class="fas fa-triangle-exclamation"></i>
+            <div>
+                <strong>Before visiting:</strong> Always call the pharmacy ahead to confirm medication availability. In a life‑threatening emergency, contact local emergency services immediately. PharmFinder is a location tool — not medical advice.
+            </div>
+        </div>
+
+        <!-- ── FOOTER ── -->
+        <footer class="dashboard-footer">
+            <div class="dashboard-footer__links">
+                <a href="about.html">About</a>
+                <a href="contact.html">Contact</a>
+                <a href="privacy.html">Privacy</a>
+                <a href="terms.html">Terms</a>
+                <a href="help.html">Support</a>
+            </div>
+            <p class="dashboard-footer__copy">&copy; <span id="footerYear"></span> PharmFinder. All rights reserved.</p>
+        </footer>
+    </div>
+
+    <!-- ── iOS MODAL ── -->
+    <div class="modal-overlay" id="modalOverlay">
+        <div class="modal-notification" id="modalNotification">
+            <button class="modal-notification__close" id="modalCloseBtn"><i class="fas fa-xmark"></i></button>
+            <div class="modal-notification__header">
+                <div class="modal-notification__app-icon"><i class="fas fa-prescription-bottle"></i></div>
+                <span class="modal-notification__app-name">PharmFinder</span>
+                <span class="modal-notification__time" id="modalTime">now</span>
+            </div>
+            <div class="modal-notification__body" id="modalBody">Message</div>
+            <div class="modal-notification__sub" id="modalSub"></div>
+            <div class="modal-notification__actions">
+                <button class="modal-notification__btn modal-notification__btn--secondary" id="modalBtnDismiss">Close</button>
+                <button class="modal-notification__btn modal-notification__btn--primary" id="modalBtnAction">OK</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast -->
+    <div class="toast" id="toast"><i class="fas fa-circle-check"></i><span id="toastMsg"></span></div>
+
+    <script>
+        (function() {
+            // ─── DATA ───
+            const defaultSaved = [
+                { id: 1, name: 'MediCare 24/7 Pharmacy', address: '12 Adeola Odeku St, VI', status: 'open',
+                    is24h: true, distance: '0.3 km' },
+                { id: 4, name: 'Rx Emergency Pharm', address: '3 Allen Avenue, Ikeja', status: 'open',
+                    is24h: true, distance: '1.8 km' },
+                { id: 2, name: 'GreenCross Pharmacy', address: '45 Broad Street, Marina', status: 'open',
+                    is24h: false, distance: '0.7 km' },
+            ];
+            const defaultRecentSearches = ['Ikeja', 'Lekki Phase 1', 'Victoria Island', 'Marina',
+            'Airport Road'];
+            const userName = 'John';
+            const userInitials = 'JD';
+            const streakCount = 5;
+            const reportsSubmitted = 2;
+            const usersHelped = 3;
+
+            // ─── LOAD FROM LOCAL STORAGE ───
+            function loadSaved() {
+                try {
+                    const raw = localStorage.getItem('pharmfinder_saved');
+                    if (raw) return JSON.parse(raw);
+                } catch (e) {}
+                return [...defaultSaved];
+            }
+
+            function loadRecentSearches() {
+                try {
+                    const raw = localStorage.getItem('pharmfinder_recent_searches');
+                    if (raw) {
+                        const parsed = JSON.parse(raw);
+                        return parsed.map(s => typeof s === 'string' ? s : s.query).slice(0, 6);
+                    }
+                } catch (e) {}
+                return [...defaultRecentSearches];
+            }
+
+            const savedPharmacies = loadSaved();
+            const recentSearches = loadRecentSearches();
+
+            // ─── DOM REFS ───
+            const modalOverlay = document.getElementById('modalOverlay');
+            const modalBody = document.getElementById('modalBody');
+            const modalSub = document.getElementById('modalSub');
+            const modalTime = document.getElementById('modalTime');
+            const modalBtnDismiss = document.getElementById('modalBtnDismiss');
+            const modalBtnAction = document.getElementById('modalBtnAction');
+            const modalCloseBtn = document.getElementById('modalCloseBtn');
+            const toast = document.getElementById('toast');
+            const toastMsg = document.getElementById('toastMsg');
+
+            let toastTimer;
+            let modalActionCallback = null;
+
+            function showModal(bodyText, subText, actionLabel, callback, dismissLabel = 'Close') {
+                modalBody.textContent = bodyText;
+                modalSub.textContent = subText || '';
+                modalTime.textContent = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                modalBtnAction.textContent = actionLabel || 'OK';
+                modalBtnDismiss.textContent = dismissLabel;
+                modalActionCallback = callback || null;
+                modalOverlay.classList.add('active');
+            }
+
+            function hideModal() {
+                modalOverlay.classList.remove('active');
+                modalActionCallback = null;
+            }
+            modalCloseBtn.addEventListener('click', hideModal);
+            modalBtnDismiss.addEventListener('click', hideModal);
+            modalBtnAction.addEventListener('click', () => {
+                if (modalActionCallback && typeof modalActionCallback === 'function') modalActionCallback();
+                hideModal();
+            });
+            modalOverlay.addEventListener('click', (e) => { if (e.target === modalOverlay) hideModal(); });
+            document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && modalOverlay.classList
+                    .contains('active')) hideModal(); });
+
+            function showToast(message, iconClass = 'fa-circle-check') {
+                clearTimeout(toastTimer);
+                toastMsg.textContent = message;
+                const iconEl = toast.querySelector('i');
+                if (iconEl) iconEl.className = 'fas ' + iconClass;
+                toast.classList.add('show');
+                toastTimer = setTimeout(() => toast.classList.remove('show'), 2800);
+            }
+
+            // ─── RENDER SAVED PREVIEW ───
+            function renderSavedPreview() {
+                const container = document.getElementById('savedPreviewList');
+                const noSavedMsg = document.getElementById('noSavedMessage');
+                if (savedPharmacies.length === 0) {
+                    container.style.display = 'none';
+                    noSavedMsg.style.display = 'block';
+                    document.getElementById('insightSaved').textContent = '0';
+                } else {
+                    container.style.display = 'flex';
+                    noSavedMsg.style.display = 'none';
+                    document.getElementById('insightSaved').textContent = savedPharmacies.length;
+                    container.innerHTML = savedPharmacies.slice(0, 4).map(p => {
+                        const badgeClass = p.status === 'open' ? 'mini-badge-open' :
+                            'mini-badge-closed';
+                        const badgeText = p.status === 'open' ? 'Open' : 'Closed';
+                        return `
+                    <div class="mini-pharmacy-card" data-id="${p.id}" role="button" tabindex="0" aria-label="${p.name} — ${p.status === 'open' ? 'Open' : 'Closed'} — ${p.distance}">
+                      <div class="mini-pharmacy-card__name">${p.name}</div>
+                      <div class="mini-pharmacy-card__addr">📍 ${p.address}</div>
+                      <div class="mini-pharmacy-card__meta">
+                        <span class="${badgeClass}">${badgeText}</span>
+                        <span style="color:var(--ios-gray);">${p.distance}</span>
+                        ${p.is24h ? '<span style="color:var(--ios-blue);font-weight:700;">24/7</span>' : ''}
+                      </div>
+                    </div>`;
+                    }).join('');
+                    // Attach click
+                    container.querySelectorAll('.mini-pharmacy-card').forEach(card => {
+                        card.addEventListener('click', () => {
+                            const id = card.getAttribute('data-id');
+                            showToast('Opening pharmacy details…', 'fa-arrow-right');
+                        });
+                        card.addEventListener('keydown', (e) => {
+                            if (e.key === 'Enter' || e.key === ' ') { e.preventDefault();
+                                card.click(); }
+                        });
+                    });
+                }
+            }
+
+            // ─── RENDER RECENT SEARCHES ───
+            function renderRecentSearches() {
+                const container = document.getElementById('recentSearchesScroll');
+                if (recentSearches.length === 0) {
+                    container.innerHTML =
+                        '<span style="font-size:0.75rem;color:var(--ios-gray3);padding:12px;">No recent searches</span>';
+                } else {
+                    container.innerHTML = recentSearches.map(s => `
+                <span class="recent-search-chip" data-query="${s}" role="button" tabindex="0" aria-label="Search ${s}">
+                  <i class="fas fa-clock-rotate-left"></i> ${s}
+                </span>`).join('');
+                    container.querySelectorAll('.recent-search-chip').forEach(chip => {
+                        chip.addEventListener('click', () => {
+                            const query = chip.getAttribute('data-query');
+                            showToast('Searching "' + query + '"…', 'fa-magnifying-glass');
+                            setTimeout(() => { window.location.href =
+                                    'index.html?location=' + encodeURIComponent(
+                                        query); }, 400);
+                        });
+                        chip.addEventListener('keydown', (e) => {
+                            if (e.key === 'Enter' || e.key === ' ') { e.preventDefault();
+                                chip.click(); }
+                        });
+                    });
+                }
+            }
+
+            // ─── SET STATIC VALUES ───
+            document.getElementById('userNameDisplay').textContent = userName;
+            document.getElementById('streakCount').textContent = streakCount;
+            document.getElementById('insightSearches').textContent = streakCount;
+            document.getElementById('insightReports').textContent = reportsSubmitted;
+            document.getElementById('footerYear').textContent = new Date().getFullYear();
+            document.querySelector('.avatar-btn').textContent = userInitials;
+
+            // ─── PRIMARY ACTION ───
+            document.getElementById('btnFindPharmacy').addEventListener('click', () => {
+                showToast('Locating nearby pharmacies…', 'fa-location-crosshairs');
+                setTimeout(() => { window.location.href = 'index.html'; }, 500);
+            });
+
+            // ─── QUICK ACTIONS ───
+            document.querySelectorAll('.quick-action-item').forEach(item => {
+                item.addEventListener('click', () => {
+                    const action = item.getAttribute('data-action');
+                    const actions = {
+                        search: { url: 'search.html', toast: 'Opening search…',
+                            icon: 'fa-magnifying-glass' },
+                        map: { url: 'map.html', toast: 'Opening map view…', icon: 'fa-map' },
+                        saved: { url: 'favorites.html', toast: 'Opening saved pharmacies…',
+                            icon: 'fa-heart' },
+                        emergency: { url: 'index.html?emergency=1',
+                            toast: 'Activating emergency mode…', icon: 'fa-heart-pulse' },
+                    };
+                    const act = actions[action];
+                    if (act) {
+                        showToast(act.toast, act.icon);
+                        setTimeout(() => { window.location.href = act.url; }, 400);
+                    }
+                });
+                item.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault();
+                        item.click(); }
+                });
+            });
+
+            // ─── EMERGENCY SHORTCUT ───
+            document.getElementById('emergencyShortcut').addEventListener('click', () => {
+                showModal(
+                    'Emergency Mode',
+                    'This will show only pharmacies that are currently open near you. Activate emergency mode?',
+                    'Activate Now',
+                    () => {
+                        showToast('Emergency mode activated!', 'fa-heart-pulse');
+                        setTimeout(() => { window.location.href =
+                                'index.html?emergency=1'; }, 400);
+                    },
+                    'Cancel'
+                );
+            });
+
+            // ─── LOCATION STATUS CARD ───
+            document.getElementById('locationStatusCard').addEventListener('click', () => {
+                showModal(
+                    'Change Location',
+                    'You can update your default location in Settings, or use the search bar to find pharmacies in a specific area.',
+                    'Open Settings',
+                    () => { window.location.href = 'settings.html'; },
+                    'Search Manually'
+                );
+            });
+
+            // ─── SHORTCUT CARDS ───
+            document.querySelectorAll('.shortcut-card').forEach(card => {
+                card.addEventListener('click', () => {
+                    const action = card.getAttribute('data-action');
+                    const urls = { profile: 'profile.html', settings: 'settings.html',
+                        help: 'help.html' };
+                    if (urls[action]) {
+                        showToast('Opening…', 'fa-arrow-right');
+                        setTimeout(() => { window.location.href = urls[action]; }, 300);
+                    }
+                });
+                card.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault();
+                        card.click(); }
+                });
+            });
+
+            // ─── CONTRIBUTION CARD ───
+            document.getElementById('contributionCard').addEventListener('click', () => {
+                showModal(
+                    'Community Impact',
+                    'You\'ve submitted ' + reportsSubmitted +
+                    ' status reports, helping ' + usersHelped +
+                    ' users find accurate pharmacy information. Thank you for making PharmFinder more reliable!',
+                    'View Reports',
+                    () => { window.location.href = 'report.html'; }
+                );
+            });
+
+            // ─── HEADER BUTTONS ───
+            document.getElementById('btnNotifications').addEventListener('click', () => {
+                showModal(
+                    'Notifications',
+                    'You have 1 new alert: "MediCare 24/7 Pharmacy is open now near you." (Demo)',
+                    'View',
+                    null
+                );
+            });
+            document.getElementById('btnProfile').addEventListener('click', () => {
+                showModal(
+                    'My Profile',
+                    'Hello ' + userName +
+                    '! View and edit your profile information. (Demo — profile page would open here.)',
+                    'Open Profile',
+                    () => { window.location.href = 'profile.html'; }
+                );
+            });
+
+            // ─── INIT ───
+            renderSavedPreview();
+            renderRecentSearches();
+
+            console.log('📊 PharmFinder Dashboard ready.');
+            console.log('👤 Welcome, ' + userName + '!');
+            console.log('❤️ ' + savedPharmacies.length + ' saved pharmacies | 🔍 ' + recentSearches.length +
+                ' recent searches');
+            console.log('💡 Tap "Find Pharmacy Near Me" or any quick action to get started.');
+
+            setTimeout(() => {
+                showToast('Welcome back, ' + userName + '! 👋', 'fa-hand-wave');
+            }, 800);
+
+            // ─── KEYBOARD SHORTCUTS ───
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'f' && e.ctrlKey) {
+                    e.preventDefault();
+                    document.getElementById('btnFindPharmacy').click();
+                }
+                if (e.key === 'e' && e.ctrlKey) {
+                    e.preventDefault();
+                    document.getElementById('emergencyShortcut').click();
+                }
+            });
+        })();
+    </script>
+</body>
+</html>

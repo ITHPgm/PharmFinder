@@ -1,0 +1,1078 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>PharmFinder — Help & Support</title>
+    <meta name="description" content="Get help using PharmFinder — how to find pharmacies, enable location, report status, and contact support." />
+    <meta name="theme-color" content="#0D6B4E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+    <style>
+        :root {
+            --ios-blue: #007AFF;
+            --ios-green: #34C759;
+            --ios-red: #FF3B30;
+            --ios-orange: #FF9500;
+            --ios-teal: #5AC8FA;
+            --ios-indigo: #5856D6;
+            --ios-purple: #AF52DE;
+            --ios-gray: #8E8E93;
+            --ios-gray2: #AEAEB2;
+            --ios-gray3: #C7C7CC;
+            --ios-gray4: #D1D1D6;
+            --ios-gray5: #E5E5EA;
+            --ios-gray6: #F2F2F7;
+            --ios-bg: #F9F9FB;
+            --ios-white: #FFFFFF;
+            --ios-black: #1C1C1E;
+            --ios-dark-card: #2C2C2E;
+            --brand-primary: #0D6B4E;
+            --brand-primary-light: #0F8A63;
+            --brand-secondary: #1B9C6B;
+            --brand-accent: #22C55E;
+            --brand-bg-light: #ECFDF5;
+            --brand-gradient: linear-gradient(135deg, #0D6B4E 0%, #0F8A63 30%, #1B9C6B 60%, #22C55E 100%);
+            --glass-bg: rgba(255, 255, 255, 0.74);
+            --glass-border: rgba(255, 255, 255, 0.58);
+            --glass-blur: blur(22px) saturate(180%);
+            --radius-sm: 10px;
+            --radius-md: 16px;
+            --radius-lg: 22px;
+            --radius-xl: 28px;
+            --radius-2xl: 36px;
+            --radius-full: 9999px;
+            --shadow-ios: 0 1px 3px rgba(0, 0, 0, 0.06), 0 6px 16px rgba(0, 0, 0, 0.06);
+            --shadow-ios-lg: 0 4px 20px rgba(0, 0, 0, 0.10), 0 12px 40px rgba(0, 0, 0, 0.08);
+            --shadow-ios-xl: 0 8px 40px rgba(0, 0, 0, 0.14), 0 20px 60px rgba(0, 0, 0, 0.10);
+            --shadow-glow-green: 0 0 40px rgba(13, 107, 78, 0.25), 0 0 80px rgba(34, 197, 94, 0.15);
+            --shadow-glow-blue: 0 0 40px rgba(0, 122, 255, 0.2), 0 0 80px rgba(90, 200, 250, 0.12);
+            --shadow-glow-red: 0 0 40px rgba(255, 59, 48, 0.2), 0 0 80px rgba(255, 45, 85, 0.10);
+            --transition-fast: 0.18s cubic-bezier(0.25, 0.1, 0.25, 1);
+            --transition-smooth: 0.3s cubic-bezier(0.25, 0.1, 0.25, 1);
+            --transition-bounce: 0.45s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            --transition-spring: 0.55s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        html {
+            scroll-behavior: smooth;
+            font-size: 16px;
+            -webkit-tap-highlight-color: transparent;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Helvetica Neue', sans-serif;
+            background: var(--ios-bg);
+            color: var(--ios-black);
+            line-height: 1.55;
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+            padding-bottom: 60px;
+        }
+
+        .bg-orb {
+            position: fixed;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 0;
+            opacity: 0.28;
+            filter: blur(85px);
+            animation: orbFloat 18s ease-in-out infinite;
+        }
+        .bg-orb--1 {
+            width: 380px;
+            height: 380px;
+            background: radial-gradient(circle, rgba(34, 197, 94, 0.30) 0%, transparent 70%);
+            top: -8%;
+            left: -8%;
+        }
+        .bg-orb--2 {
+            width: 320px;
+            height: 320px;
+            background: radial-gradient(circle, rgba(13, 107, 78, 0.26) 0%, transparent 70%);
+            bottom: -6%;
+            right: -6%;
+            animation-delay: -7s;
+            animation-duration: 20s;
+        }
+        .bg-orb--3 {
+            width: 260px;
+            height: 260px;
+            background: radial-gradient(circle, rgba(0, 122, 255, 0.14) 0%, transparent 70%);
+            top: 50%;
+            left: 55%;
+            animation-delay: -12s;
+            animation-duration: 22s;
+        }
+        @keyframes orbFloat {
+            0%,
+            100% {
+                transform: translate(0, 0) scale(1);
+            }
+            15% {
+                transform: translate(30px, -25px) scale(1.08);
+            }
+            30% {
+                transform: translate(-18px, 20px) scale(0.94);
+            }
+            45% {
+                transform: translate(25px, 15px) scale(1.05);
+            }
+            60% {
+                transform: translate(-30px, -10px) scale(0.92);
+            }
+            75% {
+                transform: translate(10px, -30px) scale(1.06);
+            }
+            90% {
+                transform: translate(-15px, 25px) scale(0.96);
+            }
+        }
+
+        .app-wrapper {
+            position: relative;
+            z-index: 1;
+            max-width: 540px;
+            margin: 0 auto;
+            padding: 0 16px 40px;
+        }
+
+        /* Header */
+        .nav-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 0 6px;
+            position: sticky;
+            top: 0;
+            z-index: 90;
+            background: rgba(249, 249, 251, 0.84);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+        }
+        .nav-header .btn-back {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.7);
+            border: 1px solid var(--ios-gray4);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all var(--transition-fast);
+            color: var(--ios-black);
+            font-size: 1rem;
+            flex-shrink: 0;
+        }
+        .nav-header .btn-back:hover {
+            background: #fff;
+            box-shadow: var(--shadow-ios);
+        }
+        .nav-header__title {
+            font-size: 1.05rem;
+            font-weight: 700;
+            letter-spacing: -0.3px;
+            color: var(--ios-black);
+            flex: 1;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .nav-header__title i {
+            color: var(--ios-teal);
+            font-size: 0.9rem;
+        }
+
+        /* Page Hero */
+        .page-hero {
+            text-align: center;
+            margin: 18px 0 20px;
+        }
+        .page-hero__icon {
+            width: 60px;
+            height: 60px;
+            border-radius: var(--radius-md);
+            background: linear-gradient(135deg, #5AC8FA, #007AFF);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 14px;
+            color: #fff;
+            font-size: 1.6rem;
+            box-shadow: 0 8px 24px rgba(0, 122, 255, 0.30);
+        }
+        .page-hero h1 {
+            font-size: 1.5rem;
+            font-weight: 800;
+            letter-spacing: -0.4px;
+            color: var(--ios-black);
+            margin-bottom: 4px;
+        }
+        .page-hero p {
+            font-size: 0.82rem;
+            color: var(--ios-gray);
+            max-width: 340px;
+            margin: 0 auto;
+        }
+
+        /* Section */
+        .section-block {
+            margin-top: 26px;
+        }
+        .section-title {
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: var(--ios-gray);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .section-title i {
+            font-size: 0.7rem;
+        }
+
+        /* Help topic cards */
+        .help-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+        .help-topic-card {
+            background: var(--ios-white);
+            border-radius: var(--radius-lg);
+            padding: 16px 14px;
+            border: 1px solid var(--ios-gray5);
+            box-shadow: var(--shadow-ios);
+            cursor: pointer;
+            transition: all var(--transition-bounce);
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            position: relative;
+            overflow: hidden;
+        }
+        .help-topic-card:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-ios-lg);
+            border-color: rgba(13, 107, 78, 0.2);
+        }
+        .help-topic-card:active {
+            transform: scale(0.96);
+        }
+        .help-topic-card__icon {
+            width: 36px;
+            height: 36px;
+            border-radius: var(--radius-sm);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.95rem;
+        }
+        .help-topic-card__icon.blue {
+            background: #EBF5FF;
+            color: var(--ios-blue);
+        }
+        .help-topic-card__icon.green {
+            background: #D1FAE5;
+            color: #065F46;
+        }
+        .help-topic-card__icon.orange {
+            background: #FED7AA;
+            color: #9A3412;
+        }
+        .help-topic-card__icon.red {
+            background: #FEE2E2;
+            color: #991B1B;
+        }
+        .help-topic-card__title {
+            font-weight: 700;
+            font-size: 0.82rem;
+            color: var(--ios-black);
+            letter-spacing: -0.2px;
+            line-height: 1.3;
+        }
+
+        /* Info card */
+        .info-card {
+            background: var(--glass-bg);
+            backdrop-filter: var(--glass-blur);
+            -webkit-backdrop-filter: var(--glass-blur);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius-xl);
+            padding: 18px;
+            box-shadow: var(--shadow-ios);
+        }
+        .info-card__step {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 12px 0;
+            border-bottom: 1px solid var(--ios-gray5);
+        }
+        .info-card__step:last-child {
+            border-bottom: none;
+        }
+        .info-card__step-num {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: var(--brand-gradient);
+            color: #fff;
+            font-weight: 700;
+            font-size: 0.7rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        .info-card__step-text {
+            font-size: 0.82rem;
+            font-weight: 500;
+            color: var(--ios-black);
+            line-height: 1.4;
+        }
+        .info-card__step-text span {
+            font-size: 0.7rem;
+            color: var(--ios-gray);
+            display: block;
+            margin-top: 3px;
+        }
+
+        /* Emergency guidance */
+        .emergency-card {
+            background: linear-gradient(135deg, #FFF5F5 0%, #FFE8E8 100%);
+            border: 1.5px solid rgba(255, 59, 48, 0.2);
+            border-radius: var(--radius-xl);
+            padding: 18px;
+            display: flex;
+            gap: 14px;
+            align-items: flex-start;
+        }
+        .emergency-card__icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: var(--ios-red);
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            flex-shrink: 0;
+            animation: emergencyPulse 2s ease-in-out infinite;
+        }
+        @keyframes emergencyPulse {
+            0%,
+            100% {
+                box-shadow: 0 0 0 0 rgba(255, 59, 48, 0.4);
+            }
+            50% {
+                box-shadow: 0 0 0 14px rgba(255, 59, 48, 0);
+            }
+        }
+        .emergency-card__content h4 {
+            font-weight: 700;
+            font-size: 0.88rem;
+            color: #C0392B;
+            margin-bottom: 4px;
+        }
+        .emergency-card__content p {
+            font-size: 0.73rem;
+            color: #8B3A3A;
+            line-height: 1.5;
+        }
+
+        /* Contact form */
+        .contact-form {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+        .form-group label {
+            font-size: 0.72rem;
+            font-weight: 700;
+            color: var(--ios-gray);
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            display: block;
+            margin-bottom: 6px;
+        }
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            border: 1.5px solid var(--ios-gray4);
+            border-radius: var(--radius-md);
+            padding: 13px 16px;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.88rem;
+            color: var(--ios-black);
+            background: rgba(255, 255, 255, 0.7);
+            outline: none;
+            transition: all var(--transition-smooth);
+            resize: vertical;
+        }
+        .form-group input:focus,
+        .form-group textarea:focus {
+            border-color: var(--brand-primary);
+            box-shadow: 0 0 0 4px rgba(13, 107, 78, 0.08);
+        }
+        .form-group textarea {
+            min-height: 110px;
+        }
+        .btn-submit-support {
+            width: 100%;
+            padding: 14px;
+            background: var(--brand-gradient);
+            color: #fff;
+            font-weight: 700;
+            font-size: 0.9rem;
+            border: none;
+            border-radius: var(--radius-full);
+            cursor: pointer;
+            transition: all var(--transition-bounce);
+            font-family: 'Inter', sans-serif;
+            box-shadow: var(--shadow-glow-green), 0 6px 20px rgba(13, 107, 78, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        .btn-submit-support:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-glow-green), 0 12px 32px rgba(13, 107, 78, 0.45);
+        }
+        .btn-submit-support:active {
+            transform: scale(0.96);
+        }
+        .btn-submit-support:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        /* FAQ */
+        .faq-item {
+            background: var(--ios-white);
+            border-radius: var(--radius-md);
+            margin-bottom: 8px;
+            border: 1px solid var(--ios-gray5);
+            overflow: hidden;
+            transition: all var(--transition-smooth);
+            box-shadow: var(--shadow-ios);
+        }
+        .faq-question {
+            padding: 15px 18px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            user-select: none;
+            color: var(--ios-black);
+            transition: all var(--transition-fast);
+            gap: 10px;
+        }
+        .faq-question:hover {
+            background: var(--ios-gray6);
+        }
+        .faq-answer {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease;
+            padding: 0 18px;
+            font-size: 0.78rem;
+            color: var(--ios-gray);
+            line-height: 1.6;
+        }
+        .faq-item.open .faq-answer {
+            max-height: 300px;
+            padding: 0 18px 15px;
+        }
+        .faq-item.open .faq-icon {
+            transform: rotate(180deg);
+            color: var(--brand-primary);
+        }
+        .faq-icon {
+            transition: all var(--transition-smooth);
+            color: var(--ios-gray);
+            font-size: 0.7rem;
+            flex-shrink: 0;
+        }
+
+        /* Important notice */
+        .notice-card {
+            background: #FFFBF0;
+            border: 1px solid rgba(245, 158, 11, 0.2);
+            border-radius: var(--radius-lg);
+            padding: 14px 16px;
+            display: flex;
+            gap: 10px;
+            font-size: 0.72rem;
+            color: #92400E;
+            line-height: 1.5;
+            align-items: flex-start;
+        }
+        .notice-card i {
+            color: #F59E0B;
+            font-size: 0.9rem;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
+        /* Footer */
+        .footer-note {
+            margin-top: 30px;
+            text-align: center;
+            font-size: 0.64rem;
+            color: var(--ios-gray3);
+            line-height: 1.5;
+        }
+
+        /* Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.55);
+            z-index: 9999;
+            display: flex;
+            align-items: flex-start;
+            justify-content: center;
+            padding-top: 60px;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
+        }
+        .modal-overlay.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+        .modal-notification {
+            background: rgba(255, 255, 255, 0.96);
+            backdrop-filter: blur(30px) saturate(200%);
+            -webkit-backdrop-filter: blur(30px) saturate(200%);
+            border-radius: 22px;
+            padding: 18px 20px;
+            width: 90%;
+            max-width: 400px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(255, 255, 255, 0.6);
+            transform: translateY(-30px) scale(0.92);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+        }
+        .modal-overlay.active .modal-notification {
+            transform: translateY(0) scale(1);
+        }
+        .modal-notification__header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        .modal-notification__app-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            background: var(--brand-gradient);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 0.85rem;
+        }
+        .modal-notification__app-name {
+            font-weight: 700;
+            font-size: 0.85rem;
+            color: var(--ios-black);
+        }
+        .modal-notification__time {
+            font-size: 0.7rem;
+            color: var(--ios-gray2);
+            margin-left: auto;
+        }
+        .modal-notification__body {
+            font-size: 0.9rem;
+            color: var(--ios-black);
+            line-height: 1.4;
+            font-weight: 500;
+        }
+        .modal-notification__sub {
+            font-size: 0.75rem;
+            color: var(--ios-gray);
+            margin-top: 4px;
+        }
+        .modal-notification__close {
+            position: absolute;
+            top: 10px;
+            right: 14px;
+            background: rgba(0, 0, 0, 0.06);
+            border: none;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 0.8rem;
+            color: var(--ios-gray);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .modal-notification__actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 12px;
+        }
+        .modal-notification__btn {
+            flex: 1;
+            padding: 10px;
+            border-radius: var(--radius-full);
+            border: none;
+            font-weight: 600;
+            font-size: 0.8rem;
+            cursor: pointer;
+            font-family: 'Inter', sans-serif;
+        }
+        .modal-notification__btn--primary {
+            background: var(--brand-primary);
+            color: #fff;
+        }
+        .modal-notification__btn--secondary {
+            background: var(--ios-gray6);
+            color: var(--ios-black);
+        }
+
+        /* Toast */
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%) translateY(120px);
+            background: var(--ios-dark-card);
+            color: #fff;
+            padding: 12px 22px;
+            border-radius: var(--radius-full);
+            font-weight: 600;
+            font-size: 0.82rem;
+            z-index: 10000;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .toast.show {
+            transform: translateX(-50%) translateY(0);
+        }
+
+        @media (max-width: 400px) {
+            .help-grid {
+                grid-template-columns: 1fr;
+            }
+            .page-hero h1 {
+                font-size: 1.25rem;
+            }
+            .info-card__step-text {
+                font-size: 0.75rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="bg-orb bg-orb--1"></div>
+    <div class="bg-orb bg-orb--2"></div>
+    <div class="bg-orb bg-orb--3"></div>
+
+    <div class="app-wrapper">
+        <!-- Header -->
+        <div class="nav-header">
+            <button class="btn-back" onclick="history.back()" aria-label="Go back">
+                <i class="fas fa-chevron-left"></i>
+            </button>
+            <span class="nav-header__title">
+                <i class="fas fa-circle-question"></i> Help & Support
+            </span>
+        </div>
+
+        <!-- Page Hero -->
+        <div class="page-hero">
+            <div class="page-hero__icon">
+                <i class="fas fa-hand-holding-heart"></i>
+            </div>
+            <h1>How can we help?</h1>
+            <p>Find answers to common questions, troubleshoot location issues, or contact our support team.</p>
+        </div>
+
+        <!-- Quick Help Topics -->
+        <div class="section-block">
+            <div class="section-title"><i class="fas fa-compass"></i> Quick Help Topics</div>
+            <div class="help-grid">
+                <div class="help-topic-card" data-topic="find-pharmacy" tabindex="0" role="button" aria-label="How to find pharmacies">
+                    <div class="help-topic-card__icon blue"><i class="fas fa-magnifying-glass-location"></i></div>
+                    <div class="help-topic-card__title">How to find pharmacies near you</div>
+                </div>
+                <div class="help-topic-card" data-topic="enable-location" tabindex="0" role="button" aria-label="Enable location services">
+                    <div class="help-topic-card__icon green"><i class="fas fa-location-crosshairs"></i></div>
+                    <div class="help-topic-card__title">Enable location on your device</div>
+                </div>
+                <div class="help-topic-card" data-topic="report-pharmacy" tabindex="0" role="button" aria-label="How to report a pharmacy">
+                    <div class="help-topic-card__icon orange"><i class="fas fa-clipboard-check"></i></div>
+                    <div class="help-topic-card__title">How to report a pharmacy status</div>
+                </div>
+                <div class="help-topic-card" data-topic="save-pharmacy" tabindex="0" role="button" aria-label="Save a pharmacy">
+                    <div class="help-topic-card__icon red"><i class="fas fa-heart"></i></div>
+                    <div class="help-topic-card__title">Save & manage favorite pharmacies</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Location Help -->
+        <div class="section-block">
+            <div class="section-title"><i class="fas fa-location-dot"></i> Location Troubleshooting</div>
+            <div class="info-card">
+                <div class="info-card__step">
+                    <div class="info-card__step-num">1</div>
+                    <div class="info-card__step-text">
+                        <strong>Check your browser permissions</strong>
+                        <span>Go to your browser settings → Privacy → Location, and ensure PharmFinder is allowed.</span>
+                    </div>
+                </div>
+                <div class="info-card__step">
+                    <div class="info-card__step-num">2</div>
+                    <div class="info-card__step-text">
+                        <strong>Enable device GPS</strong>
+                        <span>Make sure your phone's location services are turned on in system settings.</span>
+                    </div>
+                </div>
+                <div class="info-card__step">
+                    <div class="info-card__step-num">3</div>
+                    <div class="info-card__step-text">
+                        <strong>Try a manual search</strong>
+                        <span>If GPS isn't available, you can always type your area or city in the search bar.</span>
+                    </div>
+                </div>
+                <div class="info-card__step">
+                    <div class="info-card__step-num">4</div>
+                    <div class="info-card__step-text">
+                        <strong>Refresh and try again</strong>
+                        <span>Close and reopen the app, or tap the refresh button on the map.</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Emergency Guidance -->
+        <div class="section-block">
+            <div class="section-title"><i class="fas fa-heart-pulse"></i> Emergency Guidance</div>
+            <div class="emergency-card">
+                <div class="emergency-card__icon">
+                    <i class="fas fa-triangle-exclamation"></i>
+                </div>
+                <div class="emergency-card__content">
+                    <h4>If this is urgent</h4>
+                    <p>
+                        <i class="fas fa-phone"></i> <strong>Call the pharmacy directly</strong> to confirm they have your medication in stock.<br><br>
+                        <i class="fas fa-clock"></i> <strong>Always confirm availability</strong> before traveling — pharmacy hours and stock can change.<br><br>
+                        <i class="fas fa-ambulance"></i> <strong>In a life‑threatening emergency,</strong> contact your local emergency services immediately. PharmFinder is not a substitute for professional medical care.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Contact Support -->
+        <div class="section-block">
+            <div class="section-title"><i class="fas fa-envelope"></i> Contact Support</div>
+            <div class="info-card">
+                <form class="contact-form" id="supportForm" novalidate>
+                    <div class="form-group">
+                        <label for="supportName">Your Name</label>
+                        <input type="text" id="supportName" placeholder="Enter your name" required />
+                    </div>
+                    <div class="form-group">
+                        <label for="supportEmail">Email Address</label>
+                        <input type="email" id="supportEmail" placeholder="you@example.com" required />
+                    </div>
+                    <div class="form-group">
+                        <label for="supportMessage">How can we help?</label>
+                        <textarea id="supportMessage" placeholder="Describe your issue or question in detail…" maxlength="500" required></textarea>
+                    </div>
+                    <button type="submit" class="btn-submit-support" id="btnSubmitSupport">
+                        <i class="fas fa-paper-plane"></i> Send Message
+                    </button>
+                </form>
+                <p style="text-align:center;margin-top:12px;font-size:0.7rem;color:var(--ios-gray);">
+                    <i class="fas fa-clock"></i> We typically respond within 24 hours.
+                </p>
+            </div>
+        </div>
+
+        <!-- FAQ -->
+        <div class="section-block">
+            <div class="section-title"><i class="fas fa-comments"></i> Frequently Asked Questions</div>
+            <div class="faq-item">
+                <div class="faq-question" tabindex="0" role="button" aria-expanded="false">
+                    <span>Why can't I see nearby pharmacies?</span>
+                    <i class="fas fa-chevron-down faq-icon"></i>
+                </div>
+                <div class="faq-answer">
+                    First, check that your location permission is enabled in your browser settings. If you're in a rural area, there may be fewer pharmacies listed. Try expanding your search radius or searching by city name instead.
+                </div>
+            </div>
+            <div class="faq-item">
+                <div class="faq-question" tabindex="0" role="button" aria-expanded="false">
+                    <span>Why is a pharmacy marked as closed when it's actually open?</span>
+                    <i class="fas fa-chevron-down faq-icon"></i>
+                </div>
+                <div class="faq-answer">
+                    Pharmacy hours rely on a combination of submitted data and community reports. If you find incorrect information, please use the "Report Status" feature on the pharmacy's detail page to help us update it for everyone.
+                </div>
+            </div>
+            <div class="faq-item">
+                <div class="faq-question" tabindex="0" role="button" aria-expanded="false">
+                    <span>Do I need to create an account to use PharmFinder?</span>
+                    <i class="fas fa-chevron-down faq-icon"></i>
+                </div>
+                <div class="faq-answer">
+                    No! PharmFinder works without any sign‑up or login. You can search, view, and get directions instantly. An account is only needed if you want to list your own pharmacy or save favorites across devices.
+                </div>
+            </div>
+            <div class="faq-item">
+                <div class="faq-question" tabindex="0" role="button" aria-expanded="false">
+                    <span>How do I list my pharmacy on PharmFinder?</span>
+                    <i class="fas fa-chevron-down faq-icon"></i>
+                </div>
+                <div class="faq-answer">
+                    Visit the "List Your Pharmacy" section on the homepage, or create an account and navigate to the pharmacy listing form. It's free to list your basic information, with optional premium features available.
+                </div>
+            </div>
+            <div class="faq-item">
+                <div class="faq-question" tabindex="0" role="button" aria-expanded="false">
+                    <span>Is my location data stored or shared?</span>
+                    <i class="fas fa-chevron-down faq-icon"></i>
+                </div>
+                <div class="faq-answer">
+                    No. Your location is used only in real-time to find nearby pharmacies and is never stored, tracked, or shared with any third party. Your privacy is a core commitment of PharmFinder.
+                </div>
+            </div>
+        </div>
+
+        <!-- Important Notices -->
+        <div class="section-block">
+            <div class="section-title"><i class="fas fa-shield-halved"></i> Important Notices</div>
+            <div class="notice-card">
+                <i class="fas fa-circle-exclamation"></i>
+                <div>
+                    <strong>Information Accuracy:</strong> Pharmacy hours, availability, and stock information may not always be 100% accurate. We rely on a combination of submitted data and community reports. <strong>Always verify before visiting,</strong> especially for urgent medication needs.<br><br>
+                    <strong>Medical Disclaimer:</strong> PharmFinder is a location tool — it does not provide medical advice, diagnosis, or treatment. Always consult a qualified healthcare professional for medical concerns.
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer-note">
+            <i class="fas fa-heart" style="color:var(--ios-red);"></i> PharmFinder is built to help communities access pharmacies faster.<br>
+            Your feedback helps us improve — thank you for being part of it.
+        </div>
+    </div>
+
+    <!-- iOS Notification Modal -->
+    <div class="modal-overlay" id="modalOverlay">
+        <div class="modal-notification" id="modalNotification">
+            <button class="modal-notification__close" id="modalCloseBtn"><i class="fas fa-xmark"></i></button>
+            <div class="modal-notification__header">
+                <div class="modal-notification__app-icon"><i class="fas fa-prescription-bottle"></i></div>
+                <span class="modal-notification__app-name">PharmFinder</span>
+                <span class="modal-notification__time" id="modalTime">now</span>
+            </div>
+            <div class="modal-notification__body" id="modalBody">Message</div>
+            <div class="modal-notification__sub" id="modalSub"></div>
+            <div class="modal-notification__actions">
+                <button class="modal-notification__btn modal-notification__btn--secondary" id="modalBtnDismiss">Close</button>
+                <button class="modal-notification__btn modal-notification__btn--primary" id="modalBtnAction">OK</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast -->
+    <div class="toast" id="toast"><i class="fas fa-circle-check"></i><span id="toastMsg"></span></div>
+
+    <script>
+        (function() {
+            // ─── DOM REFS ───
+            const modalOverlay = document.getElementById('modalOverlay');
+            const modalBody = document.getElementById('modalBody');
+            const modalSub = document.getElementById('modalSub');
+            const modalTime = document.getElementById('modalTime');
+            const modalBtnDismiss = document.getElementById('modalBtnDismiss');
+            const modalBtnAction = document.getElementById('modalBtnAction');
+            const modalCloseBtn = document.getElementById('modalCloseBtn');
+            const toast = document.getElementById('toast');
+            const toastMsg = document.getElementById('toastMsg');
+            const supportForm = document.getElementById('supportForm');
+            const btnSubmitSupport = document.getElementById('btnSubmitSupport');
+            const faqQuestions = document.querySelectorAll('.faq-question');
+            const helpTopicCards = document.querySelectorAll('.help-topic-card');
+
+            let toastTimer;
+            let modalActionCallback = null;
+
+            // ─── MODAL SYSTEM ───
+            function showModal(bodyText, subText, actionLabel, callback, dismissLabel = 'Close') {
+                modalBody.textContent = bodyText;
+                modalSub.textContent = subText || '';
+                modalTime.textContent = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                modalBtnAction.textContent = actionLabel || 'OK';
+                modalBtnDismiss.textContent = dismissLabel;
+                modalActionCallback = callback || null;
+                modalOverlay.classList.add('active');
+            }
+
+            function hideModal() {
+                modalOverlay.classList.remove('active');
+                modalActionCallback = null;
+            }
+            modalCloseBtn.addEventListener('click', hideModal);
+            modalBtnDismiss.addEventListener('click', hideModal);
+            modalBtnAction.addEventListener('click', () => {
+                if (modalActionCallback && typeof modalActionCallback === 'function') modalActionCallback();
+                hideModal();
+            });
+            modalOverlay.addEventListener('click', (e) => { if (e.target === modalOverlay) hideModal(); });
+            document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && modalOverlay.classList
+                    .contains('active')) hideModal(); });
+
+            // ─── TOAST ───
+            function showToast(message, iconClass = 'fa-circle-check') {
+                clearTimeout(toastTimer);
+                toastMsg.textContent = message;
+                const iconEl = toast.querySelector('i');
+                if (iconEl) iconEl.className = 'fas ' + iconClass;
+                toast.classList.add('show');
+                toastTimer = setTimeout(() => toast.classList.remove('show'), 2800);
+            }
+
+            // ─── HELP TOPIC CARDS ───
+            const topicMessages = {
+                'find-pharmacy': {
+                    title: 'Finding Pharmacies',
+                    body: 'Tap the "Find Pharmacy Near Me" button on the homepage, or use the search bar to enter a city or area name. You can also browse the map view to see all nearby pharmacies visually.',
+                },
+                'enable-location': {
+                    title: 'Enable Location',
+                    body: 'On iPhone: Settings → Privacy → Location Services → Safari → While Using. On Android: Settings → Location → App permissions → Browser → Allow. Then refresh PharmFinder.',
+                },
+                'report-pharmacy': {
+                    title: 'Report a Pharmacy',
+                    body: 'Go to any pharmacy detail page and tap "Report Status." You can mark it as Open, Closed, or Closing Soon. Your report helps keep data accurate for the whole community.',
+                },
+                'save-pharmacy': {
+                    title: 'Save Pharmacies',
+                    body: 'Tap the heart icon on any pharmacy card or detail page. Your saved pharmacies appear in the "Saved" page for quick access anytime — no account required.',
+                },
+            };
+            helpTopicCards.forEach(card => {
+                card.addEventListener('click', () => {
+                    const topic = card.getAttribute('data-topic');
+                    const msg = topicMessages[topic];
+                    if (msg) {
+                        showModal(msg.title, msg.body, 'Got It');
+                    }
+                });
+                card.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        card.click();
+                    }
+                });
+            });
+
+            // ─── FAQ ACCORDION ───
+            faqQuestions.forEach(question => {
+                question.addEventListener('click', () => {
+                    const faqItem = question.closest('.faq-item');
+                    const isOpen = faqItem.classList.contains('open');
+                    // Close all
+                    document.querySelectorAll('.faq-item').forEach(item => item.classList.remove(
+                        'open'));
+                    // Toggle clicked
+                    if (!isOpen) {
+                        faqItem.classList.add('open');
+                    }
+                });
+                question.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        question.click();
+                    }
+                });
+            });
+
+            // ─── CONTACT FORM ───
+            supportForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                const name = document.getElementById('supportName').value.trim();
+                const email = document.getElementById('supportEmail').value.trim();
+                const message = document.getElementById('supportMessage').value.trim();
+
+                if (!name || !email || !message) {
+                    showToast('Please fill in all fields before sending.', 'fa-circle-exclamation');
+                    return;
+                }
+                if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+                    showToast('Please enter a valid email address.', 'fa-circle-exclamation');
+                    return;
+                }
+
+                // Disable button and simulate sending
+                btnSubmitSupport.disabled = true;
+                btnSubmitSupport.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending…';
+
+                setTimeout(() => {
+                    showModal(
+                        'Message Sent — Thank You!',
+                        'Hello ' + name +
+                        ', your message has been received. Our support team will respond to ' + email +
+                        ' within 24 hours.',
+                        'Done',
+                        () => {
+                            supportForm.reset();
+                            showToast('Support message sent successfully!', 'fa-paper-plane');
+                        }
+                    );
+                    btnSubmitSupport.disabled = false;
+                    btnSubmitSupport.innerHTML =
+                        '<i class="fas fa-paper-plane"></i> Send Message';
+                }, 1400);
+            });
+
+            // ─── INIT ───
+            console.log('🆘 PharmFinder — Help & Support page ready.');
+            console.log('💡 Tap any help topic or FAQ to learn more.');
+            console.log('📧 Use the contact form to reach our support team.');
+
+            setTimeout(() => {
+                showToast('Need help? Browse topics below or contact us.', 'fa-circle-question');
+            }, 800);
+        })();
+    </script>
+</body>
+</html>

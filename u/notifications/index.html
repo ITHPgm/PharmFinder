@@ -1,0 +1,1303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>PharmFinder — Notifications</title>
+    <meta name="description" content="Stay informed with real-time pharmacy alerts, status updates, and activity notifications from PharmFinder." />
+    <meta name="theme-color" content="#0D6B4E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+    <style>
+        :root {
+            --ios-blue: #007AFF;
+            --ios-green: #34C759;
+            --ios-red: #FF3B30;
+            --ios-orange: #FF9500;
+            --ios-teal: #5AC8FA;
+            --ios-indigo: #5856D6;
+            --ios-purple: #AF52DE;
+            --ios-pink: #FF2D55;
+            --ios-gray: #8E8E93;
+            --ios-gray2: #AEAEB2;
+            --ios-gray3: #C7C7CC;
+            --ios-gray4: #D1D1D6;
+            --ios-gray5: #E5E5EA;
+            --ios-gray6: #F2F2F7;
+            --ios-bg: #F9F9FB;
+            --ios-white: #FFFFFF;
+            --ios-black: #1C1C1E;
+            --ios-dark-card: #2C2C2E;
+            --brand-primary: #0D6B4E;
+            --brand-primary-light: #0F8A63;
+            --brand-secondary: #1B9C6B;
+            --brand-accent: #22C55E;
+            --brand-bg-light: #ECFDF5;
+            --brand-gradient: linear-gradient(135deg, #0D6B4E 0%, #0F8A63 30%, #1B9C6B 60%, #22C55E 100%);
+            --brand-gradient-subtle: linear-gradient(135deg, #ECFDF5 0%, #D1FAE5 50%, #A7F3D0 100%);
+            --glass-bg: rgba(255, 255, 255, 0.74);
+            --glass-border: rgba(255, 255, 255, 0.58);
+            --glass-blur: blur(22px) saturate(180%);
+            --radius-sm: 10px;
+            --radius-md: 16px;
+            --radius-lg: 22px;
+            --radius-xl: 28px;
+            --radius-2xl: 36px;
+            --radius-full: 9999px;
+            --shadow-ios: 0 1px 3px rgba(0, 0, 0, 0.06), 0 6px 16px rgba(0, 0, 0, 0.06);
+            --shadow-ios-lg: 0 4px 20px rgba(0, 0, 0, 0.10), 0 12px 40px rgba(0, 0, 0, 0.08);
+            --shadow-ios-xl: 0 8px 40px rgba(0, 0, 0, 0.14), 0 20px 60px rgba(0, 0, 0, 0.10);
+            --shadow-glow-green: 0 0 40px rgba(13, 107, 78, 0.25), 0 0 80px rgba(34, 197, 94, 0.15);
+            --shadow-glow-blue: 0 0 40px rgba(0, 122, 255, 0.2), 0 0 80px rgba(90, 200, 250, 0.12);
+            --shadow-glow-red: 0 0 40px rgba(255, 59, 48, 0.2), 0 0 80px rgba(255, 45, 85, 0.10);
+            --shadow-glow-amber: 0 0 40px rgba(245, 158, 11, 0.2), 0 0 80px rgba(249, 115, 22, 0.10);
+            --shadow-glow-purple: 0 0 40px rgba(175, 82, 222, 0.18), 0 0 80px rgba(175, 82, 222, 0.08);
+            --transition-fast: 0.18s cubic-bezier(0.25, 0.1, 0.25, 1);
+            --transition-smooth: 0.3s cubic-bezier(0.25, 0.1, 0.25, 1);
+            --transition-bounce: 0.45s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            --transition-spring: 0.55s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        html {
+            scroll-behavior: smooth;
+            font-size: 16px;
+            -webkit-tap-highlight-color: transparent;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Helvetica Neue', sans-serif;
+            background: var(--ios-bg);
+            color: var(--ios-black);
+            line-height: 1.55;
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+            padding-bottom: 60px;
+        }
+
+        .bg-orb {
+            position: fixed;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 0;
+            opacity: 0.24;
+            filter: blur(90px);
+            animation: orbFloat 18s ease-in-out infinite;
+        }
+        .bg-orb--1 {
+            width: 380px;
+            height: 380px;
+            background: radial-gradient(circle, rgba(34, 197, 94, 0.26) 0%, transparent 70%);
+            top: -8%;
+            left: -8%;
+        }
+        .bg-orb--2 {
+            width: 310px;
+            height: 310px;
+            background: radial-gradient(circle, rgba(0, 122, 255, 0.18) 0%, transparent 70%);
+            bottom: -6%;
+            right: -6%;
+            animation-delay: -7s;
+            animation-duration: 20s;
+        }
+        .bg-orb--3 {
+            width: 240px;
+            height: 240px;
+            background: radial-gradient(circle, rgba(255, 59, 48, 0.12) 0%, transparent 70%);
+            top: 50%;
+            left: 58%;
+            animation-delay: -12s;
+            animation-duration: 22s;
+        }
+        @keyframes orbFloat {
+            0%,
+            100% {
+                transform: translate(0, 0) scale(1);
+            }
+            15% {
+                transform: translate(30px, -25px) scale(1.08);
+            }
+            30% {
+                transform: translate(-18px, 20px) scale(0.94);
+            }
+            45% {
+                transform: translate(25px, 15px) scale(1.05);
+            }
+            60% {
+                transform: translate(-30px, -10px) scale(0.92);
+            }
+            75% {
+                transform: translate(10px, -30px) scale(1.06);
+            }
+            90% {
+                transform: translate(-15px, 25px) scale(0.96);
+            }
+        }
+
+        .app-wrapper {
+            position: relative;
+            z-index: 1;
+            max-width: 560px;
+            margin: 0 auto;
+            padding: 0 14px 40px;
+        }
+
+        /* ── NAV HEADER ── */
+        .nav-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 0 6px;
+            position: sticky;
+            top: 0;
+            z-index: 90;
+            background: rgba(249, 249, 251, 0.86);
+            backdrop-filter: blur(22px);
+            -webkit-backdrop-filter: blur(22px);
+        }
+        .nav-header .btn-back {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.7);
+            border: 1px solid var(--ios-gray4);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all var(--transition-fast);
+            color: var(--ios-black);
+            font-size: 1rem;
+            flex-shrink: 0;
+        }
+        .nav-header .btn-back:hover {
+            background: #fff;
+            box-shadow: var(--shadow-ios);
+        }
+        .nav-header__title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            letter-spacing: -0.3px;
+            color: var(--ios-black);
+            flex: 1;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .nav-header__title .live-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--ios-green);
+            animation: pulseLive 2s infinite;
+        }
+        @keyframes pulseLive {
+            0%,
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+            50% {
+                opacity: 0.4;
+                transform: scale(1.8);
+            }
+        }
+        .nav-header .btn-mark-read {
+            font-size: 0.68rem;
+            font-weight: 600;
+            color: var(--brand-primary);
+            background: var(--brand-bg-light);
+            border: none;
+            padding: 7px 14px;
+            border-radius: var(--radius-full);
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            font-family: 'Inter', sans-serif;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+        .nav-header .btn-mark-read:hover {
+            background: #D1FAE5;
+        }
+
+        /* ── SUMMARY BAR ── */
+        .summary-bar {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 12px;
+            padding: 10px 16px;
+            background: var(--glass-bg);
+            backdrop-filter: var(--glass-blur);
+            -webkit-backdrop-filter: var(--glass-blur);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius-xl);
+            box-shadow: var(--shadow-ios);
+        }
+        .summary-bar__count {
+            font-weight: 700;
+            font-size: 0.8rem;
+            color: var(--ios-black);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            flex-shrink: 0;
+        }
+        .summary-bar__count .unread-badge {
+            background: var(--ios-red);
+            color: #fff;
+            font-size: 0.6rem;
+            padding: 3px 9px;
+            border-radius: var(--radius-full);
+            font-weight: 700;
+        }
+        .summary-bar__filters {
+            display: flex;
+            gap: 6px;
+            flex: 1;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+        .summary-bar__filters::-webkit-scrollbar {
+            display: none;
+        }
+        .filter-pill {
+            padding: 6px 14px;
+            border-radius: var(--radius-full);
+            font-size: 0.66rem;
+            font-weight: 600;
+            cursor: pointer;
+            border: 1.5px solid var(--ios-gray4);
+            background: rgba(255, 255, 255, 0.6);
+            color: var(--ios-black);
+            transition: all var(--transition-bounce);
+            white-space: nowrap;
+            flex-shrink: 0;
+            font-family: 'Inter', sans-serif;
+        }
+        .filter-pill.active {
+            background: var(--brand-primary);
+            color: #fff;
+            border-color: var(--brand-primary);
+            box-shadow: 0 3px 10px rgba(13, 107, 78, 0.25);
+        }
+        .filter-pill:hover {
+            border-color: var(--brand-primary);
+            background: var(--brand-bg-light);
+        }
+        .filter-pill.active:hover {
+            background: var(--brand-primary-light);
+        }
+
+        /* ── CATEGORY TABS ── */
+        .category-tabs {
+            display: flex;
+            gap: 0;
+            margin-top: 8px;
+            background: rgba(0, 0, 0, 0.03);
+            border-radius: var(--radius-full);
+            padding: 3px;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+        .category-tabs::-webkit-scrollbar {
+            display: none;
+        }
+        .category-tab {
+            flex: 1;
+            min-width: 70px;
+            padding: 9px 8px;
+            border: none;
+            background: transparent;
+            font-weight: 600;
+            font-size: 0.66rem;
+            color: var(--ios-gray);
+            cursor: pointer;
+            border-radius: var(--radius-full);
+            transition: all var(--transition-smooth);
+            font-family: 'Inter', sans-serif;
+            text-align: center;
+            white-space: nowrap;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 3px;
+        }
+        .category-tab i {
+            font-size: 0.7rem;
+        }
+        .category-tab.active {
+            background: #fff;
+            color: var(--brand-primary);
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+            font-weight: 700;
+        }
+        .category-tab .tab-count {
+            font-size: 0.55rem;
+            background: var(--ios-gray5);
+            padding: 2px 7px;
+            border-radius: var(--radius-full);
+            font-weight: 600;
+        }
+        .category-tab.active .tab-count {
+            background: var(--brand-bg-light);
+            color: var(--brand-primary);
+        }
+
+        /* ── NOTIFICATION FEED ── */
+        .notification-feed {
+            margin-top: 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .notification-card {
+            background: var(--ios-white);
+            border-radius: var(--radius-lg);
+            padding: 15px 16px;
+            border: 1px solid var(--ios-gray5);
+            box-shadow: var(--shadow-ios);
+            display: flex;
+            gap: 12px;
+            align-items: flex-start;
+            cursor: pointer;
+            transition: all var(--transition-smooth);
+            position: relative;
+            overflow: hidden;
+        }
+        .notification-card:hover {
+            box-shadow: var(--shadow-ios-lg);
+            transform: translateY(-2px);
+            border-color: rgba(13, 107, 78, 0.15);
+        }
+        .notification-card.unread {
+            border-left: 3px solid var(--ios-blue);
+            background: #FAFBFF;
+        }
+        .notification-card.priority {
+            border-left: 3px solid var(--ios-red);
+            animation: priorityGlow 3s ease-in-out infinite;
+        }
+        @keyframes priorityGlow {
+            0%,
+            100% {
+                box-shadow: 0 0 0px rgba(255, 59, 48, 0);
+            }
+            50% {
+                box-shadow: 0 0 20px rgba(255, 59, 48, 0.12);
+            }
+        }
+        .notification-card__icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9rem;
+            flex-shrink: 0;
+        }
+        .notification-card__icon.blue {
+            background: #EBF5FF;
+            color: var(--ios-blue);
+        }
+        .notification-card__icon.green {
+            background: #D1FAE5;
+            color: #065F46;
+        }
+        .notification-card__icon.red {
+            background: #FEE2E2;
+            color: #991B1B;
+        }
+        .notification-card__icon.orange {
+            background: #FED7AA;
+            color: #9A3412;
+        }
+        .notification-card__icon.purple {
+            background: #EDE9FE;
+            color: #5B21B6;
+        }
+        .notification-card__icon.teal {
+            background: #CCFBF1;
+            color: #0F766E;
+        }
+        .notification-card__body {
+            flex: 1;
+            min-width: 0;
+        }
+        .notification-card__title {
+            font-weight: 700;
+            font-size: 0.84rem;
+            color: var(--ios-black);
+            letter-spacing: -0.2px;
+            margin-bottom: 2px;
+        }
+        .notification-card__message {
+            font-size: 0.72rem;
+            color: var(--ios-gray);
+            line-height: 1.4;
+        }
+        .notification-card__time {
+            font-size: 0.6rem;
+            color: var(--ios-gray3);
+            margin-top: 4px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .notification-card__time .unread-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--ios-blue);
+            flex-shrink: 0;
+        }
+        .notification-card__actions {
+            display: flex;
+            gap: 6px;
+            margin-top: 8px;
+            flex-wrap: wrap;
+        }
+        .btn-notif-action {
+            padding: 7px 14px;
+            border-radius: var(--radius-full);
+            font-size: 0.64rem;
+            font-weight: 700;
+            cursor: pointer;
+            border: 1.5px solid var(--ios-gray4);
+            background: #fff;
+            color: var(--ios-black);
+            transition: all var(--transition-bounce);
+            font-family: 'Inter', sans-serif;
+            white-space: nowrap;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .btn-notif-action:hover {
+            border-color: var(--brand-primary);
+            background: var(--brand-bg-light);
+            transform: translateY(-1px);
+        }
+        .btn-notif-action.primary-action {
+            background: var(--brand-gradient);
+            color: #fff;
+            border-color: transparent;
+        }
+        .btn-notif-action.primary-action:hover {
+            box-shadow: var(--shadow-glow-green);
+        }
+        .btn-notif-action.call-action {
+            border-color: var(--ios-green);
+            color: var(--ios-green);
+        }
+        .btn-notif-action.call-action:hover {
+            background: #D1FAE5;
+        }
+
+        /* ── TIME GROUPING ── */
+        .time-group-header {
+            font-size: 0.65rem;
+            font-weight: 700;
+            color: var(--ios-gray);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            padding: 8px 4px 4px;
+            margin-top: 6px;
+        }
+
+        /* ── EMPTY STATE ── */
+        .empty-state {
+            text-align: center;
+            padding: 50px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 14px;
+        }
+        .empty-state__icon {
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            background: var(--ios-gray6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            color: var(--ios-gray3);
+        }
+        .empty-state h3 {
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--ios-black);
+        }
+        .empty-state p {
+            font-size: 0.78rem;
+            color: var(--ios-gray);
+            max-width: 280px;
+        }
+        .btn-empty-action {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 24px;
+            border-radius: var(--radius-full);
+            background: var(--brand-gradient);
+            color: #fff;
+            font-weight: 700;
+            font-size: 0.85rem;
+            border: none;
+            cursor: pointer;
+            transition: all var(--transition-bounce);
+            font-family: 'Inter', sans-serif;
+            box-shadow: 0 4px 16px rgba(13, 107, 78, 0.30);
+        }
+        .btn-empty-action:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(13, 107, 78, 0.40);
+        }
+
+        /* ── SETTINGS SHORTCUT ── */
+        .settings-shortcut {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 16px;
+            background: var(--glass-bg);
+            backdrop-filter: var(--glass-blur);
+            -webkit-backdrop-filter: var(--glass-blur);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius-lg);
+            margin-top: 14px;
+            cursor: pointer;
+            transition: all var(--transition-bounce);
+            box-shadow: var(--shadow-ios);
+        }
+        .settings-shortcut:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-ios-lg);
+        }
+        .settings-shortcut__icon {
+            width: 36px;
+            height: 36px;
+            border-radius: var(--radius-sm);
+            background: #EDE9FE;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #5B21B6;
+            font-size: 0.85rem;
+            flex-shrink: 0;
+        }
+        .settings-shortcut__label {
+            flex: 1;
+            font-weight: 600;
+            font-size: 0.8rem;
+            color: var(--ios-black);
+        }
+        .settings-shortcut__arrow {
+            color: var(--ios-gray3);
+            font-size: 0.65rem;
+        }
+
+        /* ── INFO NOTE ── */
+        .info-note {
+            margin-top: 16px;
+            text-align: center;
+            font-size: 0.62rem;
+            color: var(--ios-gray3);
+            line-height: 1.5;
+        }
+
+        /* ── MODAL ── */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.55);
+            z-index: 9999;
+            display: flex;
+            align-items: flex-start;
+            justify-content: center;
+            padding-top: 60px;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
+        }
+        .modal-overlay.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+        .modal-notification {
+            background: rgba(255, 255, 255, 0.96);
+            backdrop-filter: blur(30px) saturate(200%);
+            -webkit-backdrop-filter: blur(30px) saturate(200%);
+            border-radius: 22px;
+            padding: 18px 20px;
+            width: 90%;
+            max-width: 400px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(255, 255, 255, 0.6);
+            transform: translateY(-30px) scale(0.92);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+        }
+        .modal-overlay.active .modal-notification {
+            transform: translateY(0) scale(1);
+        }
+        .modal-notification__header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        .modal-notification__app-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            background: var(--brand-gradient);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 0.85rem;
+        }
+        .modal-notification__app-name {
+            font-weight: 700;
+            font-size: 0.85rem;
+            color: var(--ios-black);
+        }
+        .modal-notification__time {
+            font-size: 0.7rem;
+            color: var(--ios-gray2);
+            margin-left: auto;
+        }
+        .modal-notification__body {
+            font-size: 0.9rem;
+            color: var(--ios-black);
+            line-height: 1.4;
+            font-weight: 500;
+        }
+        .modal-notification__sub {
+            font-size: 0.75rem;
+            color: var(--ios-gray);
+            margin-top: 4px;
+        }
+        .modal-notification__close {
+            position: absolute;
+            top: 10px;
+            right: 14px;
+            background: rgba(0, 0, 0, 0.06);
+            border: none;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 0.8rem;
+            color: var(--ios-gray);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .modal-notification__actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 12px;
+        }
+        .modal-notification__btn {
+            flex: 1;
+            padding: 10px;
+            border-radius: var(--radius-full);
+            border: none;
+            font-weight: 600;
+            font-size: 0.8rem;
+            cursor: pointer;
+            font-family: 'Inter', sans-serif;
+        }
+        .modal-notification__btn--primary {
+            background: var(--brand-primary);
+            color: #fff;
+        }
+        .modal-notification__btn--secondary {
+            background: var(--ios-gray6);
+            color: var(--ios-black);
+        }
+
+        /* ── TOAST ── */
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%) translateY(120px);
+            background: var(--ios-dark-card);
+            color: #fff;
+            padding: 12px 22px;
+            border-radius: var(--radius-full);
+            font-weight: 600;
+            font-size: 0.82rem;
+            z-index: 10000;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .toast.show {
+            transform: translateX(-50%) translateY(0);
+        }
+
+        @media (max-width: 400px) {
+            .notification-card {
+                padding: 12px;
+                gap: 8px;
+            }
+            .notification-card__icon {
+                width: 34px;
+                height: 34px;
+                font-size: 0.75rem;
+            }
+            .notification-card__title {
+                font-size: 0.76rem;
+            }
+            .btn-notif-action {
+                font-size: 0.58rem;
+                padding: 5px 10px;
+            }
+            .category-tab {
+                font-size: 0.6rem;
+                padding: 7px 5px;
+            }
+            .filter-pill {
+                font-size: 0.6rem;
+                padding: 5px 10px;
+            }
+            .nav-header .btn-mark-read {
+                font-size: 0.6rem;
+                padding: 5px 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-orb bg-orb--1"></div>
+    <div class="bg-orb bg-orb--2"></div>
+    <div class="bg-orb bg-orb--3"></div>
+
+    <div class="app-wrapper">
+        <!-- ── NAV HEADER ── -->
+        <div class="nav-header">
+            <button class="btn-back" onclick="history.back()" aria-label="Go back">
+                <i class="fas fa-chevron-left"></i>
+            </button>
+            <span class="nav-header__title">
+                <span class="live-dot"></span> Notifications
+            </span>
+            <button class="btn-mark-read" id="btnMarkAllRead" aria-label="Mark all notifications as read">
+                <i class="fas fa-check-double"></i> Mark All Read
+            </button>
+        </div>
+
+        <!-- ── SUMMARY BAR ── -->
+        <div class="summary-bar">
+            <span class="summary-bar__count" id="summaryCount">
+                <span class="unread-badge" id="unreadBadge">3</span> new
+            </span>
+            <div class="summary-bar__filters" id="filterPills">
+                <button class="filter-pill active" data-filter="all">All</button>
+                <button class="filter-pill" data-filter="unread">Unread</button>
+                <button class="filter-pill" data-filter="important">Important</button>
+            </div>
+        </div>
+
+        <!-- ── CATEGORY TABS ── -->
+        <div class="category-tabs" id="categoryTabs">
+            <button class="category-tab active" data-category="all">
+                <i class="fas fa-bell"></i> All
+                <span class="tab-count">8</span>
+            </button>
+            <button class="category-tab" data-category="nearby">
+                <i class="fas fa-location-dot"></i> Nearby
+                <span class="tab-count">2</span>
+            </button>
+            <button class="category-tab" data-category="pharmacy">
+                <i class="fas fa-prescription-bottle"></i> Pharmacy
+                <span class="tab-count">3</span>
+            </button>
+            <button class="category-tab" data-category="saved">
+                <i class="fas fa-heart"></i> Saved
+                <span class="tab-count">1</span>
+            </button>
+            <button class="category-tab" data-category="activity">
+                <i class="fas fa-list-check"></i> Activity
+                <span class="tab-count">2</span>
+            </button>
+            <button class="category-tab owner-only" data-category="owner" style="display:none;">
+                <i class="fas fa-store"></i> Owner
+                <span class="tab-count">2</span>
+            </button>
+        </div>
+
+        <!-- ── NOTIFICATION FEED ── -->
+        <div class="notification-feed" id="notificationFeed">
+            <!-- Injected by JS -->
+        </div>
+
+        <!-- ── EMPTY STATE ── -->
+        <div class="empty-state" id="emptyState" style="display:none;">
+            <div class="empty-state__icon">
+                <i class="fas fa-bell-slash"></i>
+            </div>
+            <h3>No notifications yet</h3>
+            <p>When pharmacies near you update their status or new alerts arrive, they'll appear here.</p>
+            <button class="btn-empty-action" onclick="window.location.href='index.html'">
+                <i class="fas fa-magnifying-glass-location"></i> Find Pharmacies
+            </button>
+        </div>
+
+        <!-- ── SETTINGS SHORTCUT ── -->
+        <div class="settings-shortcut" onclick="window.location.href='settings.html'" role="button" tabindex="0" aria-label="Notification settings">
+            <div class="settings-shortcut__icon">
+                <i class="fas fa-sliders"></i>
+            </div>
+            <span class="settings-shortcut__label">Notification Settings</span>
+            <i class="fas fa-chevron-right settings-shortcut__arrow"></i>
+        </div>
+
+        <!-- ── INFO NOTE ── -->
+        <div class="info-note">
+            <i class="fas fa-circle-info"></i> Notifications are based on your activity, saved pharmacies, and location.<br>
+            You can manage preferences in <a href="settings.html" style="color:var(--brand-primary);">Settings</a>.
+        </div>
+    </div>
+
+    <!-- ── iOS MODAL ── -->
+    <div class="modal-overlay" id="modalOverlay">
+        <div class="modal-notification" id="modalNotification">
+            <button class="modal-notification__close" id="modalCloseBtn"><i class="fas fa-xmark"></i></button>
+            <div class="modal-notification__header">
+                <div class="modal-notification__app-icon"><i class="fas fa-prescription-bottle"></i></div>
+                <span class="modal-notification__app-name">PharmFinder</span>
+                <span class="modal-notification__time" id="modalTime">now</span>
+            </div>
+            <div class="modal-notification__body" id="modalBody">Message</div>
+            <div class="modal-notification__sub" id="modalSub"></div>
+            <div class="modal-notification__actions" id="modalActions">
+                <button class="modal-notification__btn modal-notification__btn--secondary" id="modalBtnDismiss">Close</button>
+                <button class="modal-notification__btn modal-notification__btn--primary" id="modalBtnAction">OK</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast -->
+    <div class="toast" id="toast"><i class="fas fa-circle-check"></i><span id="toastMsg"></span></div>
+
+    <script>
+        (function() {
+            // ─── STATE ───
+            let userRole = 'user'; // 'user' or 'owner'
+            let activeFilter = 'all';
+            let activeCategory = 'all';
+
+            // ─── NOTIFICATION DATA ───
+            const allNotifications = [
+                // Priority / Nearby
+                { id: 1, category: 'nearby', priority: true, read: false,
+                    icon: 'fa-location-dot', iconBg: 'blue', title: 'Pharmacy Near You Is Open Now',
+                    message: 'MediCare 24/7 Pharmacy is currently open and 0.3 km away.',
+                    time: '2 mins ago', actions: [{ label: 'View', url: 'pharmacy-details.html?id=1',
+                        primary: true }, { label: 'Call', url: 'tel:+15551112222', call: true }
+                    ] },
+                { id: 2, category: 'pharmacy', priority: false, read: false, icon: 'fa-clock',
+                    iconBg: 'orange', title: 'Status Update: HealthPlus Pharmacy',
+                    message: 'HealthPlus Pharmacy is now marked as closed for today.',
+                    time: '12 mins ago', actions: [{ label: 'View', url: 'pharmacy-details.html?id=3',
+                        primary: true }, { label: 'Find Alternative', url: 'index.html?open=now',
+                        primary: false }
+                    ] },
+                // Pharmacy updates
+                { id: 3, category: 'pharmacy', priority: false, read: false, icon: 'fa-circle-check',
+                    iconBg: 'green', title: 'Rx Emergency Pharm Confirmed Open',
+                    message: 'A community member confirmed this pharmacy is open right now.',
+                    time: '28 mins ago', actions: [{ label: 'View', url: 'pharmacy-details.html?id=4',
+                        primary: true }, { label: 'Get Directions', url: 'map.html',
+                    primary: false }] },
+                { id: 4, category: 'pharmacy', priority: false, read: true, icon: 'fa-clock',
+                    iconBg: 'orange', title: 'CityCare Pharmacy Closing Soon',
+                    message: 'CityCare Pharmacy will close at 9 PM today instead of 10 PM.',
+                    time: '1 hour ago', actions: [{ label: 'Call Ahead', url: 'tel:+15555556666',
+                    call: true }] },
+                // Saved
+                { id: 5, category: 'saved', priority: true, read: false, icon: 'fa-heart', iconBg: 'red',
+                    title: 'Your Saved Pharmacy Is Open',
+                    message: 'GreenCross Pharmacy (one of your saved pharmacies) is now open.',
+                    time: '3 hours ago', actions: [{ label: 'View', url: 'pharmacy-details.html?id=2',
+                        primary: true }, { label: 'Call', url: 'tel:+15552223333', call: true }
+                    ] },
+                // Nearby
+                { id: 6, category: 'nearby', priority: false, read: true, icon: 'fa-location-dot',
+                    iconBg: 'blue', title: '3 Pharmacies Near You Are Open',
+                    message: 'Multiple pharmacies within 2 km are currently open — tap to view all.',
+                    time: '5 hours ago', actions: [{ label: 'View All', url: 'index.html?open=now',
+                    primary: true }] },
+                // Activity
+                { id: 7, category: 'activity', priority: false, read: true, icon: 'fa-clipboard-check',
+                    iconBg: 'purple', title: 'Your Report Was Accepted',
+                    message: 'Your status report for MediCare 24/7 Pharmacy has been verified.',
+                    time: 'Yesterday', actions: [{ label: 'View Report', url: 'report.html' }] },
+                { id: 8, category: 'activity', priority: false, read: true, icon: 'fa-star',
+                    iconBg: 'teal', title: 'You Helped 3 Users This Week',
+                    message: 'Your community contributions are making PharmFinder more reliable.',
+                    time: '2 days ago', actions: [{ label: 'View Impact', url: 'profile.html' }] },
+            ];
+
+            const ownerNotifications = [
+                { id: 101, category: 'owner', priority: true, read: false, icon: 'fa-store',
+                    iconBg: 'teal', title: 'Your Pharmacy Listing Was Approved',
+                    message: 'MediCare 24/7 Pharmacy is now live and visible to users.',
+                    time: '1 day ago', actions: [{ label: 'View Listing', url: 'pharmacy-details.html?id=1',
+                        primary: true }] },
+                { id: 102, category: 'owner', priority: false, read: false, icon: 'fa-chart-line',
+                    iconBg: 'green', title: 'You Received 48 New Views Today',
+                    message: 'Your pharmacy profile was viewed 48 times today — up 20% from last week.',
+                    time: 'Today', actions: [{ label: 'View Analytics', url: 'profile.html#owner',
+                    primary: true }] },
+                { id: 103, category: 'owner', priority: false, read: true, icon: 'fa-phone',
+                    iconBg: 'blue', title: '5 Calls Received This Week',
+                    message: 'Patients called your pharmacy 5 times this week through PharmFinder.',
+                    time: '3 days ago', actions: [{ label: 'View Details', url: 'profile.html#owner' }] },
+            ];
+
+            let notifications = [...allNotifications];
+
+            // Load role
+            function loadRole() {
+                try {
+                    const raw = localStorage.getItem('pharmfinder_profile');
+                    if (raw) {
+                        const data = JSON.parse(raw);
+                        userRole = data.role || 'user';
+                    }
+                } catch (e) {}
+            }
+            loadRole();
+
+            // Build full notification list
+            function buildNotificationList() {
+                let list = [...allNotifications];
+                if (userRole === 'owner') {
+                    list = [...list, ...ownerNotifications];
+                }
+                // Sort: priority first, then by time (simplified)
+                list.sort((a, b) => {
+                    if (a.priority && !b.priority) return -1;
+                    if (!a.priority && b.priority) return 1;
+                    if (!a.read && b.read) return -1;
+                    if (a.read && !b.read) return 1;
+                    return 0;
+                });
+                return list;
+            }
+            notifications = buildNotificationList();
+
+            // ─── DOM REFS ───
+            const notificationFeed = document.getElementById('notificationFeed');
+            const emptyState = document.getElementById('emptyState');
+            const unreadBadge = document.getElementById('unreadBadge');
+            const summaryCount = document.getElementById('summaryCount');
+            const categoryTabs = document.querySelectorAll('.category-tab');
+            const filterPills = document.querySelectorAll('.filter-pill');
+            const btnMarkAllRead = document.getElementById('btnMarkAllRead');
+            const ownerOnlyTabs = document.querySelectorAll('.owner-only');
+            const modalOverlay = document.getElementById('modalOverlay');
+            const modalBody = document.getElementById('modalBody');
+            const modalSub = document.getElementById('modalSub');
+            const modalTime = document.getElementById('modalTime');
+            const modalBtnDismiss = document.getElementById('modalBtnDismiss');
+            const modalBtnAction = document.getElementById('modalBtnAction');
+            const modalCloseBtn = document.getElementById('modalCloseBtn');
+            const modalActions = document.getElementById('modalActions');
+            const toast = document.getElementById('toast');
+            const toastMsg = document.getElementById('toastMsg');
+
+            let toastTimer;
+            let modalActionCallback = null;
+
+            function showModal(bodyText, subText, actionLabel, callback, dismissLabel = 'Close') {
+                modalBody.innerHTML = bodyText;
+                modalSub.textContent = subText || '';
+                modalTime.textContent = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                modalBtnAction.textContent = actionLabel || 'OK';
+                modalBtnDismiss.textContent = dismissLabel;
+                modalActions.style.display = 'flex';
+                modalActionCallback = callback || null;
+                modalOverlay.classList.add('active');
+            }
+
+            function hideModal() {
+                modalOverlay.classList.remove('active');
+                modalActionCallback = null;
+            }
+            modalCloseBtn.addEventListener('click', hideModal);
+            modalBtnDismiss.addEventListener('click', hideModal);
+            modalBtnAction.addEventListener('click', () => {
+                if (modalActionCallback && typeof modalActionCallback === 'function') modalActionCallback();
+                hideModal();
+            });
+            modalOverlay.addEventListener('click', (e) => { if (e.target === modalOverlay) hideModal(); });
+            document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && modalOverlay.classList
+                    .contains('active')) hideModal(); });
+
+            function showToast(message, iconClass = 'fa-circle-check') {
+                clearTimeout(toastTimer);
+                toastMsg.textContent = message;
+                const iconEl = toast.querySelector('i');
+                if (iconEl) iconEl.className = 'fas ' + iconClass;
+                toast.classList.add('show');
+                toastTimer = setTimeout(() => toast.classList.remove('show'), 2800);
+            }
+
+            // ─── FILTER & RENDER ───
+            function getFilteredNotifications() {
+                let list = [...notifications];
+                if (activeFilter === 'unread') list = list.filter(n => !n.read);
+                else if (activeFilter === 'important') list = list.filter(n => n.priority);
+                if (activeCategory !== 'all') list = list.filter(n => n.category === activeCategory);
+                return list;
+            }
+
+            function updateUnreadBadge() {
+                const unreadCount = notifications.filter(n => !n.read).length;
+                unreadBadge.textContent = unreadCount;
+                if (unreadCount === 0) {
+                    summaryCount.innerHTML = '<span class="unread-badge" style="background:var(--ios-gray3);">0</span> new';
+                } else {
+                    summaryCount.innerHTML = '<span class="unread-badge">' + unreadCount + '</span> new';
+                }
+            }
+
+            function renderNotifications() {
+                const filtered = getFilteredNotifications();
+                if (filtered.length === 0) {
+                    notificationFeed.innerHTML = '';
+                    emptyState.style.display = 'flex';
+                } else {
+                    emptyState.style.display = 'none';
+                    // Group by time periods
+                    const today = [];
+                    const yesterday = [];
+                    const earlier = [];
+                    filtered.forEach(n => {
+                        if (n.time.includes('mins') || n.time.includes('hour') || n.time === 'Today')
+                            today.push(n);
+                        else if (n.time === 'Yesterday' || n.time.includes('day') && n.time.includes('1'))
+                            yesterday.push(n);
+                        else earlier.push(n);
+                    });
+
+                    let html = '';
+                    if (today.length > 0) {
+                        html += '<div class="time-group-header">Today</div>';
+                        html += today.map(n => renderNotificationCard(n)).join('');
+                    }
+                    if (yesterday.length > 0) {
+                        html += '<div class="time-group-header">Yesterday</div>';
+                        html += yesterday.map(n => renderNotificationCard(n)).join('');
+                    }
+                    if (earlier.length > 0) {
+                        html += '<div class="time-group-header">Earlier</div>';
+                        html += earlier.map(n => renderNotificationCard(n)).join('');
+                    }
+                    notificationFeed.innerHTML = html;
+
+                    // Attach click listeners
+                    attachNotificationListeners();
+                }
+                updateUnreadBadge();
+                updateCategoryCounts();
+                updateOwnerTabs();
+            }
+
+            function renderNotificationCard(n) {
+                const unreadClass = n.read ? '' : ' unread';
+                const priorityClass = n.priority ? ' priority' : '';
+                const actionsHtml = n.actions ? n.actions.map(a => {
+                    const btnClass = a.call ? 'call-action' : (a.primary ? 'primary-action' : '');
+                    return `<button class="btn-notif-action ${btnClass}" data-url="${a.url || ''}" data-call="${a.call || false}">${a.label}</button>`;
+                }).join('') : '';
+                return `
+            <div class="notification-card${unreadClass}${priorityClass}" data-id="${n.id}" data-read="${n.read}" data-category="${n.category}" role="button" tabindex="0" aria-label="${n.title} — ${n.read ? 'Read' : 'Unread'}">
+              <div class="notification-card__icon ${n.iconBg}">
+                <i class="fas ${n.icon}"></i>
+              </div>
+              <div class="notification-card__body">
+                <div class="notification-card__title">${n.title}</div>
+                <div class="notification-card__message">${n.message}</div>
+                <div class="notification-card__time">
+                  ${!n.read ? '<span class="unread-dot"></span>' : ''} ${n.time}
+                </div>
+                ${actionsHtml ? `<div class="notification-card__actions">${actionsHtml}</div>` : ''}
+              </div>
+            </div>`;
+            }
+
+            function attachNotificationListeners() {
+                // Card click marks as read
+                document.querySelectorAll('.notification-card').forEach(card => {
+                    card.addEventListener('click', function(e) {
+                        if (e.target.closest('.btn-notif-action')) return;
+                        const id = parseInt(this.getAttribute('data-id'));
+                        markAsRead(id);
+                    });
+                    card.addEventListener('keydown', function(e) {
+                        if (e.key === 'Enter' || e.key === ' ') {
+                            e.preventDefault();
+                            if (!e.target.closest('.btn-notif-action')) {
+                                const id = parseInt(this.getAttribute('data-id'));
+                                markAsRead(id);
+                            }
+                        }
+                    });
+                });
+                // Action buttons
+                document.querySelectorAll('.btn-notif-action').forEach(btn => {
+                    btn.addEventListener('click', function(e) {
+                        e.stopPropagation();
+                        const url = this.getAttribute('data-url');
+                        const call = this.getAttribute('data-call') === 'true';
+                        if (call && url) {
+                            showModal('Call Pharmacy', 'Initiating call…',
+                                'Call Now', () => { window.open(url, '_self'); });
+                        } else if (url) {
+                            showToast('Opening…', 'fa-arrow-right');
+                            setTimeout(() => { window.location.href = url; }, 300);
+                        }
+                    });
+                });
+            }
+
+            function markAsRead(id) {
+                const notif = notifications.find(n => n.id === id);
+                if (notif && !notif.read) {
+                    notif.read = true;
+                    renderNotifications();
+                    showToast('Marked as read', 'fa-check');
+                }
+            }
+
+            function markAllAsRead() {
+                const unreadCount = notifications.filter(n => !n.read).length;
+                if (unreadCount === 0) {
+                    showToast('All notifications are already read', 'fa-check-double');
+                    return;
+                }
+                showModal(
+                    'Mark All as Read?',
+                    'This will mark all ' + unreadCount + ' unread notifications as read.',
+                    'Mark All Read',
+                    () => {
+                        notifications.forEach(n => { n.read = true; });
+                        renderNotifications();
+                        showToast('All notifications marked as read', 'fa-check-double');
+                    }
+                );
+            }
+            btnMarkAllRead.addEventListener('click', markAllAsRead);
+
+            function updateCategoryCounts() {
+                categoryTabs.forEach(tab => {
+                    const cat = tab.getAttribute('data-category');
+                    let count;
+                    if (cat === 'all') count = notifications.length;
+                    else count = notifications.filter(n => n.category === cat).length;
+                    const countEl = tab.querySelector('.tab-count');
+                    if (countEl) countEl.textContent = count;
+                });
+            }
+
+            function updateOwnerTabs() {
+                ownerOnlyTabs.forEach(tab => {
+                    tab.style.display = userRole === 'owner' ? 'flex' : 'none';
+                });
+            }
+
+            // ─── FILTER PILLS ───
+            filterPills.forEach(pill => {
+                pill.addEventListener('click', function() {
+                    filterPills.forEach(p => p.classList.remove('active'));
+                    this.classList.add('active');
+                    activeFilter = this.getAttribute('data-filter');
+                    renderNotifications();
+                });
+            });
+
+            // ─── CATEGORY TABS ───
+            categoryTabs.forEach(tab => {
+                tab.addEventListener('click', function() {
+                    categoryTabs.forEach(t => t.classList.remove('active'));
+                    this.classList.add('active');
+                    activeCategory = this.getAttribute('data-category');
+                    // Reset filter to 'all' when switching categories
+                    activeFilter = 'all';
+                    filterPills.forEach(p => p.classList.remove('active'));
+                    document.querySelector('.filter-pill[data-filter="all"]')?.classList.add(
+                        'active');
+                    renderNotifications();
+                });
+            });
+
+            // ─── INIT ───
+            updateOwnerTabs();
+            updateCategoryCounts();
+            renderNotifications();
+
+            console.log('🔔 PharmFinder Notifications ready.');
+            console.log('📩 ' + notifications.length + ' total notifications | ' + notifications.filter(n => !n
+                .read).length + ' unread');
+            console.log('👤 Role: ' + userRole);
+            console.log('💡 Tap a notification to mark it as read.');
+
+            // Simulate a new notification arriving after delay
+            setTimeout(() => {
+                const newNotif = {
+                    id: Date.now(),
+                    category: 'nearby',
+                    priority: false,
+                    read: false,
+                    icon: 'fa-location-dot',
+                    iconBg: 'blue',
+                    title: 'New Pharmacy Added Nearby',
+                    message: 'A new pharmacy just registered in your area — check it out.',
+                    time: 'Just now',
+                    actions: [{ label: 'View', url: 'index.html', primary: true }],
+                };
+                notifications.unshift(newNotif);
+                renderNotifications();
+                showToast('🔔 New notification: Pharmacy added nearby!', 'fa-bell');
+            }, 8000);
+
+            window.PharmFinderNotifications = {
+                getAll: () => notifications,
+                getUnreadCount: () => notifications.filter(n => !n.read).length,
+                markAsRead,
+                markAllAsRead,
+                addNotification: (notif) => {
+                    notifications.unshift({ ...notif, id: Date.now(), read: false });
+                    renderNotifications();
+                },
+                refresh: renderNotifications,
+            };
+        })();
+    </script>
+</body>
+</html>

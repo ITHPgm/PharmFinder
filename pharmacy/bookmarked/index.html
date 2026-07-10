@@ -1,0 +1,1256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>PharmFinder — Saved Pharmacies</title>
+    <meta name="description" content="Your saved pharmacies — quick access to trusted locations you've bookmarked." />
+    <meta name="theme-color" content="#0D6B4E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+    <style>
+        :root {
+            --ios-blue: #007AFF;
+            --ios-green: #34C759;
+            --ios-red: #FF3B30;
+            --ios-orange: #FF9500;
+            --ios-teal: #5AC8FA;
+            --ios-indigo: #5856D6;
+            --ios-purple: #AF52DE;
+            --ios-gray: #8E8E93;
+            --ios-gray2: #AEAEB2;
+            --ios-gray3: #C7C7CC;
+            --ios-gray4: #D1D1D6;
+            --ios-gray5: #E5E5EA;
+            --ios-gray6: #F2F2F7;
+            --ios-bg: #F9F9FB;
+            --ios-white: #FFFFFF;
+            --ios-black: #1C1C1E;
+            --ios-dark-card: #2C2C2E;
+            --brand-primary: #0D6B4E;
+            --brand-primary-light: #0F8A63;
+            --brand-secondary: #1B9C6B;
+            --brand-accent: #22C55E;
+            --brand-bg-light: #ECFDF5;
+            --brand-gradient: linear-gradient(135deg, #0D6B4E 0%, #0F8A63 30%, #1B9C6B 60%, #22C55E 100%);
+            --brand-gradient-subtle: linear-gradient(135deg, #ECFDF5 0%, #D1FAE5 50%, #A7F3D0 100%);
+            --glass-bg: rgba(255, 255, 255, 0.74);
+            --glass-border: rgba(255, 255, 255, 0.58);
+            --glass-blur: blur(22px) saturate(180%);
+            --radius-sm: 10px;
+            --radius-md: 16px;
+            --radius-lg: 22px;
+            --radius-xl: 28px;
+            --radius-2xl: 36px;
+            --radius-full: 9999px;
+            --shadow-ios: 0 1px 3px rgba(0, 0, 0, 0.06), 0 6px 16px rgba(0, 0, 0, 0.06);
+            --shadow-ios-lg: 0 4px 20px rgba(0, 0, 0, 0.10), 0 12px 40px rgba(0, 0, 0, 0.08);
+            --shadow-ios-xl: 0 8px 40px rgba(0, 0, 0, 0.14), 0 20px 60px rgba(0, 0, 0, 0.10);
+            --shadow-glow-green: 0 0 40px rgba(13, 107, 78, 0.25), 0 0 80px rgba(34, 197, 94, 0.15);
+            --shadow-glow-red: 0 0 40px rgba(255, 59, 48, 0.2), 0 0 80px rgba(255, 45, 85, 0.10);
+            --transition-fast: 0.18s cubic-bezier(0.25, 0.1, 0.25, 1);
+            --transition-smooth: 0.3s cubic-bezier(0.25, 0.1, 0.25, 1);
+            --transition-bounce: 0.45s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            --transition-spring: 0.55s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        html {
+            scroll-behavior: smooth;
+            font-size: 16px;
+            -webkit-tap-highlight-color: transparent;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Helvetica Neue', sans-serif;
+            background: var(--ios-bg);
+            color: var(--ios-black);
+            line-height: 1.55;
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+            padding-bottom: 60px;
+        }
+
+        /* ── Animated Background Orbs ── */
+        .bg-orb {
+            position: fixed;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 0;
+            opacity: 0.28;
+            filter: blur(85px);
+            animation: orbFloat 18s ease-in-out infinite;
+        }
+        .bg-orb--1 {
+            width: 380px;
+            height: 380px;
+            background: radial-gradient(circle, rgba(34, 197, 94, 0.30) 0%, transparent 70%);
+            top: -8%;
+            left: -8%;
+        }
+        .bg-orb--2 {
+            width: 320px;
+            height: 320px;
+            background: radial-gradient(circle, rgba(13, 107, 78, 0.26) 0%, transparent 70%);
+            bottom: -6%;
+            right: -6%;
+            animation-delay: -7s;
+            animation-duration: 20s;
+        }
+        .bg-orb--3 {
+            width: 240px;
+            height: 240px;
+            background: radial-gradient(circle, rgba(255, 149, 0, 0.14) 0%, transparent 70%);
+            top: 50%;
+            left: 55%;
+            animation-delay: -12s;
+            animation-duration: 22s;
+        }
+        @keyframes orbFloat {
+            0%,
+            100% {
+                transform: translate(0, 0) scale(1);
+            }
+            15% {
+                transform: translate(30px, -25px) scale(1.08);
+            }
+            30% {
+                transform: translate(-18px, 20px) scale(0.94);
+            }
+            45% {
+                transform: translate(25px, 15px) scale(1.05);
+            }
+            60% {
+                transform: translate(-30px, -10px) scale(0.92);
+            }
+            75% {
+                transform: translate(10px, -30px) scale(1.06);
+            }
+            90% {
+                transform: translate(-15px, 25px) scale(0.96);
+            }
+        }
+
+        /* ── Main Container ── */
+        .app-wrapper {
+            position: relative;
+            z-index: 1;
+            max-width: 540px;
+            margin: 0 auto;
+            padding: 0 16px 40px;
+        }
+
+        /* ── Navigation Header ── */
+        .nav-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 0 6px;
+            position: sticky;
+            top: 0;
+            z-index: 90;
+            background: rgba(249, 249, 251, 0.84);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+        }
+        .nav-header .btn-back {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.7);
+            border: 1px solid var(--ios-gray4);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all var(--transition-fast);
+            color: var(--ios-black);
+            font-size: 1rem;
+            flex-shrink: 0;
+        }
+        .nav-header .btn-back:hover {
+            background: #fff;
+            box-shadow: var(--shadow-ios);
+        }
+        .nav-header__title {
+            font-size: 1.05rem;
+            font-weight: 700;
+            letter-spacing: -0.3px;
+            color: var(--ios-black);
+            flex: 1;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .nav-header__title i {
+            color: var(--ios-red);
+            font-size: 0.85rem;
+            animation: heartBeat 2.5s ease-in-out infinite;
+        }
+        @keyframes heartBeat {
+            0%,
+            100% {
+                transform: scale(1);
+            }
+            8% {
+                transform: scale(1.3);
+            }
+            16% {
+                transform: scale(1);
+            }
+            24% {
+                transform: scale(1.2);
+            }
+            32% {
+                transform: scale(1);
+            }
+        }
+        .nav-header__count {
+            font-size: 0.7rem;
+            font-weight: 600;
+            color: var(--ios-gray);
+            background: var(--ios-gray6);
+            padding: 5px 12px;
+            border-radius: var(--radius-full);
+            flex-shrink: 0;
+        }
+
+        /* ── Quick Action Bar ── */
+        .quick-action-bar {
+            display: flex;
+            gap: 10px;
+            margin-top: 14px;
+        }
+        .btn-quick-action {
+            flex: 1;
+            padding: 11px 14px;
+            border-radius: var(--radius-full);
+            font-weight: 700;
+            font-size: 0.78rem;
+            border: 2px solid var(--ios-gray4);
+            background: rgba(255, 255, 255, 0.65);
+            cursor: pointer;
+            transition: all var(--transition-bounce);
+            font-family: 'Inter', sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            color: var(--ios-black);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+        .btn-quick-action:hover {
+            border-color: var(--brand-primary);
+            background: var(--brand-bg-light);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-ios);
+        }
+        .btn-quick-action:active {
+            transform: scale(0.95);
+        }
+        .btn-quick-action i {
+            font-size: 0.85rem;
+        }
+
+        /* ── Section Title ── */
+        .section-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: 26px;
+            margin-bottom: 10px;
+        }
+        .section-header h2 {
+            font-size: 1.15rem;
+            font-weight: 800;
+            letter-spacing: -0.3px;
+            color: var(--ios-black);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .section-header h2 i {
+            color: var(--ios-red);
+            font-size: 0.9rem;
+        }
+        .section-header .section-badge {
+            font-size: 0.65rem;
+            font-weight: 700;
+            background: var(--ios-gray6);
+            color: var(--ios-gray);
+            padding: 5px 12px;
+            border-radius: var(--radius-full);
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+        }
+
+        /* ── Saved Pharmacy Card ── */
+        .saved-card {
+            background: var(--ios-white);
+            border-radius: var(--radius-lg);
+            padding: 15px 16px;
+            border: 1px solid var(--ios-gray5);
+            box-shadow: var(--shadow-ios);
+            display: flex;
+            align-items: center;
+            gap: 13px;
+            margin-bottom: 10px;
+            transition: all var(--transition-smooth);
+            position: relative;
+            overflow: hidden;
+        }
+        .saved-card:hover {
+            box-shadow: var(--shadow-ios-lg);
+            border-color: rgba(13, 107, 78, 0.2);
+            transform: translateY(-2px);
+        }
+        .saved-card__icon {
+            width: 46px;
+            height: 46px;
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            flex-shrink: 0;
+        }
+        .saved-card__icon.open {
+            background: #D1FAE5;
+            color: #065F46;
+        }
+        .saved-card__icon.closed {
+            background: #FEE2E2;
+            color: #991B1B;
+        }
+        .saved-card__info {
+            flex: 1;
+            min-width: 0;
+        }
+        .saved-card__name {
+            font-weight: 700;
+            font-size: 0.88rem;
+            color: var(--ios-black);
+            letter-spacing: -0.2px;
+            margin-bottom: 2px;
+        }
+        .saved-card__addr {
+            font-size: 0.7rem;
+            color: var(--ios-gray);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .saved-card__meta {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 5px;
+            flex-wrap: wrap;
+        }
+        .saved-card__distance {
+            font-size: 0.66rem;
+            font-weight: 600;
+            color: var(--ios-gray);
+            background: var(--ios-gray6);
+            padding: 3px 9px;
+            border-radius: var(--radius-full);
+        }
+        .saved-card__badge {
+            font-size: 0.6rem;
+            font-weight: 700;
+            padding: 3px 9px;
+            border-radius: var(--radius-full);
+            text-transform: uppercase;
+            letter-spacing: 0.02em;
+        }
+        .badge-open {
+            background: #D1FAE5;
+            color: #065F46;
+        }
+        .badge-closed {
+            background: #FEE2E2;
+            color: #991B1B;
+        }
+        .badge-24h {
+            background: #DBEAFE;
+            color: #1E40AF;
+        }
+        .saved-card__actions {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            flex-shrink: 0;
+            align-items: center;
+        }
+        .btn-icon-sm {
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            border: 1.5px solid var(--ios-gray4);
+            background: #fff;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            color: var(--ios-gray);
+            transition: all var(--transition-bounce);
+        }
+        .btn-icon-sm:hover {
+            border-color: var(--brand-primary);
+            color: var(--brand-primary);
+            box-shadow: var(--shadow-glow-green);
+            transform: scale(1.1);
+        }
+        .btn-icon-sm.btn-remove:hover {
+            border-color: var(--ios-red);
+            color: var(--ios-red);
+            background: #FFF5F5;
+            box-shadow: var(--shadow-glow-red);
+        }
+        .saved-card__swipe-hint {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 0.6rem;
+            color: var(--ios-gray3);
+            opacity: 0;
+            transition: opacity var(--transition-smooth);
+            pointer-events: none;
+        }
+        .saved-card:hover .saved-card__swipe-hint {
+            opacity: 0.7;
+        }
+
+        /* ── Empty State ── */
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: var(--radius-xl);
+            border: 2px dashed var(--ios-gray4);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 14px;
+        }
+        .empty-state__icon {
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            background: var(--ios-gray6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            color: var(--ios-gray3);
+        }
+        .empty-state h3 {
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--ios-black);
+        }
+        .empty-state p {
+            font-size: 0.78rem;
+            color: var(--ios-gray);
+            max-width: 280px;
+        }
+        .btn-empty-action {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 24px;
+            border-radius: var(--radius-full);
+            background: var(--brand-gradient);
+            color: #fff;
+            font-weight: 700;
+            font-size: 0.85rem;
+            border: none;
+            cursor: pointer;
+            transition: all var(--transition-bounce);
+            font-family: 'Inter', sans-serif;
+            box-shadow: 0 4px 16px rgba(13, 107, 78, 0.30);
+        }
+        .btn-empty-action:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(13, 107, 78, 0.40);
+        }
+
+        /* ── Recently Viewed / Frequently Visited ── */
+        .smart-section {
+            margin-top: 20px;
+        }
+        .smart-section h3 {
+            font-size: 0.82rem;
+            font-weight: 700;
+            letter-spacing: -0.2px;
+            color: var(--ios-black);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 7px;
+        }
+        .smart-section h3 i {
+            color: var(--ios-teal);
+        }
+        .smart-card {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 11px 13px;
+            background: var(--ios-white);
+            border-radius: var(--radius-md);
+            border: 1px solid var(--ios-gray6);
+            margin-bottom: 6px;
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            box-shadow: var(--shadow-ios);
+        }
+        .smart-card:hover {
+            border-color: var(--ios-gray4);
+            box-shadow: var(--shadow-ios-lg);
+            transform: translateX(3px);
+        }
+        .smart-card__dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+        .smart-card__dot.green {
+            background: var(--ios-green);
+        }
+        .smart-card__dot.gray {
+            background: var(--ios-gray3);
+        }
+        .smart-card__info {
+            flex: 1;
+            min-width: 0;
+        }
+        .smart-card__name {
+            font-weight: 600;
+            font-size: 0.78rem;
+            color: var(--ios-black);
+        }
+        .smart-card__meta {
+            font-size: 0.65rem;
+            color: var(--ios-gray);
+        }
+        .smart-card__arrow {
+            color: var(--ios-gray3);
+            font-size: 0.6rem;
+        }
+        .smart-card__action-icon {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: var(--ios-gray6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.65rem;
+            color: var(--ios-gray);
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            flex-shrink: 0;
+        }
+        .smart-card__action-icon:hover {
+            background: var(--ios-red);
+            color: #fff;
+        }
+
+        /* ── Footer ── */
+        .footer-note {
+            margin-top: 30px;
+            text-align: center;
+            font-size: 0.64rem;
+            color: var(--ios-gray3);
+            line-height: 1.5;
+        }
+        .footer-note i {
+            color: var(--ios-gray2);
+        }
+
+        /* ── iOS Notification Modal ── */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.55);
+            z-index: 9999;
+            display: flex;
+            align-items: flex-start;
+            justify-content: center;
+            padding-top: 60px;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
+        }
+        .modal-overlay.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+        .modal-notification {
+            background: rgba(255, 255, 255, 0.96);
+            backdrop-filter: blur(30px) saturate(200%);
+            -webkit-backdrop-filter: blur(30px) saturate(200%);
+            border-radius: 22px;
+            padding: 18px 20px;
+            width: 90%;
+            max-width: 400px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(255, 255, 255, 0.6);
+            transform: translateY(-30px) scale(0.92);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+        }
+        .modal-overlay.active .modal-notification {
+            transform: translateY(0) scale(1);
+        }
+        .modal-notification__header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        .modal-notification__app-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            background: var(--brand-gradient);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 0.85rem;
+        }
+        .modal-notification__app-name {
+            font-weight: 700;
+            font-size: 0.85rem;
+            color: var(--ios-black);
+        }
+        .modal-notification__time {
+            font-size: 0.7rem;
+            color: var(--ios-gray2);
+            margin-left: auto;
+        }
+        .modal-notification__body {
+            font-size: 0.9rem;
+            color: var(--ios-black);
+            line-height: 1.4;
+            font-weight: 500;
+        }
+        .modal-notification__sub {
+            font-size: 0.75rem;
+            color: var(--ios-gray);
+            margin-top: 4px;
+        }
+        .modal-notification__close {
+            position: absolute;
+            top: 10px;
+            right: 14px;
+            background: rgba(0, 0, 0, 0.06);
+            border: none;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 0.8rem;
+            color: var(--ios-gray);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .modal-notification__actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 12px;
+        }
+        .modal-notification__btn {
+            flex: 1;
+            padding: 10px;
+            border-radius: var(--radius-full);
+            border: none;
+            font-weight: 600;
+            font-size: 0.8rem;
+            cursor: pointer;
+            font-family: 'Inter', sans-serif;
+        }
+        .modal-notification__btn--primary {
+            background: var(--brand-primary);
+            color: #fff;
+        }
+        .modal-notification__btn--secondary {
+            background: var(--ios-gray6);
+            color: var(--ios-black);
+        }
+
+        /* ── Toast ── */
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%) translateY(120px);
+            background: var(--ios-dark-card);
+            color: #fff;
+            padding: 12px 22px;
+            border-radius: var(--radius-full);
+            font-weight: 600;
+            font-size: 0.82rem;
+            z-index: 10000;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .toast.show {
+            transform: translateX(-50%) translateY(0);
+        }
+        .toast i {
+            font-size: 0.9rem;
+        }
+
+        /* ── Card remove animation ── */
+        .saved-card.removing {
+            animation: slideOutRight 0.4s ease forwards;
+        }
+        @keyframes slideOutRight {
+            0% {
+                transform: translateX(0);
+                opacity: 1;
+            }
+            100% {
+                transform: translateX(120%);
+                opacity: 0;
+                max-height: 0;
+                margin-bottom: 0;
+                padding-top: 0;
+                padding-bottom: 0;
+            }
+        }
+
+        @media (max-width: 400px) {
+            .saved-card {
+                padding: 12px;
+                gap: 10px;
+            }
+            .saved-card__icon {
+                width: 38px;
+                height: 38px;
+                font-size: 0.9rem;
+            }
+            .saved-card__name {
+                font-size: 0.78rem;
+            }
+            .btn-icon-sm {
+                width: 28px;
+                height: 28px;
+                font-size: 0.65rem;
+            }
+            .btn-quick-action {
+                font-size: 0.7rem;
+                padding: 9px 10px;
+            }
+            .nav-header__title {
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ── Animated Background Orbs ── -->
+    <div class="bg-orb bg-orb--1"></div>
+    <div class="bg-orb bg-orb--2"></div>
+    <div class="bg-orb bg-orb--3"></div>
+
+    <!-- ── App Wrapper ── -->
+    <div class="app-wrapper">
+        <!-- Navigation Header -->
+        <div class="nav-header">
+            <button class="btn-back" onclick="history.back()" aria-label="Go back">
+                <i class="fas fa-chevron-left"></i>
+            </button>
+            <span class="nav-header__title">
+                <i class="fas fa-heart"></i> Saved Pharmacies
+            </span>
+            <span class="nav-header__count" id="savedCount">0 saved</span>
+        </div>
+
+        <!-- Quick Action Bar -->
+        <div class="quick-action-bar">
+            <button class="btn-quick-action" id="btnFindNearby">
+                <i class="fas fa-magnifying-glass-location"></i> Find Nearby
+            </button>
+            <button class="btn-quick-action" id="btnViewOnMap">
+                <i class="fas fa-map"></i> View on Map
+            </button>
+            <button class="btn-quick-action" id="btnClearAll" style="border-color:#FECACA;color:var(--ios-red);">
+                <i class="fas fa-trash-can"></i> Clear
+            </button>
+        </div>
+
+        <!-- Saved Pharmacies Section -->
+        <div class="section-header">
+            <h2><i class="fas fa-bookmark"></i> Your Saved Pharmacies</h2>
+            <span class="section-badge" id="sectionBadge">0 items</span>
+        </div>
+
+        <!-- Saved List Container -->
+        <div id="savedListContainer">
+            <!-- Injected by JS -->
+        </div>
+
+        <!-- Empty State (hidden when items exist) -->
+        <div class="empty-state" id="emptyState">
+            <div class="empty-state__icon">
+                <i class="fas fa-heart-circle-plus"></i>
+            </div>
+            <h3>No saved pharmacies yet</h3>
+            <p>When you find a pharmacy you like, tap the heart icon to save it here for quick access.</p>
+            <button class="btn-empty-action" id="btnFindPharmacies">
+                <i class="fas fa-magnifying-glass"></i> Find Pharmacies
+            </button>
+        </div>
+
+        <!-- Recently Viewed Section -->
+        <div class="smart-section" id="recentlyViewedSection">
+            <h3><i class="fas fa-clock-rotate-left"></i> Recently Viewed</h3>
+            <div id="recentlyViewedList">
+                <!-- Injected by JS -->
+            </div>
+        </div>
+
+        <!-- Frequently Visited Section -->
+        <div class="smart-section" id="frequentlyVisitedSection">
+            <h3><i class="fas fa-star"></i> Frequently Visited</h3>
+            <div id="frequentlyVisitedList">
+                <!-- Injected by JS -->
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer-note">
+            <i class="fas fa-circle-info"></i> Your saved pharmacies are stored locally on this device.<br>
+            They'll be available whenever you return — no account required.
+        </div>
+    </div>
+
+    <!-- ── iOS Notification Modal ── -->
+    <div class="modal-overlay" id="modalOverlay">
+        <div class="modal-notification" id="modalNotification">
+            <button class="modal-notification__close" id="modalCloseBtn">
+                <i class="fas fa-xmark"></i>
+            </button>
+            <div class="modal-notification__header">
+                <div class="modal-notification__app-icon">
+                    <i class="fas fa-prescription-bottle"></i>
+                </div>
+                <span class="modal-notification__app-name">PharmFinder</span>
+                <span class="modal-notification__time" id="modalTime">now</span>
+            </div>
+            <div class="modal-notification__body" id="modalBody">Message</div>
+            <div class="modal-notification__sub" id="modalSub"></div>
+            <div class="modal-notification__actions">
+                <button class="modal-notification__btn modal-notification__btn--secondary" id="modalBtnDismiss">Dismiss</button>
+                <button class="modal-notification__btn modal-notification__btn--primary" id="modalBtnAction">OK</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ── Toast ── -->
+    <div class="toast" id="toast"><i class="fas fa-circle-check"></i><span id="toastMsg"></span></div>
+
+    <script>
+        (function() {
+            // ─── DEFAULT DATA (seeded if localStorage is empty) ───
+            const defaultSaved = [
+                { id: 1, name: 'MediCare 24/7 Pharmacy', address: '12 Adeola Odeku St, Victoria Island',
+                    distance: '0.3 km', status: 'open', is24h: true, phone: '+1 (555) 111-2222',
+                    savedAt: Date.now() - 86400000 },
+                { id: 4, name: 'Rx Emergency Pharm', address: '3 Allen Avenue, Ikeja', distance: '1.8 km',
+                    status: 'open', is24h: true, phone: '+1 (555) 444-5555', savedAt: Date.now() -
+                    172800000 },
+                { id: 2, name: 'GreenCross Pharmacy', address: '45 Broad Street, Marina, Lagos Island',
+                    distance: '0.7 km', status: 'open', is24h: false, phone: '+1 (555) 222-3333',
+                    savedAt: Date.now() - 259200000 },
+                { id: 5, name: 'CityCare Pharmacy', address: '22B Admiralty Way, Lekki Phase 1',
+                    distance: '2.2 km', status: 'open', is24h: false, phone: '+1 (555) 555-6666',
+                    savedAt: Date.now() - 345600000 },
+            ];
+
+            const defaultRecent = [
+                { id: 1, name: 'MediCare 24/7 Pharmacy', distance: '0.3 km', status: 'open',
+                viewedAt: '8 min ago' },
+                { id: 6, name: 'NightOwl Drugs', distance: '2.6 km', status: 'open', viewedAt: '22 min ago' },
+                { id: 3, name: 'HealthPlus Pharmacy', distance: '1.1 km', status: 'closed',
+                viewedAt: '1 hour ago' },
+            ];
+
+            const defaultFrequent = [
+                { id: 1, name: 'MediCare 24/7 Pharmacy', distance: '0.3 km', status: 'open',
+                    visitCount: 12 },
+                { id: 4, name: 'Rx Emergency Pharm', distance: '1.8 km', status: 'open', visitCount: 8 },
+                { id: 2, name: 'GreenCross Pharmacy', distance: '0.7 km', status: 'open', visitCount: 5 },
+            ];
+
+            // ─── LOAD FROM LOCAL STORAGE ───
+            function loadSaved() {
+                try {
+                    const raw = localStorage.getItem('pharmfinder_saved');
+                    if (raw) return JSON.parse(raw);
+                } catch (e) { /* ignore */ }
+                // Seed with defaults & save
+                localStorage.setItem('pharmfinder_saved', JSON.stringify(defaultSaved));
+                return [...defaultSaved];
+            }
+
+            function saveToStorage(list) {
+                localStorage.setItem('pharmfinder_saved', JSON.stringify(list));
+            }
+
+            let savedPharmacies = loadSaved();
+
+            // ─── DOM REFS ───
+            const savedListContainer = document.getElementById('savedListContainer');
+            const emptyState = document.getElementById('emptyState');
+            const savedCount = document.getElementById('savedCount');
+            const sectionBadge = document.getElementById('sectionBadge');
+            const recentlyViewedList = document.getElementById('recentlyViewedList');
+            const frequentlyVisitedList = document.getElementById('frequentlyVisitedList');
+            const btnClearAll = document.getElementById('btnClearAll');
+            const btnFindNearby = document.getElementById('btnFindNearby');
+            const btnViewOnMap = document.getElementById('btnViewOnMap');
+            const btnFindPharmacies = document.getElementById('btnFindPharmacies');
+            const modalOverlay = document.getElementById('modalOverlay');
+            const modalBody = document.getElementById('modalBody');
+            const modalSub = document.getElementById('modalSub');
+            const modalTime = document.getElementById('modalTime');
+            const modalBtnDismiss = document.getElementById('modalBtnDismiss');
+            const modalBtnAction = document.getElementById('modalBtnAction');
+            const modalCloseBtn = document.getElementById('modalCloseBtn');
+            const toast = document.getElementById('toast');
+            const toastMsg = document.getElementById('toastMsg');
+
+            let toastTimer;
+            let modalActionCallback = null;
+
+            // ─── MODAL ───
+            function showModal(bodyText, subText, actionLabel, callback, dismissLabel = 'Dismiss') {
+                modalBody.textContent = bodyText;
+                modalSub.textContent = subText || '';
+                modalTime.textContent = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                modalBtnAction.textContent = actionLabel || 'OK';
+                modalBtnDismiss.textContent = dismissLabel;
+                modalActionCallback = callback || null;
+                modalOverlay.classList.add('active');
+            }
+
+            function hideModal() {
+                modalOverlay.classList.remove('active');
+                modalActionCallback = null;
+            }
+            modalCloseBtn.addEventListener('click', hideModal);
+            modalBtnDismiss.addEventListener('click', hideModal);
+            modalBtnAction.addEventListener('click', () => {
+                if (modalActionCallback && typeof modalActionCallback === 'function') modalActionCallback();
+                hideModal();
+            });
+            modalOverlay.addEventListener('click', (e) => { if (e.target === modalOverlay) hideModal(); });
+            document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && modalOverlay.classList
+                    .contains('active')) hideModal(); });
+
+            // ─── TOAST ───
+            function showToast(message, iconClass = 'fa-circle-check') {
+                clearTimeout(toastTimer);
+                toastMsg.textContent = message;
+                const iconEl = toast.querySelector('i');
+                if (iconEl) iconEl.className = 'fas ' + iconClass;
+                toast.classList.add('show');
+                toastTimer = setTimeout(() => toast.classList.remove('show'), 2800);
+            }
+
+            // ─── RENDER SAVED LIST ───
+            function renderSavedList() {
+                const count = savedPharmacies.length;
+                savedCount.textContent = count + ' saved';
+                sectionBadge.textContent = count + ' item' + (count !== 1 ? 's' : '');
+
+                if (count === 0) {
+                    savedListContainer.innerHTML = '';
+                    emptyState.style.display = 'flex';
+                    btnClearAll.style.opacity = '0.5';
+                    btnClearAll.style.pointerEvents = 'none';
+                } else {
+                    emptyState.style.display = 'none';
+                    btnClearAll.style.opacity = '1';
+                    btnClearAll.style.pointerEvents = 'all';
+                    savedListContainer.innerHTML = savedPharmacies.map(p => {
+                        const iconClass = p.status === 'open' ? 'open' : 'closed';
+                        const badgeClass = p.status === 'open' ? 'badge-open' : 'badge-closed';
+                        const badgeText = p.status === 'open' ? 'Open Now' : 'Closed';
+                        const badge24h = p.is24h ?
+                            '<span class="saved-card__badge badge-24h">24/7</span>' : '';
+                        const savedDate = new Date(p.savedAt).toLocaleDateString([], {
+                            month: 'short',
+                            day: 'numeric'
+                        });
+                        return `
+                    <div class="saved-card" id="saved-card-${p.id}" data-id="${p.id}">
+                      <div class="saved-card__icon ${iconClass}">
+                        <i class="fas fa-prescription-bottle"></i>
+                      </div>
+                      <div class="saved-card__info">
+                        <div class="saved-card__name">${p.name}</div>
+                        <div class="saved-card__addr"><i class="fas fa-map-pin"></i> ${p.address}</div>
+                        <div class="saved-card__meta">
+                          <span class="saved-card__distance"><i class="fas fa-location-arrow"></i> ${p.distance}</span>
+                          <span class="saved-card__badge ${badgeClass}">${badgeText}</span>
+                          ${badge24h}
+                          <span style="font-size:0.6rem;color:var(--ios-gray3);">Saved ${savedDate}</span>
+                        </div>
+                      </div>
+                      <div class="saved-card__actions">
+                        <button class="btn-icon-sm btn-call-saved" data-phone="${p.phone}" data-name="${p.name}" title="Call" aria-label="Call ${p.name}">
+                          <i class="fas fa-phone"></i>
+                        </button>
+                        <button class="btn-icon-sm btn-dir-saved" data-name="${p.name}" title="Directions" aria-label="Get directions to ${p.name}">
+                          <i class="fas fa-route"></i>
+                        </button>
+                        <button class="btn-icon-sm btn-remove" data-id="${p.id}" data-name="${p.name}" title="Remove from saved" aria-label="Remove ${p.name}">
+                          <i class="fas fa-trash-can"></i>
+                        </button>
+                      </div>
+                    </div>`;
+                    }).join('');
+
+                    // Attach event listeners
+                    attachSavedCardListeners();
+                }
+            }
+
+            function attachSavedCardListeners() {
+                // Call buttons
+                document.querySelectorAll('.btn-call-saved').forEach(btn => {
+                    btn.addEventListener('click', function(e) {
+                        e.stopPropagation();
+                        const phone = this.getAttribute('data-phone');
+                        const name = this.getAttribute('data-name');
+                        showModal('Call Pharmacy', `Calling ${name} at ${phone}.`, 'Call Now',
+                            () => { window.open('tel:' + phone.replace(/[^0-9+]/g, ''),
+                                    '_self'); });
+                    });
+                });
+
+                // Direction buttons
+                document.querySelectorAll('.btn-dir-saved').forEach(btn => {
+                    btn.addEventListener('click', function(e) {
+                        e.stopPropagation();
+                        const name = this.getAttribute('data-name');
+                        showModal('Get Directions',
+                            `Opening directions to ${name} in your maps app.`, 'Open Maps',
+                            () => {
+                                window.open(
+                                    'https://www.google.com/maps/dir/?api=1&destination=6.4281,3.4215',
+                                    '_blank');
+                            });
+                    });
+                });
+
+                // Remove buttons
+                document.querySelectorAll('.btn-remove').forEach(btn => {
+                    btn.addEventListener('click', function(e) {
+                        e.stopPropagation();
+                        const id = parseInt(this.getAttribute('data-id'));
+                        const name = this.getAttribute('data-name');
+                        removePharmacy(id, name);
+                    });
+                });
+
+                // Card click navigates to pharmacy detail
+                document.querySelectorAll('.saved-card').forEach(card => {
+                    card.addEventListener('click', function() {
+                        const id = this.getAttribute('data-id');
+                        showToast('Opening pharmacy details…', 'fa-arrow-right');
+                        // In production: window.location.href = 'pharmacy-details.html?id=' + id;
+                    });
+                    card.setAttribute('tabindex', '0');
+                    card.setAttribute('role', 'button');
+                    card.addEventListener('keydown', function(e) {
+                        if (e.key === 'Enter' || e.key === ' ') {
+                            e.preventDefault();
+                            this.click();
+                        }
+                    });
+                });
+            }
+
+            function removePharmacy(id, name) {
+                const card = document.getElementById('saved-card-' + id);
+                if (card) {
+                    card.classList.add('removing');
+                    card.addEventListener('animationend', function() {
+                        savedPharmacies = savedPharmacies.filter(p => p.id !== id);
+                        saveToStorage(savedPharmacies);
+                        renderSavedList();
+                        showToast('"' + name + '" removed from saved', 'fa-trash-can');
+                    }, { once: true });
+                }
+            }
+
+            // ─── RENDER SMART SECTIONS ───
+            function renderRecentlyViewed() {
+                recentlyViewedList.innerHTML = defaultRecent.map(rv => {
+                    const dotColor = rv.status === 'open' ? 'green' : 'gray';
+                    return `
+                <div class="smart-card" data-id="${rv.id}">
+                  <span class="smart-card__dot ${dotColor}"></span>
+                  <div class="smart-card__info">
+                    <div class="smart-card__name">${rv.name}</div>
+                    <div class="smart-card__meta">📍 ${rv.distance} · ${rv.viewedAt}</div>
+                  </div>
+                  <span class="smart-card__arrow"><i class="fas fa-chevron-right"></i></span>
+                </div>`;
+                }).join('');
+
+                document.querySelectorAll('#recentlyViewedList .smart-card').forEach(card => {
+                    card.addEventListener('click', () => {
+                        showToast('Opening ' + card.querySelector('.smart-card__name')
+                            .textContent + '…', 'fa-arrow-right');
+                    });
+                });
+            }
+
+            function renderFrequentlyVisited() {
+                frequentlyVisitedList.innerHTML = defaultFrequent.map(fv => {
+                    const dotColor = fv.status === 'open' ? 'green' : 'gray';
+                    return `
+                <div class="smart-card" data-id="${fv.id}">
+                  <span class="smart-card__dot ${dotColor}"></span>
+                  <div class="smart-card__info">
+                    <div class="smart-card__name">${fv.name}</div>
+                    <div class="smart-card__meta">📍 ${fv.distance} · Visited ${fv.visitCount} times</div>
+                  </div>
+                  <span class="smart-card__arrow"><i class="fas fa-chevron-right"></i></span>
+                </div>`;
+                }).join('');
+
+                document.querySelectorAll('#frequentlyVisitedList .smart-card').forEach(card => {
+                    card.addEventListener('click', () => {
+                        showToast('Opening ' + card.querySelector('.smart-card__name')
+                            .textContent + '…', 'fa-arrow-right');
+                    });
+                });
+            }
+
+            // ─── CLEAR ALL ───
+            btnClearAll.addEventListener('click', () => {
+                if (savedPharmacies.length === 0) return;
+                showModal(
+                    'Clear All Saved?',
+                    'This will remove all ' + savedPharmacies.length +
+                    ' saved pharmacies. This action cannot be undone.',
+                    'Clear All',
+                    () => {
+                        savedPharmacies = [];
+                        saveToStorage(savedPharmacies);
+                        renderSavedList();
+                        showToast('All saved pharmacies cleared', 'fa-trash-can');
+                    },
+                    'Cancel'
+                );
+            });
+
+            // ─── QUICK ACTION BUTTONS ───
+            btnFindNearby.addEventListener('click', () => {
+                showToast('Opening pharmacy finder…', 'fa-magnifying-glass-location');
+                setTimeout(() => { window.location.href = 'index.html'; }, 400);
+            });
+
+            btnViewOnMap.addEventListener('click', () => {
+                showToast('Opening map view…', 'fa-map');
+                setTimeout(() => { window.location.href = 'map.html'; }, 400);
+            });
+
+            btnFindPharmacies.addEventListener('click', () => {
+                showToast('Opening pharmacy finder…', 'fa-magnifying-glass');
+                setTimeout(() => { window.location.href = 'index.html'; }, 400);
+            });
+
+            // ─── KEYBOARD SHORTCUTS ───
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'f' && e.ctrlKey) {
+                    e.preventDefault();
+                    window.location.href = 'index.html';
+                }
+                if (e.key === 'm' && e.ctrlKey) {
+                    e.preventDefault();
+                    window.location.href = 'map.html';
+                }
+            });
+
+            // ─── INIT ───
+            renderSavedList();
+            renderRecentlyViewed();
+            renderFrequentlyVisited();
+
+            console.log('❤️ PharmFinder — Saved Pharmacies page ready.');
+            console.log('📌 ' + savedPharmacies.length + ' pharmacies saved.');
+            console.log('💡 Shortcuts: Ctrl+F (Find) | Ctrl+M (Map)');
+            console.log('🗂️ Data stored in localStorage under "pharmfinder_saved".');
+
+            // Welcome toast
+            setTimeout(() => {
+                if (savedPharmacies.length > 0) {
+                    showToast('You have ' + savedPharmacies.length + ' saved pharmac' + (savedPharmacies
+                        .length === 1 ? 'y' : 'ies'), 'fa-heart');
+                } else {
+                    showToast('Tap the heart icon on any pharmacy to save it here', 'fa-heart');
+                }
+            }, 1000);
+
+            // ─── EXPORT FOR EXTERNAL USE ───
+            window.PharmFinderFavorites = {
+                getSaved: () => savedPharmacies,
+                addPharmacy: (pharmacy) => {
+                    if (!savedPharmacies.find(p => p.id === pharmacy.id)) {
+                        pharmacy.savedAt = Date.now();
+                        savedPharmacies.unshift(pharmacy);
+                        saveToStorage(savedPharmacies);
+                        renderSavedList();
+                        return true;
+                    }
+                    return false;
+                },
+                removePharmacy: (id) => {
+                    const pharmacy = savedPharmacies.find(p => p.id === id);
+                    if (pharmacy) {
+                        savedPharmacies = savedPharmacies.filter(p => p.id !== id);
+                        saveToStorage(savedPharmacies);
+                        renderSavedList();
+                        return pharmacy;
+                    }
+                    return null;
+                },
+                isSaved: (id) => savedPharmacies.some(p => p.id === id),
+                count: () => savedPharmacies.length,
+            };
+
+        })();
+    </script>
+</body>
+</html>
